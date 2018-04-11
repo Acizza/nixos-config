@@ -61,6 +61,7 @@
         atool
         python
         unzip
+        unrar
         mediainfo
         libcaca
         highlight
