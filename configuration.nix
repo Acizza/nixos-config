@@ -97,6 +97,7 @@
         dhcpcd
         ripgrep
         google-musicmanager
+        brasero
       ];
       
       extraOutputsToInstall = [ "dev" ];
