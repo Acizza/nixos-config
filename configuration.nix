@@ -96,6 +96,7 @@
         gnome3.eog
         dhcpcd
         ripgrep
+        google-musicmanager
       ];
       
       extraOutputsToInstall = [ "dev" ];
