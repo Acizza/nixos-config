@@ -27,6 +27,9 @@
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
+    
+    inputMethod.enabled = "ibus";
+    inputMethod.ibus.engines = [ pkgs.ibus-engines.mozc ];
   };
 
   time.timeZone = "America/Los_Angeles";
@@ -98,6 +101,8 @@
         ripgrep
         google-musicmanager
         brasero
+        # for killall
+        psmisc
       ];
       
       extraOutputsToInstall = [ "dev" ];
