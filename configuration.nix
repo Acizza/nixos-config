@@ -54,13 +54,16 @@
     allowUnfree = true;
 
     packageOverrides = pkgs: rec {
-      polybar = pkgs.polybar.override {
-        i3GapsSupport = true;
-      };
-      
       curl = pkgs.curl.override {
         sslSupport = true;
       };
+      
+      lua = pkgs.luajit;
+      luaPackages = pkgs.luajitPackages;
+      
+      awesome = pkgs.awesome.overrideAttrs (old: {
+        cmakeFlags = "${old.cmakeFlags} -DLUA_LIBRARIES=${pkgs.luajit}/lib/libluajit-${pkgs.luajit.luaversion}.so";
+      });
     };
   };
   
@@ -69,7 +72,6 @@
         firefox
         termite
         ranger
-        polybar
         atool
         python3
         unzip
@@ -114,9 +116,12 @@
         psmisc
         hicolor_icon_theme
         pywal
+        luajit
       ];
       
       extraOutputsToInstall = [ "dev" ];
+      
+      variables.PATH = "~/.cargo/bin";
   };
   
   #gnome3.networkmanagerapplet
@@ -172,14 +177,9 @@
         };
 
         windowManager = {
-            i3 = {
-                enable = true;
-                package = pkgs.i3-gaps;
-            };
-            
             awesome = {
                 enable = true;
-                luaModules = with pkgs.luaPackages; [
+                luaModules = with pkgs.luajitPackages; [
                     luafilesystem
                 ];
             };
