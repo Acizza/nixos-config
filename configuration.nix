@@ -117,6 +117,8 @@
         hicolor_icon_theme
         pywal
         luajit
+        (import ./packages/anitrack.nix)
+        (import ./packages/bcnotif.nix)
       ];
       
       extraOutputsToInstall = [ "dev" ];
