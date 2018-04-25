@@ -87,7 +87,6 @@
         steam
         git
         transmission-gtk
-        jq
         rustup
         gcc
         pkgconfig
@@ -109,7 +108,7 @@
         gnome3.adwaita-icon-theme
         gnome3.dconf-editor
         gnome3.eog
-        dhcpcd
+        gnome3.networkmanagerapplet
         ripgrep
         google-musicmanager
         brasero
@@ -118,9 +117,9 @@
         hicolor_icon_theme
         numix-icon-theme
         pywal
-        luajit
         (import ./packages/tranim.nix)
         (import ./packages/bcnotif.nix)
+        (import ./packages/sp.nix) # Command line tool for Spotify's dbus interface
         (spotify.override {
             curl = pkgs.curl.override {
                 sslSupport = false;
@@ -134,8 +133,6 @@
       
       variables.PATH = "~/.cargo/bin";
   };
-  
-  #gnome3.networkmanagerapplet
   
   programs = {
     bash.enableCompletion = true;
@@ -210,6 +207,8 @@
       firewall.enable = true;
       enableIPv6 = false;
       hostName = "jonathan";
+      
+      networkmanager.enable = true;
   };
 
   sound.enable = true;
