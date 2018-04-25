@@ -115,9 +115,10 @@
         # for killall
         psmisc
         hicolor_icon_theme
+        numix-icon-theme
         pywal
         luajit
-        (import ./packages/anitrack.nix)
+        (import ./packages/tranim.nix)
         (import ./packages/bcnotif.nix)
       ];
       
