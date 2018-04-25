@@ -58,11 +58,12 @@
         sslSupport = true;
       };
       
-      lua = pkgs.luajit;
-      luaPackages = pkgs.luajitPackages;
-      
-      awesome = pkgs.awesome.overrideAttrs (old: {
-        cmakeFlags = "${old.cmakeFlags} -DLUA_LIBRARIES=${pkgs.luajit}/lib/libluajit-${pkgs.luajit.luaversion}.so";
+      # nixos-unstable contains a version of Spotify that no longer exists
+      spotify = pkgs.spotify.overrideAttrs (old: {
+        src = pkgs.fetchurl {
+            url = "https://repository-origin.spotify.com/pool/non-free/s/spotify-client/spotify-client_1.0.77.338.g758ebd78-41_amd64.deb";
+            sha256 = null;
+        };
       });
     };
   };
@@ -120,6 +121,13 @@
         luajit
         (import ./packages/tranim.nix)
         (import ./packages/bcnotif.nix)
+        (spotify.override {
+            curl = pkgs.curl.override {
+                sslSupport = false;
+                gnutlsSupport = true;
+            };
+        })
+        easytag
       ];
       
       extraOutputsToInstall = [ "dev" ];
@@ -182,7 +190,7 @@
         windowManager = {
             awesome = {
                 enable = true;
-                luaModules = with pkgs.luajitPackages; [
+                luaModules = with pkgs.luaPackages; [
                     luafilesystem
                 ];
             };
