@@ -1,12 +1,12 @@
 with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage rec {
-    name = "tranim-${version}";
-    version = "3aaae079b9024cd9c83efe6d6e48e2d05b9ff9a1";
+    name = "anup-${version}";
+    version = "579ff2983d45dfad13c5ae05c69c2db5fff91399";
     
     src = fetchFromGitHub {
         owner = "Acizza";
-        repo = "tranim";
+        repo = "anup";
         rev = "${version}";
         sha256 = null;
     };

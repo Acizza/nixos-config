@@ -57,15 +57,11 @@
       curl = pkgs.curl.override {
         sslSupport = true;
       };
-      
-      # nixos-unstable contains a version of Spotify that no longer exists
-      spotify = pkgs.spotify.overrideAttrs (old: {
-        src = pkgs.fetchurl {
-            url = "https://repository-origin.spotify.com/pool/non-free/s/spotify-client/spotify-client_1.0.77.338.g758ebd78-41_amd64.deb";
-            sha256 = null;
-        };
-      });
     };
+    
+    permittedInsecurePackages = [
+        "mono-4.0.4.1"
+    ];
   };
   
   environment = {
@@ -117,15 +113,10 @@
         hicolor_icon_theme
         numix-icon-theme
         pywal
-        (import ./packages/tranim.nix)
+        (import ./packages/anup.nix)
         (import ./packages/bcnotif.nix)
         (import ./packages/sp.nix) # Command line tool for Spotify's dbus interface
-        (spotify.override {
-            curl = pkgs.curl.override {
-                sslSupport = false;
-                gnutlsSupport = true;
-            };
-        })
+        spotify
         easytag
       ];
       
