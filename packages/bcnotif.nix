@@ -2,7 +2,7 @@ with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage rec {
     name = "bcnotif-${version}";
-    version = "70b3d0994ff4f9c140c8127d1477fe63867c43e4";
+    version = "c70ae69c16029dff80fd2c1c0d697707cac41a79";
     
     src = fetchFromGitHub {
         owner = "Acizza";
