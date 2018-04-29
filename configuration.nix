@@ -58,10 +58,6 @@
         sslSupport = true;
       };
     };
-    
-    permittedInsecurePackages = [
-        "mono-4.0.4.1"
-    ];
   };
   
   environment = {
@@ -106,7 +102,6 @@
         gnome3.eog
         gnome3.networkmanagerapplet
         ripgrep
-        google-musicmanager
         brasero
         psmisc # for killall
         hicolor_icon_theme
