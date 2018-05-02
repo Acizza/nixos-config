@@ -2,7 +2,7 @@ with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage rec {
     name = "anup-${version}";
-    version = "579ff2983d45dfad13c5ae05c69c2db5fff91399";
+    version = "dc956330b34d105c7518d9b311e62a1079beefe2";
     
     src = fetchFromGitHub {
         owner = "Acizza";
