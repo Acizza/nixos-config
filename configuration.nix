@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
@@ -15,7 +11,7 @@
     loader.grub = {
         enable = true;
         version = 2;
-        useOSProber = true;
+        useOSProber = false;
         device = "/dev/sdb";
 
         extraEntries = ''
@@ -52,65 +48,59 @@
 
   nixpkgs.config = {
     allowUnfree = true;
-
-    packageOverrides = pkgs: rec {
-      curl = pkgs.curl.override {
-        sslSupport = true;
-      };
-    };
   };
   
   environment = {
     systemPackages = with pkgs; [
+        # Core Applications
         firefox
         termite
         ranger
-        atool
-        python3
-        unzip
-        unrar
-        mediainfo
-        libcaca
-        highlight
-        feh
-        smplayer
         mpv
         vscode
         steam
         git
+        spotify
         transmission-gtk
         rustup
-        gcc
-        pkgconfig
-        gnumake
-        cmake
-        binutils
-        openssl
-        file
-        zlib
-        libssh2
-        notify-osd
-        numlockx
-        lxappearance-gtk3
-        arc-icon-theme
-        arc-theme
-        gnome3.gnome-system-monitor
-        gnome3.gedit
-        gnome3.dconf
-        gnome3.adwaita-icon-theme
-        gnome3.dconf-editor
-        gnome3.eog
-        gnome3.networkmanagerapplet
-        ripgrep
-        brasero
-        psmisc # for killall
-        hicolor_icon_theme
-        pywal
         (import ./packages/anup.nix)
         (import ./packages/bcnotif.nix)
+        wineWowPackages.staging
+        gnome3.gnome-system-monitor
+        gnome3.gedit
+        gnome3.eog
+        
+        # Misc Applications
+        ripgrep
+        psmisc # killall
+        pywal
         (import ./packages/sp.nix) # Command line tool for Spotify's dbus interface
-        spotify
+        (import ./packages/dxvk.nix) # D3D11 -> Vulkan (for Wine)
         easytag
+        gnome3.networkmanagerapplet
+        feh
+        lxappearance-gtk3
+        atool
+        gnupg1
+        python3
+        numlockx
+        binutils
+        mediainfo
+        libcaca
+        highlight
+        file
+        notify-osd
+        
+        # Compression
+        unzip
+        unrar
+        p7zip
+        zlib
+        
+        # Themes
+        arc-icon-theme
+        arc-theme
+        gnome3.adwaita-icon-theme
       ];
       
       extraOutputsToInstall = [ "dev" ];
@@ -138,7 +128,7 @@
         
             blur-background = true;
             blur-background-fixed = true;
-            blur-kern = "15,15,0.140858,0.182684,0.227638,0.272532,0.313486,0.346456,0.367879,0.375311,0.367879,0.346456,0.313486,0.272532,0.227638,0.182684,0.140858,0.182684,0.236928,0.295230,0.353455,0.406570,0.449329,0.477114,0.486752,0.477114,0.449329,0.406570,0.353455,0.295230,0.236928,0.182684,0.227638,0.295230,0.367879,0.440432,0.506617,0.559898,0.594521,0.606531,0.594521,0.559898,0.506617,0.440432,0.367879,0.295230,0.227638,0.272532,0.353455,0.440432,0.527292,0.606531,0.670320,0.711770,0.726149,0.711770,0.670320,0.606531,0.527292,0.440432,0.353455,0.272532,0.313486,0.406570,0.506617,0.606531,0.697676,0.771052,0.818731,0.835270,0.818731,0.771052,0.697676,0.606531,0.506617,0.406570,0.313486,0.346456,0.449329,0.559898,0.670320,0.771052,0.852144,0.904837,0.923116,0.904837,0.852144,0.771052,0.670320,0.559898,0.449329,0.346456,0.367879,0.477114,0.594521,0.711770,0.818731,0.904837,0.960789,0.980199,0.960789,0.904837,0.818731,0.711770,0.594521,0.477114,0.367879,0.375311,0.486752,0.606531,0.726149,0.835270,0.923116,0.980199,0.980199,0.923116,0.835270,0.726149,0.606531,0.486752,0.375311,0.367879,0.477114,0.594521,0.711770,0.818731,0.904837,0.960789,0.980199,0.960789,0.904837,0.818731,0.711770,0.594521,0.477114,0.367879,0.346456,0.449329,0.559898,0.670320,0.771052,0.852144,0.904837,0.923116,0.904837,0.852144,0.771052,0.670320,0.559898,0.449329,0.346456,0.313486,0.406570,0.506617,0.606531,0.697676,0.771052,0.818731,0.835270,0.818731,0.771052,0.697676,0.606531,0.506617,0.406570,0.313486,0.272532,0.353455,0.440432,0.527292,0.606531,0.670320,0.711770,0.726149,0.711770,0.670320,0.606531,0.527292,0.440432,0.353455,0.272532,0.227638,0.295230,0.367879,0.440432,0.506617,0.559898,0.594521,0.606531,0.594521,0.559898,0.506617,0.440432,0.367879,0.295230,0.227638,0.182684,0.236928,0.295230,0.353455,0.406570,0.449329,0.477114,0.486752,0.477114,0.449329,0.406570,0.353455,0.295230,0.236928,0.182684,0.140858,0.182684,0.227638,0.272532,0.313486,0.346456,0.367879,0.375311,0.367879,0.346456,0.313486,0.272532,0.227638,0.182684,0.140858";
+            blur-kern = "7x7box";
             
             blur-background-exclude = [
                 "!window_type = 'dock' &&
@@ -181,15 +171,12 @@
             default = "awesome";
         };
 
-        dpi = 192;
+        dpi = 161;
         videoDrivers = [ "nvidia" ];
     };
   };
 
   networking = {
-      #firewall.allowedTCPPorts = [ ... ];
-      #firewall.allowedUDPPorts = [ ... ];
-
       firewall.enable = true;
       enableIPv6 = false;
       hostName = "jonathan";
@@ -211,4 +198,6 @@
     description = "Jonathan";
     extraGroups = [ "wheel" "networkmanager" ];
   };
+
+  system.nixos.stateVersion = "18.03";
 }
