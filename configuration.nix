@@ -22,6 +22,8 @@
     };
     
     cleanTmpDir = true;
+    
+    kernelPackages = pkgs.linuxPackages_4_17;
   };
 
   i18n = {
@@ -102,8 +104,6 @@
         arc-theme
         gnome3.adwaita-icon-theme
       ];
-      
-      extraOutputsToInstall = [ "dev" ];
       
       variables.PATH = "~/.cargo/bin";
   };
@@ -197,6 +197,7 @@
     home = "/home/jonathan";
     description = "Jonathan";
     extraGroups = [ "wheel" "networkmanager" ];
+    shell = "/run/current-system/sw/bin/fish";
   };
 
   system.nixos.stateVersion = "18.03";
