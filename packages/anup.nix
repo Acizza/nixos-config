@@ -13,7 +13,7 @@ rustPlatform.buildRustPackage rec {
     
     cargoSha256 = null;
     
-    nativeBuildInputs = [ openssl pkgconfig ];
+    buildInputs = [ openssl pkgconfig ];
     
     meta = with stdenv.lib; {
         license = licenses.asl20;
