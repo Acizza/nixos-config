@@ -92,6 +92,7 @@
         highlight
         file
         notify-osd
+        pavucontrol
         
         # Compression
         unzip
