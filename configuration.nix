@@ -106,6 +106,7 @@
       ];
       
       variables.PATH = "~/.cargo/bin";
+      variables.TERM = "termite";
   };
   
   programs = {
