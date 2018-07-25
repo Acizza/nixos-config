@@ -191,7 +191,7 @@
   hardware = {
       pulseaudio.enable = true;
       opengl.driSupport32Bit = true;
-      cpu.intel.updateMicrocode = true;
+      cpu.amd.updateMicrocode = true;
   };
 
   users.extraUsers.jonathan = {
