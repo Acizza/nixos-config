@@ -2,16 +2,16 @@ with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage rec {
     name = "anup-${version}";
-    version = "71e2d49624e3b7a4db38f03b89d28dc5d8fe9b33";
+    version = "f26ed28ebcf377ef66f8ff26bfc827aae08434be";
     
     src = fetchFromGitLab {
         owner = "Acizza";
         repo = "anup";
         rev = "${version}";
-        sha256 = "1h4yya3jjwdjvqc93a42v04z3834b5a97n5nrz8nzjh3wi0ib58n";
+        sha256 = "14qrzmgd4aqglq64sznz8grizqpszb5w74cv4qk0h61wlaxvnccb";
     };
     
-    cargoSha256 = "03k9n9hzaz970hsl4ca3r8ykwivfcg5rvhim8nfjgsbfq96rwbnx";
+    cargoSha256 = "1ajmz3w2hszf9q7lryxjd8bvlmnlgnc7z1p97wn0vi4j3lz97csn";
     
     depsBuildBuild = [ buildPackages.stdenv.cc pkgconfig ];
     buildInputs = [ openssl.dev xdg_utils ];
