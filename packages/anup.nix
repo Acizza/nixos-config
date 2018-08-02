@@ -2,13 +2,13 @@ with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage rec {
     name = "anup-${version}";
-    version = "a629636dc011f603b2c1cef681c8ede9fea497bb";
+    version = "71e2d49624e3b7a4db38f03b89d28dc5d8fe9b33";
     
     src = fetchFromGitLab {
         owner = "Acizza";
         repo = "anup";
         rev = "${version}";
-        sha256 = "0jdbz80dw099ygwlx6xlcib5h703d7hcq9ldw1wwlpckc4hvzdm1";
+        sha256 = "1h4yya3jjwdjvqc93a42v04z3834b5a97n5nrz8nzjh3wi0ib58n";
     };
     
     cargoSha256 = "03k9n9hzaz970hsl4ca3r8ykwivfcg5rvhim8nfjgsbfq96rwbnx";
