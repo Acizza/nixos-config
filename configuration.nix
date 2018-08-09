@@ -71,6 +71,7 @@
         gnome3.gnome-system-monitor
         gnome3.gedit
         gnome3.eog
+        veracrypt
         
         # Misc Applications
         ripgrep
@@ -179,7 +180,14 @@
   };
 
   networking = {
-      firewall.enable = true;
+      firewall = {
+          enable = true;
+          
+          # Spotify local file sync
+          allowedTCPPorts = [ 57621 ];
+          allowedUDPPorts = [ 57621 1900 5353 ];
+      };
+      
       enableIPv6 = false;
       hostName = "jonathan";
       
