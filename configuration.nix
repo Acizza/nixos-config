@@ -77,7 +77,6 @@
         ripgrep
         psmisc # killall
         pywal
-        (import ./packages/sp.nix) # Command line tool for Spotify's dbus interface
         (import ./packages/dxvk.nix) # D3D11 -> Vulkan (for Wine)
         easytag
         gnome3.networkmanagerapplet
