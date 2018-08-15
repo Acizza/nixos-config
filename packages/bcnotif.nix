@@ -2,16 +2,16 @@ with import <nixpkgs> {};
 
 rustPlatform.buildRustPackage rec {
     name = "bcnotif-${version}";
-    version = "4b5f9cb51e52bba898316d1920511b4b0e3502cb";
+    version = "8ed652ae7cb9db8cc9e979bf8ba05033720ccfbd";
     
     src = fetchFromGitLab {
         owner = "Acizza";
         repo = "bcnotif";
         rev = "${version}";
-        sha256 = "17nlvl8kwskc9b6hd9sx3s759whjqr15n0jpjdy551ff59d61z4j";
+        sha256 = "0cq3gxrrx0xl5c33qfx70pj1sar65fsb0npp7w1yr8001vdzk9f4";
     };
     
-    cargoSha256 = "04hpczkmz9fd63yvh34h9xsgq6b8vdb1npc6n5insch6yqrawz2m";
+    cargoSha256 = "1pmppxbdpnya5spgl0lxy6xjyspsxzqqwjw1z0ndkrgd2c0wwpwm";
     
     depsBuildBuild = [ pkgconfig ];
     buildInputs = [ dbus.dev openssl.dev ];
