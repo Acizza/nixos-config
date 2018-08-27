@@ -12,7 +12,7 @@
         enable = true;
         version = 2;
         useOSProber = false;
-        device = "/dev/sdb";
+        device = "/dev/sda";
 
         extraEntries = ''
           menuentry "Windows 10" {
@@ -188,7 +188,7 @@
       };
       
       enableIPv6 = false;
-      hostName = "jonathan";
+      hostName = "jonathan-desktop";
       
       networkmanager.enable = true;
   };
