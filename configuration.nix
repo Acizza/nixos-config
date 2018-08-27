@@ -23,7 +23,7 @@
     
     cleanTmpDir = true;
     
-    kernelPackages = pkgs.linuxPackages_4_17;
+    kernelPackages = pkgs.linuxPackages_4_18;
   };
 
   i18n = {
