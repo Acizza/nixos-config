@@ -43,11 +43,6 @@
       noto-fonts-cjk
   ];
 
-  nix.gc = {
-    automatic = true;
-    dates = "00:00";
-  };
-
   nixpkgs.config = {
     allowUnfree = true;
   };
