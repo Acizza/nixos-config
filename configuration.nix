@@ -174,7 +174,7 @@
         };
 
         dpi = 161;
-        videoDrivers = [ "nvidia" ];
+        videoDrivers = [ "nvidiaBeta" ];
     };
   };
 
