@@ -57,6 +57,11 @@
             nativeOnly = true;
         };
     };
+
+    wine = {
+        release = "staging";
+        build = "wineWow";
+    };
   };
   
   environment = {
@@ -74,7 +79,7 @@
         rustup
         (import ./packages/anup.nix)
         (import ./packages/bcnotif.nix)
-        wineWowPackages.staging
+        wine
         gnome3.gnome-system-monitor
         gnome3.gedit
         gnome3.eog
@@ -100,7 +105,8 @@
         file
         notify-osd
         pavucontrol
-        
+        winetricks
+
         # Compression
         unzip
         unrar
