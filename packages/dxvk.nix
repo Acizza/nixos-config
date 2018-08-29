@@ -1,33 +1,36 @@
 with import <nixpkgs> {};
 
 let
-  version = "0.54";
+  version = "0.70";
+
+  setup_dxvk = writeScript "setup_dxvk" ''
+    #!${stdenv.shell}
+    winetricks --force @out@/share/dxvk/setup_dxvk.verb
+  '';
 in
   stdenv.mkDerivation {
     name = "dxvk-${version}";
     
     src = fetchurl {
         url = "https://github.com/doitsujin/dxvk/releases/download/v${version}/dxvk-${version}.tar.gz";
-        sha256 = "0h4nizhd9pssn749ghaznv69xlmx458g1xijp3kjs7d0m9mihbqw";
+        sha256 = "17sfvz8rx2bjvxdw5ahiv1lk41sbxxzp16z4r8slljdy63alc19i";
     };
     
-    phases = "unpackPhase preInstallPhase installPhase";
-    
-    preInstallPhase = ''
-        substituteInPlace x32/setup_dxvk.sh --replace /bin/bash ${bash}/bin/bash
-        substituteInPlace x64/setup_dxvk.sh --replace /bin/bash ${bash}/bin/bash
-    '';
+    phases = "unpackPhase installPhase fixupPhase";
     
     installPhase = ''
-        mkdir -p $out/share/dxvk/
+      mkdir -p $out/share/dxvk/
         
-        cp -r x32 $out/share/dxvk/
-        cp -r x64 $out/share/dxvk/
-        
-        mkdir -p $out/bin/
-        
-        ln -s $out/share/dxvk/x32/setup_dxvk.sh $out/bin/setup_dxvk32
-        ln -s $out/share/dxvk/x64/setup_dxvk.sh $out/bin/setup_dxvk64
+      cp -r x32 $out/share/dxvk/
+      cp -r x64 $out/share/dxvk/
+      cp setup_dxvk.verb $out/share/dxvk/setup_dxvk.verb
+
+      mkdir -p $out/bin/
+    '';
+
+    fixupPhase = ''
+      substitute ${setup_dxvk} $out/bin/setup_dxvk --subst-var out
+      chmod +x $out/bin/setup_dxvk
     '';
     
     meta = with stdenv.lib; {
