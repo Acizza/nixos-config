@@ -47,6 +47,16 @@
 
   nixpkgs.config = {
     allowUnfree = true;
+    # This is needed in order to use the native version of Steam. Although it's marked as broken, it seems to run fine.
+    allowBroken = true;
+
+    # Steam's Proton mode will only work properly with native libraries.
+    # Trying to launch a DXVK-enabled game without this results in a DirectInput error.
+    packageOverrides = pkgs: rec {
+        steam = pkgs.steam.override {
+            nativeOnly = true;
+        };
+    };
   };
   
   environment = {
