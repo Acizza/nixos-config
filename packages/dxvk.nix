@@ -31,6 +31,12 @@ in
     fixupPhase = ''
       substitute ${setup_dxvk} $out/bin/setup_dxvk --subst-var out
       chmod +x $out/bin/setup_dxvk
+
+      # This allows new versions to overwrite the previous one
+      # https://github.com/doitsujin/dxvk/issues/569#issuecomment-414537585
+      substituteInPlace $out/share/dxvk/setup_dxvk.verb --replace \
+        "cp " \
+        "cp --remove-destination "
     '';
     
     meta = with stdenv.lib; {
