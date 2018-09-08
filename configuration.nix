@@ -198,6 +198,16 @@
       hostName = "jonathan-desktop";
       
       networkmanager.enable = true;
+
+      # Block ads / tracking from desktop applications
+      # This mainly serves as a backup incase my PiHole fails, or if connected to a different network
+      hosts."0.0.0.0" = [
+          # Spotify
+          "www.googletagservices.com"
+          "audio-fac.spotify.com"
+          "audio4-ak.spotify.com.edgesuite.net"
+          "heads4-ak.spotify.com.edgesuite.net"
+      ];
   };
 
   sound.enable = true;
