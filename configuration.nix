@@ -99,6 +99,7 @@
         notify-osd
         pavucontrol
         winetricks
+        openvpn
 
         # Compression
         unzip
