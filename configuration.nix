@@ -81,6 +81,7 @@
         ripgrep # Improved version of grep
         bat # Improved version of cat
         psmisc # killall
+        calc
         pywal
         (import ./packages/dxvk.nix) # D3D11 -> Vulkan (for Wine)
         easytag
