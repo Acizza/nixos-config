@@ -113,7 +113,7 @@
         gnome3.adwaita-icon-theme
       ];
       
-      variables.PATH = "~/.cargo/bin";
+      variables.PATH = [ "/home/jonathan/.cargo/bin" ];
       variables.TERM = "termite";
   };
   
