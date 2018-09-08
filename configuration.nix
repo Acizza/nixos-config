@@ -208,6 +208,11 @@
           "audio-fac.spotify.com"
           "audio4-ak.spotify.com.edgesuite.net"
           "heads4-ak.spotify.com.edgesuite.net"
+
+          # Firefox
+          "location.services.mozilla.com"
+          "shavar.services.mozilla.com"
+          "incoming.telemetry.mozilla.com" # This is normally disabled, but added just to be safe
       ];
   };
 
