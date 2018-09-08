@@ -47,6 +47,13 @@
 
   nixpkgs.config = {
     allowUnfree = true;
+
+    packageOverrides = pkgs: rec {
+        wine = pkgs.wine.override {
+            wineBuild = "wineWow";
+            wineRelease = "staging";
+        };
+    };
   };
   
   environment = {
