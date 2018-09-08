@@ -212,7 +212,7 @@
           # Firefox
           "location.services.mozilla.com"
           "shavar.services.mozilla.com"
-          "incoming.telemetry.mozilla.com" # This is normally disabled, but added just to be safe
+          "incoming.telemetry.mozilla.org" # This is normally disabled, but added just to be safe
       ];
   };
 
