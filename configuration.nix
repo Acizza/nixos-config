@@ -203,16 +203,22 @@
       # Block ads / tracking from desktop applications
       # This mainly serves as a backup incase my PiHole fails, or if connected to a different network
       hosts."0.0.0.0" = [
-          # Spotify
-          "www.googletagservices.com"
-          "audio-fac.spotify.com"
-          "audio4-ak.spotify.com.edgesuite.net"
-          "heads4-ak.spotify.com.edgesuite.net"
+        # Spotify
+        "www.googletagservices.com"
+        "audio-fac.spotify.com"
+        "audio4-ak.spotify.com.edgesuite.net"
+        "heads4-ak.spotify.com.edgesuite.net"
 
-          # Firefox
-          "location.services.mozilla.com"
-          "shavar.services.mozilla.com"
-          "incoming.telemetry.mozilla.org" # This is normally disabled, but added just to be safe
+        # Firefox
+        "location.services.mozilla.com"
+        "shavar.services.mozilla.com"
+        "incoming.telemetry.mozilla.org" # This is normally disabled, but added just to be safe
+
+        # General
+        "www.google-analytics.com" # The X-Plane installer is known to use this
+        "ssl.google-analytics.com"
+        "b.scorecardresearch.com"
+        "www.imrworldwide.com"
       ];
   };
 
