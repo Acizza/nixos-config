@@ -214,6 +214,13 @@
         "shavar.services.mozilla.com"
         "incoming.telemetry.mozilla.org" # This is normally disabled, but added just to be safe
 
+        # VS Code (https://www.reddit.com/r/privacy/comments/80d8wu/just_realised_that_visual_studio_code_sends/duvaf76/)
+        "dc.services.visualstudio.com"
+        "marketplace.visualstudio.com"
+        "dc.trafficmanager.net"
+        "vortex.data.microsoft.com"
+        "weu-breeziest-in.cloudapp.net"
+
         # General
         "www.google-analytics.com" # The X-Plane installer is known to use this
         "ssl.google-analytics.com"
