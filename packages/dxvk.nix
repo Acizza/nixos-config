@@ -1,7 +1,7 @@
 with import <nixpkgs> {};
 
 let
-  version = "0.71";
+  version = "0.72";
 
   setup_dxvk = writeScript "setup_dxvk" ''
     #!${stdenv.shell}
@@ -13,7 +13,7 @@ in
     
     src = fetchurl {
         url = "https://github.com/doitsujin/dxvk/releases/download/v${version}/dxvk-${version}.tar.gz";
-        sha256 = "1m9p7nqwpqcvnxjdmz62i0mc35ksrm9r4sd7c5lkc3s5s4vn7rpv";
+        sha256 = "0lhccpdvhmkbcdm34n6wjk4hiwhbkix3v90ri4ydsnngk67z915w";
     };
     
     phases = "unpackPhase installPhase fixupPhase";
