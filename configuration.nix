@@ -120,6 +120,7 @@
   
   programs = {
     fish.enable = true;
+    adb.enable = true;
   };
 
   services = {
@@ -241,7 +242,7 @@
     isNormalUser = true;
     home = "/home/jonathan";
     description = "Jonathan";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" "adbusers" ];
     shell = "/run/current-system/sw/bin/fish";
   };
 
