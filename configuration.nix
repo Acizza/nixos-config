@@ -28,6 +28,8 @@
 
   systemd.extraConfig = "DefaultLimitNOFILE=1048576";
 
+  virtualisation.virtualbox.host.enable = true;
+
   i18n = {
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
