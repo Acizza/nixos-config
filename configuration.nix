@@ -51,9 +51,8 @@
     allowUnfree = true;
 
     packageOverrides = pkgs: rec {
-        wine = pkgs.wine.override {
-            wineBuild = "wineWow";
-            wineRelease = "staging";
+        winetricks = pkgs.winetricks.override {
+            wine = pkgs.wineWowPackages.staging;
         };
     };
   };
@@ -73,7 +72,7 @@
         rustup
         (import ./packages/anup.nix)
         (import ./packages/bcnotif.nix)
-        wine
+        wineWowPackages.staging
         gnome3.gnome-system-monitor
         gnome3.gedit
         gnome3.eog
