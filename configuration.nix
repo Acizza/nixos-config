@@ -161,6 +161,8 @@
     xserver = {
         enable = true;
         layout = "us";
+        dpi = 161;
+        videoDrivers = [ "nvidiaBeta" ];
 
         desktopManager = {
             default = "none";
@@ -184,8 +186,13 @@
             default = "awesome";
         };
 
-        dpi = 161;
-        videoDrivers = [ "nvidiaBeta" ];
+        # Monitor sleep times
+        serverFlagsSection = ''
+            Option "BlankTime" "15"
+            Option "StandbyTime" "16"
+            Option "SuspendTime" "16"
+            Option "OffTime" "16"
+        '';
     };
   };
 
