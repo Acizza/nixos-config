@@ -1,0 +1,13 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 73ed7a3..eae0db6 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -60,7 +60,7 @@ gl_generator = "0.9"
+ 
+ [profile.release]
+ lto = true
+-debug = 1
++codegen-units = 1
+ 
+ [package.metadata.deb]
+ maintainer = "Joe Wilm <joe@jwilm.com>"

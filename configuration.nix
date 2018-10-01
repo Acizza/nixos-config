@@ -54,6 +54,10 @@
         winetricks = pkgs.winetricks.override {
             wine = pkgs.wineWowPackages.staging;
         };
+
+        alacritty = pkgs.alacritty.overrideAttrs (old: rec {
+            patches = old.patches ++ [ ./patches/alacritty.patch ];
+        });
     };
   };
   
@@ -61,7 +65,7 @@
     systemPackages = with pkgs; [
         # Core Applications
         firefox
-        termite
+        alacritty
         ranger
         mpv
         vscode
@@ -117,7 +121,7 @@
       ];
       
       variables.PATH = [ "/home/jonathan/.cargo/bin" ];
-      variables.TERM = "termite";
+      variables.TERM = "alacritty";
   };
   
   programs = {
