@@ -150,7 +150,7 @@
             blur-background-exclude = [
                 "!window_type = 'dock' &&
                  !window_type = 'popup_menu' &&
-                 !class_g = 'Termite'"
+                 !class_g = 'Alacritty'"
             ];
         '';
     };
