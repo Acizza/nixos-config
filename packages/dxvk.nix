@@ -13,7 +13,7 @@ in
     
     src = fetchurl {
         url = "https://github.com/doitsujin/dxvk/releases/download/v${version}/dxvk-${version}.tar.gz";
-        sha256 = "1jyaga7sz99bkdaaq7nyridgr2d1lfa2lra8lxff90qypz6kdrzr";
+        sha256 = "1g0w5r7cgv35766zd0vxwrhzaka3kd210cckc9aasv00pcsahn3h";
     };
     
     phases = "unpackPhase installPhase fixupPhase";
