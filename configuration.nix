@@ -78,7 +78,6 @@
         (import ./packages/bcnotif.nix)
         wineWowPackages.staging
         gnome3.gnome-system-monitor
-        gnome3.gedit
         gnome3.eog
         veracrypt
         tor-browser-bundle-bin
