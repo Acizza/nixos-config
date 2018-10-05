@@ -234,11 +234,13 @@
         "vortex.data.microsoft.com"
         "weu-breeziest-in.cloudapp.net"
 
-        # General
-        "www.google-analytics.com" # The X-Plane installer is known to use this
+        # Unity Games
+        "config.uca.cloud.unity3d.com"
+        "api.uca.cloud.unity3d.com"
+
+        # Steam / X-Plane installer
+        "www.google-analytics.com"
         "ssl.google-analytics.com"
-        "b.scorecardresearch.com"
-        "www.imrworldwide.com"
       ];
   };
 
