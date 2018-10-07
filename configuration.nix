@@ -259,6 +259,4 @@
     extraGroups = [ "wheel" "networkmanager" "adbusers" "vboxusers"  ];
     shell = "/run/current-system/sw/bin/fish";
   };
-
-  system.stateVersion = "18.03";
 }
