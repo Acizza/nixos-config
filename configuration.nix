@@ -106,6 +106,7 @@
         pavucontrol
         winetricks
         openvpn
+        youtube-dl
 
         # Compression
         unzip
