@@ -55,8 +55,10 @@
             wine = pkgs.wineWowPackages.staging;
         };
 
+        # Given how often a terminal is open, it's worth trying to make it as fast as possible
         alacritty = pkgs.alacritty.overrideAttrs (old: rec {
             patches = old.patches ++ [ ./patches/alacritty.patch ];
+            RUSTFLAGS = "-C target-cpu=native";
         });
     };
   };
