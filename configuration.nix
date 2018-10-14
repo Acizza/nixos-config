@@ -56,6 +56,18 @@
         };
 
         # The following overrides are to make some packages run as fast as possible
+        awesome = pkgs.awesome.overrideDerivation (old: rec {
+            NIX_CFLAGS_COMPILE = "-O3 -march=native";
+        });
+
+        lua = pkgs.lua.overrideDerivation (old: rec {
+            NIX_CFLAGS_COMPILE = "-O3 -march=native";
+        });
+
+        mpv = pkgs.mpv.overrideDerivation (old: rec {
+            NIX_CFLAGS_COMPILE = "-O3 -march=native";
+        });
+
         alacritty = pkgs.alacritty.overrideAttrs (old: rec {
             patches = old.patches ++ [ ./patches/alacritty.patch ];
             RUSTFLAGS = "-C target-cpu=native";
