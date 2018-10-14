@@ -55,9 +55,14 @@
             wine = pkgs.wineWowPackages.staging;
         };
 
-        # Given how often a terminal is open, it's worth trying to make it as fast as possible
+        # The following overrides are to make some packages run as fast as possible
         alacritty = pkgs.alacritty.overrideAttrs (old: rec {
             patches = old.patches ++ [ ./patches/alacritty.patch ];
+            RUSTFLAGS = "-C target-cpu=native";
+        });
+
+        ripgrep = pkgs.ripgrep.overrideAttrs (old: rec {
+            patches = old.patches ++ [ ./patches/ripgrep.patch ];
             RUSTFLAGS = "-C target-cpu=native";
         });
     };

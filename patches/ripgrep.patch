@@ -1,0 +1,14 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 803aaf5..b7dfdce 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -77,7 +77,8 @@ simd-accel = ["grep/simd-accel"]
+ pcre2 = ["grep/pcre2"]
+ 
+ [profile.release]
+-debug = 1
++codegen-units = 1
++lto = true
+ 
+ [package.metadata.deb]
+ features = ["pcre2"]
