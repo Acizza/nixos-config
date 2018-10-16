@@ -49,35 +49,7 @@
 
   nixpkgs.config = {
     allowUnfree = true;
-
-    packageOverrides = pkgs: rec {
-        winetricks = pkgs.winetricks.override {
-            wine = pkgs.wineWowPackages.staging;
-        };
-
-        # The following overrides are to make some packages run as fast as possible
-        awesome = pkgs.awesome.overrideDerivation (old: rec {
-            NIX_CFLAGS_COMPILE = "-O3 -march=native";
-        });
-
-        lua = pkgs.lua.overrideDerivation (old: rec {
-            NIX_CFLAGS_COMPILE = "-O3 -march=native";
-        });
-
-        mpv = pkgs.mpv.overrideDerivation (old: rec {
-            NIX_CFLAGS_COMPILE = "-O3 -march=native";
-        });
-
-        alacritty = pkgs.alacritty.overrideAttrs (old: rec {
-            patches = old.patches ++ [ ./patches/alacritty.patch ];
-            RUSTFLAGS = "-C target-cpu=native";
-        });
-
-        ripgrep = pkgs.ripgrep.overrideAttrs (old: rec {
-            patches = old.patches ++ [ ./patches/ripgrep.patch ];
-            RUSTFLAGS = "-C target-cpu=native";
-        });
-    };
+    packageOverrides = import ./overlays/overlay.nix pkgs;
   };
   
   environment = {
@@ -93,8 +65,6 @@
         spotify
         transmission-gtk
         rustup
-        (import ./packages/anup.nix)
-        (import ./packages/bcnotif.nix)
         wineWowPackages.staging
         gnome3.gnome-system-monitor
         gnome3.eog
@@ -107,7 +77,6 @@
         psmisc # killall
         calc
         pywal
-        (import ./packages/dxvk.nix) # D3D11 -> Vulkan (for Wine)
         easytag
         gnome3.networkmanagerapplet
         feh
@@ -137,6 +106,12 @@
         arc-icon-theme
         arc-theme
         gnome3.adwaita-icon-theme
+      ] ++ [
+        # Overlay packages
+        dxvk
+        bcnotif
+        # Enable when NLL is added to stable Rust
+        #anup
       ];
       
       variables.PATH = [ "/home/jonathan/.cargo/bin" ];

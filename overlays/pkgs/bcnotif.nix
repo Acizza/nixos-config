@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+{ rustPlatform, fetchFromGitLab, pkgs, stdenv }:
 
 rustPlatform.buildRustPackage rec {
     name = "bcnotif-${version}";
@@ -13,8 +13,8 @@ rustPlatform.buildRustPackage rec {
     
     cargoSha256 = "10b9v8ringz4b9w7gswdfcqq3w7xsbcvs8pyg2acg7snzmp6mvcv";
     
-    nativeBuildInputs = [ pkgconfig ];
-    buildInputs = [ dbus.dev openssl.dev ];
+    nativeBuildInputs = with pkgs; [ pkgconfig ];
+    buildInputs = with pkgs; [ dbus.dev openssl.dev ];
     
     meta = with stdenv.lib; {
         license = licenses.asl20;
