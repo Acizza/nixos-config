@@ -112,6 +112,7 @@
         bcnotif
         # Enable when NLL is added to stable Rust
         #anup
+        protonvpn-cli
       ];
       
       variables.PATH = [ "/home/jonathan/.cargo/bin" ];

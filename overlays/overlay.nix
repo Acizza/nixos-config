@@ -19,6 +19,8 @@ self: super: {
         RUSTFLAGS = "-C target-cpu=native";
     });
 
+    protonvpn-cli = super.callPackage ./pkgs/protonvpn-cli.nix { };
+
     # The following overrides are to make some packages run as fast as possible
     awesome = super.awesome.overrideDerivation (old: rec {
         NIX_CFLAGS_COMPILE = "-O3 -march=native";
