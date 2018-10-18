@@ -1,24 +1,9 @@
-{ stdenv, writeScript, fetchFromGitHub, pkgs }:
+{ stdenv, fetchFromGitHub, openvpn, python, dialog, wget, sysctl, coreutils, makeWrapper }:
 
 let
   version = "v1.1.1";
-
-  dependencies = with pkgs; [
-    openvpn
-    python
-    dialog
-    wget
-    sysctl
-    coreutils
-  ];
-
-  protonvpn-cli = writeScript "protonvpn-cli" ''
-    #!${stdenv.shell}
-    PATH=$PATH:${stdenv.lib.makeBinPath dependencies}
-    exec @out@/share/protonvpn-cli.sh "$@"
-  '';
 in
-  stdenv.mkDerivation {
+  stdenv.mkDerivation rec {
     name = "protonvpn-cli-${version}";
 
     src = fetchFromGitHub {
@@ -28,17 +13,27 @@ in
       sha256 = "0kli5xqsprjwv8rchzgpkwl7lk4jzg5yc78qc4kjfkywnx62xbpd";
     };
 
-    buildInputs = dependencies;
-    phases = "unpackPhase installPhase";
+    runtime_deps = [
+      openvpn
+      python
+      dialog
+      wget
+      sysctl
+      coreutils
+    ];
+
+    buildInputs = runtime_deps ++ [ makeWrapper ];
+
+    phases = "unpackPhase installPhase fixupPhase";
 
     installPhase = ''
-        mkdir -p $out/bin $out/share
+      mkdir -p $out/bin
+      cp protonvpn-cli.sh $out/bin/protonvpn-cli
+    '';
 
-        cp protonvpn-cli.sh $out/share/protonvpn-cli.sh
-        chmod +x $out/share/protonvpn-cli.sh
-
-        substitute ${protonvpn-cli} $out/bin/protonvpn-cli --subst-var out
-        chmod +x $out/bin/protonvpn-cli
+    fixupPhase = ''
+      wrapProgram $out/bin/protonvpn-cli \
+        --prefix PATH : ${stdenv.lib.makeBinPath runtime_deps}
     '';
 
     meta = with stdenv.lib; {
