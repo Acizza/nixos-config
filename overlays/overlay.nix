@@ -34,6 +34,10 @@ self: super: {
         NIX_CFLAGS_COMPILE = "-O3 -march=native";
     });
 
+    ffmpeg = super.ffmpeg.overrideDerivation (old: rec {
+        NIX_CFLAGS_COMPILE = "-O3 -march=native";
+    });
+
     alacritty = super.alacritty.overrideAttrs (old: rec {
         patches = old.patches ++ [ ./patches/alacritty.patch ];
         RUSTFLAGS = "-C target-cpu=native";

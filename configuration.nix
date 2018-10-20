@@ -87,6 +87,7 @@
       pavucontrol
       winetricks
       youtube-dl
+      ffmpeg
 
       # Compression
       unzip
