@@ -238,9 +238,17 @@
   sound.enable = true;
 
   hardware = {
-    pulseaudio.enable = true;
-    opengl.driSupport32Bit = true;
     cpu.amd.updateMicrocode = true;
+    opengl.driSupport32Bit = true;
+
+    pulseaudio = {
+      enable = true;
+
+      # Fix audio volume randomly raising in Spotify when playing local files
+      daemon.config = {
+        flat-volumes = "no";
+      };
+    };
   };
 
   users.extraUsers.jonathan = {
