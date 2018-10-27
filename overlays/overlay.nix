@@ -4,6 +4,10 @@ self: super: {
         wine = super.wineWowPackages.staging;
     };
 
+    sudo = super.sudo.override {
+      withInsults = true;
+    };
+
     # Custom packages
     dxvk = (super.callPackage ./pkgs/dxvk {
         winePackage = super.wineWowPackages.staging;
