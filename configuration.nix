@@ -225,7 +225,6 @@
 
       # VS Code (https://www.reddit.com/r/privacy/comments/80d8wu/just_realised_that_visual_studio_code_sends/duvaf76/)
       "dc.services.visualstudio.com"
-      "marketplace.visualstudio.com"
       "dc.trafficmanager.net"
       "vortex.data.microsoft.com"
       "weu-breeziest-in.cloudapp.net"
