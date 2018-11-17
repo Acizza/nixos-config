@@ -1,7 +1,7 @@
 { stdenv, fetchFromGitHub, openvpn, python, dialog, wget, sysctl, coreutils, makeWrapper }:
 
 let
-  version = "v1.1.1";
+  version = "v1.1.2";
 in
   stdenv.mkDerivation rec {
     name = "protonvpn-cli-${version}";
@@ -10,7 +10,7 @@ in
       owner = "ProtonVPN";
       repo = "protonvpn-cli";
       rev = "${version}";
-      sha256 = "0kli5xqsprjwv8rchzgpkwl7lk4jzg5yc78qc4kjfkywnx62xbpd";
+      sha256 = "0xvflr8zf267n3dv63nkk4wjxhbckw56sqmyca3krf410vrd7zlv";
     };
 
     runtime_deps = [
