@@ -93,6 +93,7 @@
       winetricks
       youtube-dl
       ffmpeg
+      python36Packages.ds4drv
 
       # Compression
       unzip
@@ -193,6 +194,15 @@
         Option "OffTime" "16"
       '';
     };
+
+    # Allows ds4drv to be ran without root
+    udev.extraRules = ''
+      KERNEL=="uinput", MODE="0666"
+      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="05c4", MODE="0666"
+      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:05C4.*", MODE="0666"
+      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0666"
+      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:09CC.*", MODE="0666"
+    '';
   };
 
   networking = {
