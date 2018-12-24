@@ -113,11 +113,10 @@
       # Overlay packages
       dxvk
       bcnotif
-      # Enable when NLL is added to stable Rust
-      #anup
+      anup
       protonvpn-cli
     ];
-      
+
     variables.PATH = [ "/home/jonathan/.cargo/bin" ];
     variables.TERM = "alacritty";
   };

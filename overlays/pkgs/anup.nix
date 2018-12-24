@@ -1,20 +1,20 @@
-with import <nixpkgs> {};
+{ rustPlatform, fetchFromGitLab, pkgs, stdenv }:
 
 rustPlatform.buildRustPackage rec {
     name = "anup-${version}";
-    version = "f00c1e02e8ee87c7e7331eca160b1d9b7555b4a1";
+    version = "c6d61e28b4de0bf56d192d08e0e80a78d135a995";
     
     src = fetchFromGitLab {
         owner = "Acizza";
         repo = "anup";
         rev = "${version}";
-        sha256 = "1klwms6nlgkvg1rqla9ri5qk38irpyskb2qm682qzs9sq5ial253";
+        sha256 = "0l4p21d3fiyx4fz7cvzva8nf0mi2ndnmdvf9msj86izas3213cva";
     };
     
-    cargoSha256 = "1inif0cnrqbylql8r26qmsvqk0z2qz3gzn8b3s411bfkdhi6a9k8";
+    cargoSha256 = "1pjl7wqimj7wiks57fn7sw23mk1aidajxg5vi5280c1wwyk3q0vf";
     
-    nativeBuildInputs = [ buildPackages.stdenv.cc pkgconfig ];
-    buildInputs = [ openssl.dev xdg_utils ];
+    nativeBuildInputs = with pkgs; [ buildPackages.stdenv.cc pkgconfig ];
+    buildInputs = with pkgs; [ openssl.dev xdg_utils ];
     
     meta = with stdenv.lib; {
         license = licenses.asl20;
