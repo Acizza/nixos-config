@@ -96,6 +96,7 @@
       youtube-dl
       ffmpeg
       python36Packages.ds4drv
+      the-powder-toy
 
       # Compression
       unzip

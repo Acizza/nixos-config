@@ -8,6 +8,21 @@ self: super: {
       withInsults = true;
     };
 
+    the-powder-toy = super.the-powder-toy.overrideDerivation (old: rec {
+        version = "93.3";
+
+        src = super.fetchFromGitHub {
+          owner = "simtr";
+          repo = "The-Powder-Toy";
+          rev = "v93.3";
+          sha256 = "1bg1y13kpqxx4mpncxvmg8w02dyqyd9hl43rwnys3sqrjdm9k02j";
+        };
+
+        patches = [];
+
+        NIX_CFLAGS_COMPILE = "-march=native";
+    });
+
     # Custom packages
     dxvk = (super.callPackage ./pkgs/dxvk {
         winePackage = super.wineWowPackages.staging;
