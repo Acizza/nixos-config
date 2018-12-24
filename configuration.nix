@@ -95,6 +95,7 @@
       winetricks
       youtube-dl
       ffmpeg
+      rpcs3
       python36Packages.ds4drv
       the-powder-toy
 
