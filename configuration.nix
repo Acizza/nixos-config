@@ -48,6 +48,8 @@
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = import ./overlays/overlay.nix pkgs;
+
+    android_sdk.accept_license = true;
   };
   
   environment = {
