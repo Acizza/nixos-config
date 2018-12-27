@@ -70,6 +70,7 @@
       gnome3.eog
       veracrypt
       tor-browser-bundle-bin
+      soulseekqt
         
       # Misc Applications
       ripgrep # Improved version of grep
