@@ -53,6 +53,11 @@ self: super: {
         NIX_CFLAGS_COMPILE = "-march=native";
     });
 
+    # lollypop seems to need glib-networking in order to make HTTP(S) requests
+    lollypop = super.lollypop.overrideAttrs (old: rec {
+        buildInputs = old.buildInputs ++ [ super.glib-networking ];
+    });
+
     # Custom packages
     dxvk = (super.callPackage ./pkgs/dxvk {
         winePackage = super.wineWowPackages.staging;
