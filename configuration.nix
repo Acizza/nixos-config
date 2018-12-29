@@ -211,9 +211,8 @@
     firewall = {
       enable = true;
 
-      # Spotify local file sync
-      allowedTCPPorts = [ 57621 ];
-      allowedUDPPorts = [ 57621 1900 5353 ];
+      # Soulseek
+      allowedTCPPorts = [ 60015 60016 ];
     };
 
     enableIPv6 = false;
