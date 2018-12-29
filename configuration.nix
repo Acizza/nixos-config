@@ -69,7 +69,6 @@
       gnome3.gnome-system-monitor
       gnome3.eog
       veracrypt
-      tor-browser-bundle-bin
       soulseekqt
         
       # Misc Applications
