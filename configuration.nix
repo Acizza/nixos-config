@@ -76,7 +76,6 @@
       ripgrep # Improved version of grep
       bat # Improved version of cat
       psmisc # killall
-      calc
       pywal
       easytag
       gnome3.networkmanagerapplet
