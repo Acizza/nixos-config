@@ -12,12 +12,12 @@ self: super: {
         waylandSupport = false;
         alsaSupport = false;
     }).overrideDerivation (old: rec {
-        gitVersion = "7619-dbd4814";
+        gitVersion = "7652-37c621e";
 
         src = super.fetchgit {
           url = "https://github.com/RPCS3/rpcs3";
-          rev = "dbd48145840d7ff0ef6be5b2c41368ba09d0b5d2";
-          sha256 = "1r8ysh157bvgv5lidnklsdhppqxmqblrlkmw0mnbyszhrc8zhqpv";
+          rev = "37c621ebbf8f9d97e15951f2464379a1908975a1";
+          sha256 = "0zyqvj68pyxn34m96jhz1klxxs38d6fxzxm5rlys7yqbwxxxbl6i";
         };
 
         preConfigure = ''
@@ -94,7 +94,7 @@ self: super: {
     });
 
     ripgrep = super.ripgrep.overrideAttrs (old: rec {
-        patches = old.patches ++ [ ./patches/ripgrep.patch ];
+        #patches = old.patches ++ [ ./patches/ripgrep.patch ];
         RUSTFLAGS = "-C target-cpu=native";
     });
 }
