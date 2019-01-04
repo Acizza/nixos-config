@@ -8,13 +8,7 @@
       enable = true;
       version = 2;
       useOSProber = false;
-      device = "/dev/sda";
-
-      extraEntries = ''
-        menuentry "Windows 10" {
-            chainloader (hd0,1)+1
-        }
-      '';
+      device = "/dev/sdb";
     };
     
     cleanTmpDir = true;
