@@ -3,6 +3,15 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
+  fileSystems = {
+    # SSD
+    "/".options = [ "noatime" "nodiratime" "discard" ];
+    "/home".options = [ "noatime" "nodiratime" "discard" ];
+
+    # HDD
+    "/media/data".options = [ "noatime" "nodiratime" "defaults" ];
+  };
+
   boot = {
     loader.grub = {
       enable = true;
