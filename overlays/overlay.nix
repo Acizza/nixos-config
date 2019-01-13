@@ -12,12 +12,12 @@ self: super: {
         waylandSupport = false;
         alsaSupport = false;
     }).overrideDerivation (old: rec {
-        gitVersion = "7652-37c621e";
+        gitVersion = "7715-bc27f5f";
 
         src = super.fetchgit {
           url = "https://github.com/RPCS3/rpcs3";
-          rev = "37c621ebbf8f9d97e15951f2464379a1908975a1";
-          sha256 = "0zyqvj68pyxn34m96jhz1klxxs38d6fxzxm5rlys7yqbwxxxbl6i";
+          rev = "bc27f5f75c159c8844f26c663fc68f1282d102d8";
+          sha256 = "0kl9d5hvz6hivh3frk3h6n226bfwkcyc0cgiibq34frlccnr3w54";
         };
 
         preConfigure = ''
