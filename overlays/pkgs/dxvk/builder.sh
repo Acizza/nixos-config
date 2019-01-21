@@ -15,6 +15,7 @@ _configure_dxvk() {
         --cross-file build-wine${1}.txt \
         --buildtype release \
         --prefix $PWD/build${1} \
+        --strip \
         build.wine${1}
 }
 
@@ -25,19 +26,23 @@ _compile_dxvk() {
 }
 
 _install_dxvk() {
-    local lib_dir
+    local lib_dir=$out/share/dxvk/
 
     if [ $1 == 64 ]; then
-        lib_dir=$out/lib
+        lib_dir=$lib_dir/x64
     else
-        lib_dir=$out/lib32
+        lib_dir=$lib_dir/x32
     fi
 
-    mkdir -p $out/bin $lib_dir
+    mkdir -p $lib_dir
     
     cd build${1}
-    cp lib/*.dll.so $lib_dir/
-    cp bin/setup_dxvk.sh $out/bin/setup_dxvk${1}
-    chmod +x $out/bin/setup_dxvk${1}
+
+    cp lib/dxgi.dll.so $lib_dir/dxgi.dll
+    cp lib/d3d11.dll.so $lib_dir/d3d11.dll
+    cp lib/d3d10.dll.so $lib_dir/d3d10.dll
+    cp lib/d3d10core.dll.so $lib_dir/d3d10core.dll
+    cp lib/d3d10_1.dll.so $lib_dir/d3d10_1.dll
+
     cd ..
 }

@@ -2,11 +2,20 @@
   fetchFromGitHub,
   pkgs,
   stdenv,
-  winePackage ? pkgs.wineWowPackages.unstable
+  writeScript,
+  meson,
+  ninja,
+  glslang,
+  winePackage ? pkgs.wineWowPackages.unstable,
 }:
 
 let
   version = "v0.95";
+
+  setup_dxvk = writeScript "setup_dxvk" ''
+    #!${stdenv.shell}
+    winetricks --force @out@/share/dxvk/setup_dxvk.verb
+  '';
 in
   multiStdenv.mkDerivation {
     name = "dxvk-${version}";
@@ -18,9 +27,9 @@ in
       sha256 = "1j06028dx5n7x5s492yiw6jlhmps70s4viiph57pvi4c0p4yag7k";
     };
 
-    buildInputs = with pkgs; [ meson ninja glslang ] ++ [ winePackage ];
+    buildInputs = [ meson ninja glslang ] ++ [ winePackage ];
 
-    phases = "unpackPhase buildPhase fixupPhase";
+    phases = "unpackPhase buildPhase installPhase fixupPhase";
 
     buildPhase =
       let
@@ -31,14 +40,18 @@ in
         build_dxvk 32
       '';
 
-    fixupPhase = ''
-      substituteInPlace $out/bin/setup_dxvk64 --replace \
-        "#!/bin/bash" \
-        "#!${stdenv.shell}"
+    installPhase = ''
+      mkdir -p $out/bin/
+      cp utils/setup_dxvk.verb $out/share/dxvk/setup_dxvk.verb
+    '';
 
-      substituteInPlace $out/bin/setup_dxvk32 --replace \
-        "#!/bin/bash" \
-        "#!${stdenv.shell}"
+    fixupPhase = ''
+      substituteInPlace $out/share/dxvk/setup_dxvk.verb --replace \
+        "cp " \
+        "cp --remove-destination "
+
+      substitute ${setup_dxvk} $out/bin/setup_dxvk --subst-var out
+      chmod +x $out/bin/setup_dxvk
     '';
     
     meta = with stdenv.lib; {
