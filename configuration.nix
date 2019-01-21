@@ -115,6 +115,7 @@
     ] ++ [
       # Overlay packages
       dxvk
+      dxup
       bcnotif
       anup
       protonvpn-cli

@@ -65,6 +65,8 @@ self: super: {
         NIX_CFLAGS_COMPILE = "-O3 -march=native";
     });
 
+    dxup = super.callPackage ./pkgs/dxup.nix {};
+
     anup = (super.callPackage ./pkgs/anup.nix { }).overrideAttrs (old: rec {
         RUSTFLAGS = "-C target-cpu=native";
     });
