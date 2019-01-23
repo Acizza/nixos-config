@@ -9,8 +9,8 @@
 
 let
   # Revision comes from the d3d9-dev branch
-  version = "2e0d97ae741f3fd260a87ff0d97e3e2be3ec03b2";
-  pipelineJob = "58";
+  version = "b2e8c4c587c2766a08c61eea01eb0a331056f81f";
+  pipelineJob = "83";
 
   setup_dxup = writeScript "setup_dxup" ''
     #!${stdenv.shell}
@@ -22,7 +22,7 @@ in
 
     src = fetchurl {
       url = "https://git.froggi.es/joshua/dxup/-/jobs/${pipelineJob}/artifacts/download";
-      sha256 = "03jfa5i01amxmln2y0i88jpn6v1snckv4s2zj2zlizsl8ma54cjc";
+      sha256 = "0xvxmlhadn9lpw0rwqnal15i22rcjwii2vqvdvd11ihkncn77ir6";
     };
 
     buildInputs = [ unzip ];
@@ -31,19 +31,15 @@ in
 
     unpackPhase = ''
       unzip $src
-      tar xvf build/dxup-d3d9-dev.${version}.tar.gz
     '';
 
-    installPhase =
-      let
-        dxupRoot = "dxup-d3d9-dev.${version}";
-      in ''
-        mkdir -p $out/bin/
-        mkdir -p $out/share/dxup
+    installPhase = ''
+      mkdir -p $out/bin/
+      mkdir -p $out/share/dxup
 
-        cp -r ${dxupRoot}/{x32,x64} $out/share/dxup/
-        cp ${dxupRoot}/setup_dxup_d3d9.verb $out/share/dxup/setup_dxup_d3d9.verb
-      '';
+      cp -r build/dxup-release/{x32,x64} $out/share/dxup/
+      cp build/dxup-release/setup_dxup_d3d9.verb $out/share/dxup/setup_dxup_d3d9.verb
+    '';
 
     fixupPhase = ''
       substitute ${setup_dxup} $out/bin/setup_dxup --subst-var out
