@@ -10,7 +10,7 @@
 }:
 
 let
-  version = "v0.95";
+  version = "v0.96";
 
   setup_dxvk = writeScript "setup_dxvk" ''
     #!${stdenv.shell}
@@ -24,7 +24,7 @@ in
       owner = "doitsujin";
       repo = "dxvk";
       rev = "${version}";
-      sha256 = "1j06028dx5n7x5s492yiw6jlhmps70s4viiph57pvi4c0p4yag7k";
+      sha256 = "0g28nhqvh4v3bs2820kspj9gsljm1g9b45n3kfgz3bdqw1sfnwij";
     };
 
     buildInputs = [ meson ninja glslang ] ++ [ winePackage ];
