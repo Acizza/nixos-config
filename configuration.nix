@@ -82,7 +82,6 @@
       easytag
       gnome3.networkmanagerapplet
       feh
-      lxappearance-gtk3
       atool
       gnupg1
       python3
