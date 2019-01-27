@@ -65,7 +65,6 @@
       vscode
       steam
       git
-      spotify
       transmission-gtk
       rustup
       wineWowPackages.staging
@@ -226,12 +225,6 @@
     # Block ads / tracking from desktop applications
     # This mainly serves as a backup incase my Pi-hole fails, or if connected to a different network
     hosts."0.0.0.0" = [
-      # Spotify
-      "www.googletagservices.com"
-      "audio-fac.spotify.com"
-      "audio4-ak.spotify.com.edgesuite.net"
-      "heads4-ak.spotify.com.edgesuite.net"
-
       # Firefox
       "location.services.mozilla.com"
       "shavar.services.mozilla.com"
@@ -248,9 +241,11 @@
       "config.uca.cloud.unity3d.com"
       "api.uca.cloud.unity3d.com"
 
-      # Steam / X-Plane installer
+      # General
       "www.google-analytics.com"
       "ssl.google-analytics.com"
+      "www.googletagmanager.com"
+      "www.googletagservices.com"
     ];
   };
 
