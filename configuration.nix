@@ -206,6 +206,9 @@
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0666"
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:09CC.*", MODE="0666"
     '';
+
+    # This is required for lollypop to scrobble to services like last.fm
+    gnome3.gnome-keyring.enable = true;
   };
 
   networking = {
