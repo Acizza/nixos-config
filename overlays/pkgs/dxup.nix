@@ -9,8 +9,8 @@
 
 let
   # Revision comes from the d3d9-dev branch
-  version = "b2e8c4c587c2766a08c61eea01eb0a331056f81f";
-  pipelineJob = "83";
+  version = "8e087120950db4396c6af88d53b8eff0ff8da781";
+  pipelineJob = "100";
 
   setup_dxup = writeScript "setup_dxup" ''
     #!${stdenv.shell}
@@ -22,7 +22,7 @@ in
 
     src = fetchurl {
       url = "https://git.froggi.es/joshua/dxup/-/jobs/${pipelineJob}/artifacts/download";
-      sha256 = "0xvxmlhadn9lpw0rwqnal15i22rcjwii2vqvdvd11ihkncn77ir6";
+      sha256 = "1f0qmnb1vl31bdbq337i8bis5rwyzqq4hm4c87rk029hig41dv7z";
     };
 
     buildInputs = [ unzip ];
