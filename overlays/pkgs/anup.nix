@@ -2,16 +2,16 @@
 
 rustPlatform.buildRustPackage rec {
     name = "anup-${version}";
-    version = "1ce7e6a11dd19381de263e27ac8d675e3b778588";
+    version = "6062dfbef4d5c0f061b9f6e342acab54f34e089a";
     
     src = fetchFromGitLab {
         owner = "Acizza";
         repo = "anup";
         rev = "${version}";
-        sha256 = "15xdymdbgd4dwl43gsby24dwwnxiv1fm2zm2b7i61jh14lv19a3n";
+        sha256 = "03l720ya9bqlww18x0ymswvrcbmpg0m8bx1ky13s3zfzynz0ss9a";
     };
     
-    cargoSha256 = "13f9yrmai2qcl7v0sls4z1aj3357yn5m70qr4pqm7yds71dm39h6";
+    cargoSha256 = "1k0y9d282pmkpg94mpy4bimqkxj02av0rp2i0z4mcx8mwnrkj3hz";
     
     nativeBuildInputs = with pkgs; [ buildPackages.stdenv.cc pkgconfig ];
     buildInputs = with pkgs; [ openssl.dev xdg_utils ];
