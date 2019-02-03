@@ -209,6 +209,8 @@
 
     # This is required for lollypop to scrobble to services like last.fm
     gnome3.gnome-keyring.enable = true;
+
+    sshd.enable = true;
   };
 
   networking = {
