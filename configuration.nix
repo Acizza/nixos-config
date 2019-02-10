@@ -117,6 +117,7 @@
       bcnotif
       anup
       wpfxm
+      nixup
       protonvpn-cli
     ];
 
