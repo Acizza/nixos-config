@@ -116,6 +116,7 @@
       dxup
       bcnotif
       anup
+      wpfxm
       protonvpn-cli
     ];
 

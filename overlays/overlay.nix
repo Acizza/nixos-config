@@ -75,6 +75,10 @@ self: super: {
         RUSTFLAGS = "-C target-cpu=native";
     });
 
+    wpfxm = (super.callPackage ./pkgs/wpfxm.nix { }).overrideAttrs (old: rec {
+        RUSTFLAGS = "-C target-cpu=native";
+    });
+
     protonvpn-cli = super.callPackage ./pkgs/protonvpn-cli.nix { };
 
     # The following overrides are to make some packages run as fast as possible
