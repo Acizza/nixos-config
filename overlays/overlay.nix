@@ -58,6 +58,11 @@ self: super: {
         buildInputs = old.buildInputs ++ [ super.glib-networking ];
     });
 
+    qemu = super.qemu.override {
+        hostCpuOnly = true;
+        smbdSupport = true;
+    };
+
     # Custom packages
     dxvk = (super.callPackage ./pkgs/dxvk {
         winePackage = super.wineWowPackages.staging;

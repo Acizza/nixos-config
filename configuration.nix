@@ -99,6 +99,7 @@
       rpcs3
       python36Packages.ds4drv
       the-powder-toy
+      qemu
 
       # Compression
       unzip
