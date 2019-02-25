@@ -2,7 +2,6 @@
   fetchFromGitHub,
   pkgs,
   stdenv,
-  writeScript,
   meson,
   ninja,
   glslang,
@@ -10,12 +9,7 @@
 }:
 
 let
-  version = "v0.96";
-
-  setup_dxvk = writeScript "setup_dxvk" ''
-    #!${stdenv.shell}
-    winetricks --force @out@/share/dxvk/setup_dxvk.verb
-  '';
+  version = "v1.0";
 in
   multiStdenv.mkDerivation {
     name = "dxvk-${version}";
@@ -24,7 +18,7 @@ in
       owner = "doitsujin";
       repo = "dxvk";
       rev = "${version}";
-      sha256 = "0g28nhqvh4v3bs2820kspj9gsljm1g9b45n3kfgz3bdqw1sfnwij";
+      sha256 = "1f4wsl104nympcrcr7sja3k8wgkh7czsdgsm5176l0m3h9rw2mga";
     };
 
     buildInputs = [ meson ninja glslang ] ++ [ winePackage ];
@@ -41,17 +35,17 @@ in
       '';
 
     installPhase = ''
+      cp setup_dxvk.sh $out/share/dxvk/setup_dxvk
+      chmod +x $out/share/dxvk/setup_dxvk
+
       mkdir -p $out/bin/
-      cp utils/setup_dxvk.verb $out/share/dxvk/setup_dxvk.verb
+      ln -s $out/share/dxvk/setup_dxvk $out/bin/setup_dxvk
     '';
 
     fixupPhase = ''
-      substituteInPlace $out/share/dxvk/setup_dxvk.verb --replace \
-        "cp " \
-        "cp --remove-destination "
-
-      substitute ${setup_dxvk} $out/bin/setup_dxvk --subst-var out
-      chmod +x $out/bin/setup_dxvk
+      substituteInPlace $out/share/dxvk/setup_dxvk --replace \
+        "#!/bin/bash" \
+        "#!${stdenv.shell}"
     '';
     
     meta = with stdenv.lib; {
