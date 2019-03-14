@@ -76,7 +76,6 @@
         
       # Misc Applications
       ripgrep # Improved version of grep
-      bat # Improved version of cat
       psmisc # killall
       pywal
       easytag
