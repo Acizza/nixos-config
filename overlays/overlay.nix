@@ -126,7 +126,7 @@ self: super: {
     });
 
     ripgrep = super.ripgrep.overrideAttrs (old: rec {
-        #patches = old.patches ++ [ ./patches/ripgrep.patch ];
+        patches = old.patches ++ [ ./patches/ripgrep.patch ];
         RUSTFLAGS = "-C target-cpu=native";
     });
 }
