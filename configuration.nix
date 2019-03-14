@@ -114,7 +114,6 @@
     ] ++ [
       # Overlay packages
       dxvk
-      dxup
       bcnotif
       anup
       wpfxm
