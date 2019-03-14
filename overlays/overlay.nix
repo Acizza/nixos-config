@@ -59,6 +59,10 @@ self: super: {
         buildInputs = old.buildInputs ++ [ super.glib-networking ];
     });
 
+    wineWowPackages.staging = super.wineWowPackages.staging.overrideDerivation (old: rec {
+        NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
+    });
+
     qemu = super.qemu.override {
         hostCpuOnly = true;
         smbdSupport = true;
