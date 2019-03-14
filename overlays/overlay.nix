@@ -63,6 +63,17 @@ self: super: {
         NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
     });
 
+    soulseekqt = super.soulseekqt.overrideDerivation (old: rec {
+        buildInputs = old.buildInputs ++ [ super.makeWrapper ];
+
+        phases = "unpackPhase patchPhase installPhase fixupPhase postFixupPhase";
+
+        postFixupPhase = ''
+            wrapProgram "$out/bin/SoulseekQt" \
+                --prefix QT_PLUGIN_PATH : ${super.qt5.qtbase}/${super.qt5.qtbase.qtPluginPrefix}
+        '';
+    });
+
     qemu = super.qemu.override {
         hostCpuOnly = true;
         smbdSupport = true;
