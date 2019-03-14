@@ -106,15 +106,18 @@ self: super: {
 
     # The following overrides are to make some packages run as fast as possible
     awesome = super.awesome.overrideDerivation (old: rec {
-        NIX_CFLAGS_COMPILE = "-O3 -march=native";
+        stdenv = super.llvmPackages_latest.stdenv;
+        NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
     });
 
     lua = super.lua.overrideDerivation (old: rec {
+        stdenv = super.gcc8Stdenv;
         NIX_CFLAGS_COMPILE = "-O3 -march=native";
     });
 
     mpv = super.mpv.overrideDerivation (old: rec {
-        NIX_CFLAGS_COMPILE = "-O3 -march=native";
+        stdenv = super.llvmPackages_latest.stdenv;
+        NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
     });
 
     alacritty = super.alacritty.overrideAttrs (old: rec {
