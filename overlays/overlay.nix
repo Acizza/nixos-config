@@ -83,7 +83,7 @@ self: super: {
     dxvk = (super.callPackage ./pkgs/dxvk {
         winePackage = super.wineWowPackages.staging;
     }).overrideDerivation (old: rec {
-        NIX_CFLAGS_COMPILE = "-O3 -march=native";
+        NIX_CFLAGS_COMPILE = "-Ofast -march=native";
     });
 
     dxup = super.callPackage ./pkgs/dxup.nix {};
