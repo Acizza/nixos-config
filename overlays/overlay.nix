@@ -39,18 +39,19 @@ self: super: {
     });
 
     the-powder-toy = super.the-powder-toy.overrideDerivation (old: rec {
-        version = "93.3";
+        stdenv = super.llvmPackages_latest.stdenv;
+        version = "94.1";
 
         src = super.fetchFromGitHub {
           owner = "simtr";
           repo = "The-Powder-Toy";
-          rev = "v93.3";
+          rev = "v${version}";
           sha256 = "1bg1y13kpqxx4mpncxvmg8w02dyqyd9hl43rwnys3sqrjdm9k02j";
         };
 
         patches = [];
 
-        NIX_CFLAGS_COMPILE = "-march=native";
+        NIX_CFLAGS_COMPILE = "-O3 -march=native";
     });
 
     # lollypop seems to need glib-networking in order to make HTTP(S) requests
