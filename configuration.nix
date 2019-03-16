@@ -58,7 +58,7 @@
   environment = {
     systemPackages = with pkgs; [
       # Core Applications
-      mozilla.latest.firefox-nightly-bin
+      firefox-bin
       alacritty
       ranger
       mpv

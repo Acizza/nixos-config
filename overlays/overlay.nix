@@ -1,7 +1,4 @@
-self: super: rec {
-    # Third-party overlays
-    mozilla = import (builtins.fetchTarball https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz) self super;
-
+self: super: {
     # Generic overrides
     winetricks = super.winetricks.override {
         wine = super.wineWowPackages.staging;
