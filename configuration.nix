@@ -218,8 +218,10 @@
     firewall = {
       enable = true;
 
-      # Soulseek
-      allowedTCPPorts = [ 60015 60016 ];
+      # Open these ports when connected to a VPN
+      interfaces.tun0 = {
+        allowedTCPPorts = [ 5504 20546 ];
+      };
     };
 
     enableIPv6 = false;
