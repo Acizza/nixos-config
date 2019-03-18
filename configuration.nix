@@ -99,6 +99,7 @@
       python36Packages.ds4drv
       the-powder-toy
       qemu
+      srm
 
       # Compression
       unzip
