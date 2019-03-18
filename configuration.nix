@@ -117,7 +117,6 @@
       anup
       wpfxm
       nixup
-      protonvpn-cli
     ];
 
     variables.PATH = [ "/home/jonathan/.cargo/bin" ];
