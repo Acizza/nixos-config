@@ -65,7 +65,7 @@
       vscode
       steam
       git
-      transmission-gtk
+      deluge
       rustup
       wineWowPackages.staging
       gnome3.gnome-system-monitor
