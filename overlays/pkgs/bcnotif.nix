@@ -2,16 +2,16 @@
 
 rustPlatform.buildRustPackage rec {
     name = "bcnotif-${version}";
-    version = "a2b5c3afb7f6dfab09d3fc5c44429b3c43f8891b";
+    version = "b83a72b7d520485d23a3d3dc0f83b8f02cbd91a4";
     
     src = fetchFromGitLab {
         owner = "Acizza";
         repo = "bcnotif";
         rev = "${version}";
-        sha256 = "09ayr3qxqkl2d9yvy9wbi4dph5lc04mmqg1rxp8xx7r3yll3pdjx";
+        sha256 = "1v2qqx9wrfdn6zqgndwj1m86b9ab5iq970vmf7d21xkbkk9kf7bx";
     };
     
-    cargoSha256 = "1iw97f5z0k7236mycjkkz8zfkn3pj6yirp1lri1kf1m47rd51jrd";
+    cargoSha256 = "1v3002skk0nfbs3z3a38ic8wprgy5dz47x344zwd8gp10iv6gkys";
     
     nativeBuildInputs = with pkgs; [ pkgconfig ];
     buildInputs = with pkgs; [ dbus.dev openssl.dev ];
