@@ -123,34 +123,38 @@ self: super: {
       '';
     });
 
-    rpcs3 = (super.rpcs3.override {
-        waylandSupport = false;
-        alsaSupport = false;
-    }).overrideDerivation (old: rec {
-        gitVersion = "7802-56e24f8";
+    # Latest version of RPCS3 + compilation with clang
+    rpcs3 = ((super.rpcs3.override {
+      waylandSupport = false;
+      alsaSupport = false;
 
-        src = super.fetchgit {
-          url = "https://github.com/RPCS3/rpcs3";
-          rev = "56e24f8993d70ff19f69ae0fda3f8b9db720ece4";
-          sha256 = "1kc7vb4ywlpay6p5wgmaz6i2f08zjfvj3zrwp8fiyjjr7v9pmawi";
-        };
+      stdenv = super.llvmPackages_latest.stdenv;
+    }).overrideAttrs (oldAttrs: {
+      gitVersion = "7916-f15eb88";
+      version = "0.0.6-7916-f15eb88";
 
-        preConfigure = ''
-          cat > ./rpcs3/git-version.h <<EOF
-          #define RPCS3_GIT_VERSION "${gitVersion}"
-          #define RPCS3_GIT_BRANCH "HEAD"
-          #define RPCS3_GIT_VERSION_NO_UPDATE 1
-          EOF
-        '';
+      src = super.fetchgit {
+        url = "https://github.com/RPCS3/rpcs3";
+        rev = "f15eb88f59fbd872a0dd58fedcc8add5f16b6b68";
+        sha256 = "12dxy5pvrs6025chkjsr89pbmf5ryhd1spd9sh19nmfx58zb3j7g";
+      };
 
-        cmakeFlags = [
-          "-DUSE_SYSTEM_LIBPNG=ON"
-          "-DUSE_SYSTEM_FFMPEG=ON"
-          "-DUSE_NATIVE_INSTRUCTIONS=ON"
-        ];
+      cmakeFlags = oldAttrs.cmakeFlags ++ [
+        "-DUSE_DISCORD_RPC=OFF"
+        "-DUSE_NATIVE_INSTRUCTIONS=ON"
+      ];
 
-        # Compilation fails on GCC 7 or earlier
-        stdenv = super.gcc8Stdenv;
+      patches = oldAttrs.patches or [] ++ [ ./patches/rpcs3_clang.patch ];
+    })).overrideDerivation (drv: {
+      name = "rpcs3-${drv.version}";
+
+      preConfigure = ''
+        cat > ./rpcs3/git-version.h <<EOF
+        #define RPCS3_GIT_VERSION "${drv.gitVersion}"
+        #define RPCS3_GIT_BRANCH "HEAD"
+        #define RPCS3_GIT_VERSION_NO_UPDATE 1
+        EOF
+      '';
     });
 
     the-powder-toy = super.the-powder-toy.overrideDerivation (old: rec {
