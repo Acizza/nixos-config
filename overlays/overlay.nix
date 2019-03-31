@@ -209,9 +209,9 @@ self: super: {
       NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
     });
 
-    alacritty = super.alacritty.overrideAttrs (old: rec {
-        patches = old.patches ++ [ ./patches/alacritty.patch ];
-        RUSTFLAGS = "-C target-cpu=native";
+    alacritty = super.alacritty.overrideAttrs (oldAttrs: {
+      patches = oldAttrs.patches or [] ++ [ ./patches/alacritty.patch ];
+      RUSTFLAGS = "-C target-cpu=native";
     });
 
     ripgrep = super.ripgrep.overrideAttrs (old: rec {
