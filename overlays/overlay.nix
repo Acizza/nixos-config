@@ -12,6 +12,25 @@ self: super: {
       wine = self.wine;
     };
 
+    # Nvidia Vulkan developer driver
+    linuxPackages_5_0 = super.linuxPackages_5_0.extend (selfLinux: superLinux: {
+      nvidia_x11_beta = superLinux.nvidia_x11_beta.overrideDerivation (old: rec {
+        name = "nvidia-x11-${vulkanDevVersion}-${selfLinux.kernel.version}-vulkan";
+        vulkanDevVersion = "418.49.04";
+
+        # The Vulkan developer drivers don't have their own build for tools like
+        # nvidia-settings, so all we need to do is override the main driver
+        src =
+          let
+            versionStr = builtins.replaceStrings ["."] [""] vulkanDevVersion;
+          in
+            super.fetchurl {
+              url = "https://developer.nvidia.com/vulkan-beta-${versionStr}-linux";
+              sha256 = "0cg5wj1snxav31s4nxkpk2wlcqa7fy3wn9isg0dahinwagxjfm8g";
+            };
+      });
+    });
+
     # Wine staging with esync + FAudio
     wine = ((super.wine.override {
       # Note: we cannot set wineRelease to staging here, as it will no longer allow us
