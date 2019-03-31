@@ -191,9 +191,10 @@ self: super: {
 
     ### Modifications to make some packages run as fast as possible
 
-    awesome = super.awesome.overrideDerivation (old: rec {
-        stdenv = super.llvmPackages_latest.stdenv;
-        NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
+    awesome = (super.awesome.override {
+      stdenv = super.llvmPackages_latest.stdenv;
+    }).overrideAttrs (_: {
+      NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
     });
 
     lua = super.lua.overrideDerivation (old: rec {
