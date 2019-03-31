@@ -233,8 +233,8 @@ self: super: {
       RUSTFLAGS = "-C target-cpu=native";
     });
 
-    nixup = (super.callPackage ./pkgs/nixup.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
+    nixup = (super.callPackage ./pkgs/nixup.nix { }).overrideAttrs (_: {
+      RUSTFLAGS = "-C target-cpu=native";
     });
 
     dxvk = (super.callPackage ./pkgs/dxvk {
