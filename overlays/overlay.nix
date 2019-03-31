@@ -197,9 +197,10 @@ self: super: {
       NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
     });
 
-    lua = super.lua.overrideDerivation (old: rec {
-        stdenv = super.gcc8Stdenv;
-        NIX_CFLAGS_COMPILE = "-O3 -march=native";
+    lua = (super.lua.override {
+      stdenv = super.gcc8Stdenv;
+    }).overrideAttrs (_: {
+      NIX_CFLAGS_COMPILE = "-O3 -march=native";
     });
 
     mpv = super.mpv.overrideDerivation (old: rec {
