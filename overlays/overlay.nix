@@ -203,9 +203,10 @@ self: super: {
       NIX_CFLAGS_COMPILE = "-O3 -march=native";
     });
 
-    mpv = super.mpv.overrideDerivation (old: rec {
-        stdenv = super.llvmPackages_latest.stdenv;
-        NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
+    mpv = (super.mpv.override {
+      stdenv = super.llvmPackages_latest.stdenv;
+    }).overrideAttrs (_: {
+      NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
     });
 
     alacritty = super.alacritty.overrideAttrs (old: rec {
