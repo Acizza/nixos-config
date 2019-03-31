@@ -225,8 +225,8 @@ self: super: {
       RUSTFLAGS = "-C target-cpu=native";
     });
 
-    bcnotif = (super.callPackage ./pkgs/bcnotif.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
+    bcnotif = (super.callPackage ./pkgs/bcnotif.nix { }).overrideAttrs (_: {
+      RUSTFLAGS = "-C target-cpu=native";
     });
 
     wpfxm = (super.callPackage ./pkgs/wpfxm.nix { }).overrideAttrs (old: rec {
