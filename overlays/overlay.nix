@@ -180,15 +180,13 @@ self: super: {
       buildInputs = old.buildInputs ++ [ super.glib-networking ];
     });
 
-    soulseekqt = super.soulseekqt.overrideDerivation (old: rec {
-        buildInputs = old.buildInputs ++ [ super.makeWrapper ];
+    soulseekqt = super.soulseekqt.overrideAttrs (oldAttrs: {
+      buildInputs = oldAttrs.buildInputs ++ [ super.makeWrapper ];
 
-        phases = "unpackPhase patchPhase installPhase fixupPhase postFixupPhase";
-
-        postFixupPhase = ''
-            wrapProgram "$out/bin/SoulseekQt" \
-                --prefix QT_PLUGIN_PATH : ${super.qt5.qtbase}/${super.qt5.qtbase.qtPluginPrefix}
-        '';
+      fixupPhase = oldAttrs.fixupPhase or "" + ''
+        wrapProgram "$out/bin/SoulseekQt" \
+          --prefix QT_PLUGIN_PATH : ${super.qt5.qtbase}/${super.qt5.qtbase.qtPluginPrefix}
+      '';
     });
 
     ### Modifications to make some packages run as fast as possible
