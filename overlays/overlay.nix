@@ -124,14 +124,16 @@ self: super: {
     });
 
     # Latest version of RPCS3 + compilation with clang
-    rpcs3 = ((super.rpcs3.override {
+    rpcs3 = (super.rpcs3.override {
       waylandSupport = false;
       alsaSupport = false;
 
       stdenv = super.llvmPackages_latest.stdenv;
-    }).overrideAttrs (oldAttrs: {
+    }).overrideAttrs (oldAttrs: rec {
+      name = "rpcs3-${version}";
+
       gitVersion = "7916-f15eb88";
-      version = "0.0.6-7916-f15eb88";
+      version = "0.0.6-${gitVersion}";
 
       src = super.fetchgit {
         url = "https://github.com/RPCS3/rpcs3";
@@ -145,12 +147,10 @@ self: super: {
       ];
 
       patches = oldAttrs.patches or [] ++ [ ./patches/rpcs3_clang.patch ];
-    })).overrideDerivation (drv: {
-      name = "rpcs3-${drv.version}";
 
       preConfigure = ''
         cat > ./rpcs3/git-version.h <<EOF
-        #define RPCS3_GIT_VERSION "${drv.gitVersion}"
+        #define RPCS3_GIT_VERSION "${gitVersion}"
         #define RPCS3_GIT_BRANCH "HEAD"
         #define RPCS3_GIT_VERSION_NO_UPDATE 1
         EOF
