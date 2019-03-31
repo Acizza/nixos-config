@@ -176,8 +176,8 @@ self: super: {
     });
 
     # lollypop seems to need glib-networking in order to make HTTP(S) requests
-    lollypop = super.lollypop.overrideAttrs (old: rec {
-        buildInputs = old.buildInputs ++ [ super.glib-networking ];
+    lollypop = super.lollypop.overrideAttrs (old: {
+      buildInputs = old.buildInputs ++ [ super.glib-networking ];
     });
 
     soulseekqt = super.soulseekqt.overrideDerivation (old: rec {
