@@ -67,7 +67,7 @@
       git
       deluge
       rustup
-      wineWowPackages.staging
+      wine
       gnome3.gnome-system-monitor
       gnome3.eog
       veracrypt

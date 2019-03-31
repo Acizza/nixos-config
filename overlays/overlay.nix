@@ -1,12 +1,108 @@
 self: super: {
-    # Generic overrides
-    winetricks = super.winetricks.override {
-        wine = super.wineWowPackages.staging;
+    qemu = super.qemu.override {
+        hostCpuOnly = true;
+        smbdSupport = true;
     };
 
     sudo = super.sudo.override {
       withInsults = true;
     };
+
+    winetricks = super.winetricks.override {
+      wine = self.wine;
+    };
+
+    # Wine staging with esync + FAudio
+    wine = ((super.wine.override {
+      # Note: we cannot set wineRelease to staging here, as it will no longer allow us
+      # to use overrideAttrs
+      wineBuild = "wineWow";
+
+      # https://github.com/NixOS/nixpkgs/issues/28486#issuecomment-324859956
+      gstreamerSupport = false;
+    }).overrideAttrs (oldAttrs: {
+      version = "4.5";
+      NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
+
+      # This saves a decent amount of build time
+      configureFlags = oldAttrs.configureFlags or [] ++ [ "--disable-tests" ];
+
+      ## TODO: the following overrides can be removed when the upstream Wine version is >= 4.3
+      buildInputs = oldAttrs.buildInputs ++ [ self.faudio self.faudio_32 ];
+
+      mono = super.fetchurl rec {
+        url = "http://dl.winehq.org/wine/wine-mono/4.8.0/wine-mono-4.8.0.msi";
+        sha256 = "0y47mfjkb2viraqrvi8qpjn2935sra81h3l4bvaag737s7zmj0c9";
+      };
+    })).overrideDerivation (drv: {
+      name = "wine-wow-${drv.version}-staging-esync";
+
+      src = super.fetchurl {
+        url = "https://dl.winehq.org/wine/source/4.x/wine-${drv.version}.tar.xz";
+        sha256 = "1dy1v27cw9vp2xnr8y4bdcvvw5ivcgpk2375jgn536csbwaxgwjz";
+      };
+
+      buildInputs =
+        let
+          toPackages = pkgNames: pkgs:
+            map (pn: super.lib.getAttr pn pkgs) pkgNames;
+
+          toBuildInputs = pkgArches: archPkgs:
+            super.lib.concatLists (map archPkgs pkgArches);
+
+          mkBuildInputs = pkgArches: pkgNames:
+            toBuildInputs pkgArches (toPackages pkgNames);
+
+          build-inputs = pkgNames: extra:
+            (mkBuildInputs drv.pkgArches pkgNames) ++ extra;
+        in
+          (build-inputs [ "perl" "utillinux" "autoconf" "libtxc_dxtn_s2tc" ] drv.buildInputs)
+            ++ [ self.esyncPatches self.git ];
+
+      postPatch = with super.lib; let
+        staging = super.fetchFromGitHub {
+          sha256 = "18xpha7nl3jg7c24cgbncciyyqqb6svsyfp1xk81993wnl6r8abs";
+          owner = "wine-staging";
+          repo = "wine-staging";
+          rev = "v${drv.version}";
+        };
+
+        extraEsyncPatch = if versionAtLeast drv.version "4.5" then super.fetchpatch {
+          name = "esync-no_kernel_obj_list.patch";
+          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/esync-no_kernel_obj_list.patch";
+          sha256 = "1yjcyawhcyqr4jxsbc9cficyyxznnibbfhkidm4y1p4xjmp0m3yy";
+        } else super.fetchpatch {
+          name = "esync-no_alloc_handle.patch";
+          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/esync-no_alloc_handle.patch";
+          sha256 = "0x4aljyywp267b7jx4509hiz8p4zvp79hmkf3pwapxdqihxvzfzp";
+        };
+      in ''
+        # staging patches
+        echo "applying staging patches"
+
+        patchShebangs tools
+        cp -r ${staging}/patches .
+        chmod +w patches
+        cd patches
+        patchShebangs gitapply.sh
+        ./patchinstall.sh DESTDIR="$PWD/.." --all \
+            -W xaudio2-revert \
+            -W xaudio2_7-CreateFX-FXEcho \
+            -W xaudio2_7-WMA_support \
+            -W xaudio2_CommitChanges
+        cd ..
+
+        # esync patches
+        echo "applying esync patchset"
+
+        for patch in ${self.esyncPatches}/share/esync/*.patch; do
+          git apply -C1 --verbose < "$patch"
+        done
+
+        echo "applying extra esync patch"
+        patch -Np1 < "${extraEsyncPatch}"
+      '';
+    });
 
     rpcs3 = (super.rpcs3.override {
         waylandSupport = false;
@@ -59,10 +155,6 @@ self: super: {
         buildInputs = old.buildInputs ++ [ super.glib-networking ];
     });
 
-    wineWowPackages.staging = super.wineWowPackages.staging.overrideDerivation (old: rec {
-        NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
-    });
-
     soulseekqt = super.soulseekqt.overrideDerivation (old: rec {
         buildInputs = old.buildInputs ++ [ super.makeWrapper ];
 
@@ -74,35 +166,8 @@ self: super: {
         '';
     });
 
-    qemu = super.qemu.override {
-        hostCpuOnly = true;
-        smbdSupport = true;
-    };
+    ### Modifications to make some packages run as fast as possible
 
-    # Custom packages
-    dxvk = (super.callPackage ./pkgs/dxvk {
-        winePackage = super.wineWowPackages.staging;
-    }).overrideDerivation (old: rec {
-        NIX_CFLAGS_COMPILE = "-Ofast -march=native";
-    });
-
-    anup = (super.callPackage ./pkgs/anup.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
-    });
-
-    bcnotif = (super.callPackage ./pkgs/bcnotif.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
-    });
-
-    wpfxm = (super.callPackage ./pkgs/wpfxm.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
-    });
-
-    nixup = (super.callPackage ./pkgs/nixup.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
-    });
-
-    # The following overrides are to make some packages run as fast as possible
     awesome = super.awesome.overrideDerivation (old: rec {
         stdenv = super.llvmPackages_latest.stdenv;
         NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
@@ -127,4 +192,42 @@ self: super: {
         patches = old.patches ++ [ ./patches/ripgrep.patch ];
         RUSTFLAGS = "-C target-cpu=native";
     });
+
+    ### Custom packages
+
+    anup = (super.callPackage ./pkgs/anup.nix { }).overrideAttrs (old: rec {
+        RUSTFLAGS = "-C target-cpu=native";
+    });
+
+    bcnotif = (super.callPackage ./pkgs/bcnotif.nix { }).overrideAttrs (old: rec {
+        RUSTFLAGS = "-C target-cpu=native";
+    });
+
+    wpfxm = (super.callPackage ./pkgs/wpfxm.nix { }).overrideAttrs (old: rec {
+        RUSTFLAGS = "-C target-cpu=native";
+    });
+
+    nixup = (super.callPackage ./pkgs/nixup.nix { }).overrideAttrs (old: rec {
+        RUSTFLAGS = "-C target-cpu=native";
+    });
+
+    dxvk = (super.callPackage ./pkgs/dxvk {
+      winePackage = self.wine;
+    }).overrideDerivation (old: rec {
+      NIX_CFLAGS_COMPILE = "-Ofast -march=native";
+    });
+
+    faudio = super.callPackage ./pkgs/faudio.nix {
+      stdenv = super.llvmPackages_latest.stdenv;
+    };
+
+    faudio_32 = self.faudio.overrideDerivation (o: rec {
+      stdenv = super.overrideCC
+        super.stdenv
+        (super.wrapClangMulti super.llvmPackages_latest.clang);
+    });
+
+    esyncPatches = super.callPackage ./pkgs/esync-patches.nix {
+      wine = self.wine;
+    };
 }
