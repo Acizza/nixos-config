@@ -214,9 +214,9 @@ self: super: {
       RUSTFLAGS = "-C target-cpu=native";
     });
 
-    ripgrep = super.ripgrep.overrideAttrs (old: rec {
-        patches = old.patches ++ [ ./patches/ripgrep.patch ];
-        RUSTFLAGS = "-C target-cpu=native";
+    ripgrep = super.ripgrep.overrideAttrs (oldAttrs: {
+      patches = oldAttrs.patches or [] ++ [ ./patches/ripgrep.patch ];
+      RUSTFLAGS = "-C target-cpu=native";
     });
 
     ### Custom packages
