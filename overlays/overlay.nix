@@ -221,8 +221,8 @@ self: super: {
 
     ### Custom packages
 
-    anup = (super.callPackage ./pkgs/anup.nix { }).overrideAttrs (old: rec {
-        RUSTFLAGS = "-C target-cpu=native";
+    anup = (super.callPackage ./pkgs/anup.nix { }).overrideAttrs (_: {
+      RUSTFLAGS = "-C target-cpu=native";
     });
 
     bcnotif = (super.callPackage ./pkgs/bcnotif.nix { }).overrideAttrs (old: rec {
