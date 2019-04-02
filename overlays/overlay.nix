@@ -127,14 +127,19 @@ self: super: {
   }).overrideAttrs (oldAttrs: rec {
     name = "rpcs3-${version}";
 
-    gitVersion = "7916-f15eb88";
+    commit = "2119566da711f6b031fa4d62a3aab1bc614584d8";
+    gitVersion = "7930-${builtins.substring 0 7 commit}";
     version = "0.0.6-${gitVersion}";
 
     src = super.fetchgit {
       url = "https://github.com/RPCS3/rpcs3";
-      rev = "f15eb88f59fbd872a0dd58fedcc8add5f16b6b68";
-      sha256 = "12dxy5pvrs6025chkjsr89pbmf5ryhd1spd9sh19nmfx58zb3j7g";
+      rev = "${commit}";
+      sha256 = "0z10c62sndasr9z2mmsnxgqgll6n43f5i2hdyb451q5sxlr6bmim";
     };
+
+    # https://github.com/NixOS/nixpkgs/commit/b11558669ebc7472ecaaaa7cafa2729a22b37c17
+    # RPCS3 no longer detects Vulkan due to the above commit
+    buildInputs = oldAttrs.buildInputs ++ [ super.vulkan-headers ];
 
     cmakeFlags = oldAttrs.cmakeFlags ++ [
       "-DUSE_DISCORD_RPC=OFF"
