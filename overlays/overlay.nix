@@ -46,13 +46,8 @@ self: super: {
     # This saves a decent amount of build time
     configureFlags = oldAttrs.configureFlags or [] ++ [ "--disable-tests" ];
 
-    ## TODO: the following overrides can be removed when the upstream Wine version is >= 4.3
+    # TODO: this can be removed when the upstream Wine version is >= 4.3
     buildInputs = oldAttrs.buildInputs ++ [ self.faudio self.faudio_32 ];
-
-    mono = super.fetchurl rec {
-      url = "http://dl.winehq.org/wine/wine-mono/4.8.0/wine-mono-4.8.0.msi";
-      sha256 = "0y47mfjkb2viraqrvi8qpjn2935sra81h3l4bvaag737s7zmj0c9";
-    };
   })).overrideDerivation (drv: {
     name = "wine-wow-${drv.version}-staging-esync";
 
