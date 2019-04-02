@@ -243,6 +243,12 @@ self: super: {
     NIX_CFLAGS_COMPILE = "-Ofast -march=native";
   });
 
+  d9vk = (super.callPackage ./pkgs/d9vk {
+    winePackage = self.wine;
+  }).overrideAttrs (oldAttrs: {
+    NIX_CFLAGS_COMPILE = "-Ofast -march=native";
+  });
+
   faudio = super.callPackage ./pkgs/faudio.nix {
     stdenv = super.llvmPackages_latest.stdenv;
   };
