@@ -273,7 +273,7 @@
     isNormalUser = true;
     home = "/home/jonathan";
     description = "Jonathan";
-    extraGroups = [ "wheel" "networkmanager" "adbusers" "vboxusers"  ];
+    extraGroups = [ "wheel" "networkmanager" "adbusers" ];
     shell = "/run/current-system/sw/bin/fish";
   };
 }
