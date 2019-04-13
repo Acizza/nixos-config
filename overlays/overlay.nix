@@ -16,7 +16,7 @@ self: super: {
   linuxPackages_5_0 = super.linuxPackages_5_0.extend (selfLinux: superLinux: {
     nvidia_x11_beta = superLinux.nvidia_x11_beta.overrideDerivation (old: rec {
       name = "nvidia-x11-${vulkanDevVersion}-${selfLinux.kernel.version}-vulkan";
-      vulkanDevVersion = "418.49.04";
+      vulkanDevVersion = "418.52.03";
 
       # The Vulkan developer drivers don't have their own build for tools like
       # nvidia-settings, so all we need to do is override the main driver
@@ -26,7 +26,7 @@ self: super: {
         in
           super.fetchurl {
             url = "https://developer.nvidia.com/vulkan-beta-${versionStr}-linux";
-            sha256 = "0cg5wj1snxav31s4nxkpk2wlcqa7fy3wn9isg0dahinwagxjfm8g";
+            sha256 = "11y44d2m5sfzrwqv66wx7sx62476mfq3wp09z696z69dgk76i6xl";
           };
     });
   });
