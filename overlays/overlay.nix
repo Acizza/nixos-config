@@ -189,6 +189,21 @@ self: super: {
     '';
   });
 
+  vscode = super.vscode.overrideAttrs (oldAttrs: rec {
+    src = super.fetchurl {
+      url = "https://github.com/VSCodium/vscodium/releases/download/${oldAttrs.version}/VSCodium-linux-x64-${oldAttrs.version}.tar.gz";
+      sha256 = "05xhxwd2dqx3r18wjmz482a0llaink4hwv02qypq1qr72rad747z";
+    };
+
+    unpackPhase = ''
+      tar xvf ${src}
+    '';
+
+    patchPhase = oldAttrs.patchPhase or "" + ''
+      mv bin/vscodium bin/code
+    '';
+  });
+
   ### Modifications to make some packages run as fast as possible
 
   awesome = (super.awesome.override {
