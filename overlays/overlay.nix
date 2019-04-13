@@ -71,7 +71,7 @@ self: super: {
           (mkBuildInputs drv.pkgArches pkgNames) ++ extra;
       in
         (build-inputs [ "perl" "utillinux" "autoconf" "libtxc_dxtn_s2tc" ] drv.buildInputs)
-          ++ [ self.esyncPatches self.git ];
+          ++ [ self.esync-patches self.git ];
 
     postPatch = with super.lib; let
       staging = super.fetchFromGitHub {
@@ -109,7 +109,7 @@ self: super: {
       # esync patches
       echo "applying esync patchset"
 
-      for patch in ${self.esyncPatches}/share/esync/*.patch; do
+      for patch in ${self.esync-patches}/share/esync/*.patch; do
         git apply -C1 --verbose < "$patch"
       done
 
@@ -259,7 +259,7 @@ self: super: {
       (super.wrapClangMulti super.llvmPackages_latest.clang);
   });
 
-  esyncPatches = super.callPackage ./pkgs/esync-patches.nix {
+  esync-patches = super.callPackage ./pkgs/esync-patches.nix {
     wine = self.wine;
   };
 }
