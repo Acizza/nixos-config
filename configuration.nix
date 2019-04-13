@@ -119,6 +119,7 @@
       anup
       wpfxm
       nixup
+      vapoursynth-plugins
     ];
 
     variables.PATH = [ "/home/jonathan/.cargo/bin" ];

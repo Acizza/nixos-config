@@ -204,10 +204,30 @@ self: super: {
   });
 
   mpv = (super.mpv.override {
+    vapoursynthSupport = true;
+    stdenv = super.llvmPackages_latest.stdenv;
+  }).overrideAttrs (oldAttrs: {
+    NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
+  });
+
+
+  vapoursynth = (super.vapoursynth.override {
+    stdenv = super.llvmPackages_latest.stdenv;
+  }).overrideAttrs (oldAttrs: {
+    NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
+  });
+
+  vapoursynth-mvtools = (super.vapoursynth-mvtools.override {
     stdenv = super.llvmPackages_latest.stdenv;
   }).overrideAttrs (_: {
     NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
   });
+
+  vapoursynth-plugins = super.buildEnv {
+    name = "vapoursynth-plugins";
+    paths = [ self.vapoursynth-mvtools ];
+    pathsToLink = [ "/lib" ];
+  };
 
   alacritty = super.alacritty.overrideAttrs (oldAttrs: {
     patches = oldAttrs.patches or [] ++ [ ./patches/alacritty.patch ];
