@@ -31,7 +31,7 @@ self: super: {
     });
   });
 
-  # Wine staging with esync + FAudio
+  # Latest Wine staging with FAudio
   wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
     # to use overrideAttrs
@@ -39,63 +39,37 @@ self: super: {
 
     # https://github.com/NixOS/nixpkgs/issues/28486#issuecomment-324859956
     gstreamerSupport = false;
-  }).overrideAttrs (oldAttrs: {
-    version = "4.5";
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
-
-    # This saves a decent amount of build time
-    configureFlags = oldAttrs.configureFlags or [] ++ [ "--disable-tests" ];
-
-    # TODO: this can be removed when the upstream Wine version is >= 4.3
-    buildInputs = oldAttrs.buildInputs ++ [ self.faudio self.faudio_32 ];
-  })).overrideDerivation (drv: {
-    name = "wine-wow-${drv.version}-staging-esync";
+  }).overrideAttrs (oldAttrs: rec {
+    version = "4.6";
 
     src = super.fetchurl {
-      url = "https://dl.winehq.org/wine/source/4.x/wine-${drv.version}.tar.xz";
-      sha256 = "1dy1v27cw9vp2xnr8y4bdcvvw5ivcgpk2375jgn536csbwaxgwjz";
+      url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
+      sha256 = "1nk2nlkdklwpd0kbq8hx59gl05b5wglcla0v3892by6k4kwh341j";
     };
 
-    buildInputs =
-      let
-        toPackages = pkgNames: pkgs:
-          map (pn: super.lib.getAttr pn pkgs) pkgNames;
+    staging = super.fetchFromGitHub {
+      sha256 = "0mripibsi1p8h2j9ngqszkcjppdxji027ss4shqwb0nypaydd9w2";
+      owner = "wine-staging";
+      repo = "wine-staging";
+      rev = "v${version}";
+    };
 
-        toBuildInputs = pkgArches: archPkgs:
-          super.lib.concatLists (map archPkgs pkgArches);
+    # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
+    buildInputs = oldAttrs.buildInputs ++ [ self.faudio self.faudio_32 ];
 
-        mkBuildInputs = pkgArches: pkgNames:
-          toBuildInputs pkgArches (toPackages pkgNames);
+    # This saves a bit of build time
+    configureFlags = oldAttrs.configureFlags or [] ++ [ "--disable-tests" ];
 
-        build-inputs = pkgNames: extra:
-          (mkBuildInputs drv.pkgArches pkgNames) ++ extra;
-      in
-        (build-inputs [ "perl" "utillinux" "autoconf" "libtxc_dxtn_s2tc" ] drv.buildInputs)
-          ++ [ self.esync-patches self.git ];
+    NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
+  })).overrideDerivation (drv: {
+    name = "wine-wow-${drv.version}-staging";
 
-    postPatch = with super.lib; let
-      staging = super.fetchFromGitHub {
-        sha256 = "18xpha7nl3jg7c24cgbncciyyqqb6svsyfp1xk81993wnl6r8abs";
-        owner = "wine-staging";
-        repo = "wine-staging";
-        rev = "v${drv.version}";
-      };
+    buildInputs = drv.buildInputs ++ [ super.perl super.utillinux super.autoconf super.libtxc_dxtn_s2tc ];
 
-      extraEsyncPatch = if versionAtLeast drv.version "4.5" then super.fetchpatch {
-        name = "esync-no_kernel_obj_list.patch";
-        url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/esync-no_kernel_obj_list.patch";
-        sha256 = "1yjcyawhcyqr4jxsbc9cficyyxznnibbfhkidm4y1p4xjmp0m3yy";
-      } else super.fetchpatch {
-        name = "esync-no_alloc_handle.patch";
-        url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/esync-no_alloc_handle.patch";
-        sha256 = "0x4aljyywp267b7jx4509hiz8p4zvp79hmkf3pwapxdqihxvzfzp";
-      };
-    in ''
+    postPatch = ''
       # staging patches
-      echo "applying staging patches"
-
       patchShebangs tools
-      cp -r ${staging}/patches .
+      cp -r ${drv.staging}/patches .
       chmod +w patches
       cd patches
       patchShebangs gitapply.sh
@@ -105,16 +79,6 @@ self: super: {
           -W xaudio2_7-WMA_support \
           -W xaudio2_CommitChanges
       cd ..
-
-      # esync patches
-      echo "applying esync patchset"
-
-      for patch in ${self.esync-patches}/share/esync/*.patch; do
-        git apply -C1 --verbose < "$patch"
-      done
-
-      echo "applying extra esync patch"
-      patch -Np1 < "${extraEsyncPatch}"
     '';
   });
 
@@ -293,8 +257,4 @@ self: super: {
       super.stdenv
       (super.wrapClangMulti super.llvmPackages_latest.clang);
   });
-
-  esync-patches = super.callPackage ./pkgs/esync-patches.nix {
-    wine = self.wine;
-  };
 }
