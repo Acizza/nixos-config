@@ -249,6 +249,7 @@
       # Unity Games
       "config.uca.cloud.unity3d.com"
       "api.uca.cloud.unity3d.com"
+      "cdp.cloud.unity3d.com"
 
       # Unreal Engine 4 (not confirmed, but added to be safe)
       "tracking.epicgames.com"
