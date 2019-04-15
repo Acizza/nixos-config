@@ -129,6 +129,9 @@
   programs = {
     fish.enable = true;
     adb.enable = true;
+
+    # lollypop needs this in order to save settings
+    dconf.enable = true;
   };
 
   services = {
