@@ -40,18 +40,20 @@ self: super: {
     # https://github.com/NixOS/nixpkgs/issues/28486#issuecomment-324859956
     gstreamerSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.6";
+    version = "4.7";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "1nk2nlkdklwpd0kbq8hx59gl05b5wglcla0v3892by6k4kwh341j";
+      sha256 = "1c5swx6jj0hz9w2jgyl30pdjcq9n62qp1rmqyq1d4q2a6n291jiv";
     };
 
     staging = super.fetchFromGitHub {
-      sha256 = "0mripibsi1p8h2j9ngqszkcjppdxji027ss4shqwb0nypaydd9w2";
+      sha256 = "1xwzxaai315vcl9g458m6jzwyyrrz4gw078pgcivjbfw3j72q4l4";
       owner = "wine-staging";
       repo = "wine-staging";
-      rev = "v${version}";
+      # This specific revision is needed until Wine 4.8, as it fixes an issue with esync
+      # not included in the 4.7 release
+      rev = "c48811407e3c9cb2d6a448d6664f89bacd9cc36f";
     };
 
     # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
