@@ -93,14 +93,14 @@ self: super: {
   }).overrideAttrs (oldAttrs: rec {
     name = "rpcs3-${version}";
 
-    commit = "2119566da711f6b031fa4d62a3aab1bc614584d8";
-    gitVersion = "7930-${builtins.substring 0 7 commit}";
+    commit = "be6d9af1abef5dd2d9a4bd38c56facf0440358de";
+    gitVersion = "8034-${builtins.substring 0 7 commit}";
     version = "0.0.6-${gitVersion}";
 
     src = super.fetchgit {
       url = "https://github.com/RPCS3/rpcs3";
       rev = "${commit}";
-      sha256 = "0z10c62sndasr9z2mmsnxgqgll6n43f5i2hdyb451q5sxlr6bmim";
+      sha256 = "1fcyfm90cc41qs117q48p5bkk7qg2qk5zskmlq3345d4sc0crf0r";
     };
 
     # https://github.com/NixOS/nixpkgs/commit/b11558669ebc7472ecaaaa7cafa2729a22b37c17
@@ -112,7 +112,9 @@ self: super: {
       "-DUSE_NATIVE_INSTRUCTIONS=ON"
     ];
 
-    patches = oldAttrs.patches or [] ++ [ ./patches/rpcs3_clang.patch ];
+    patches = oldAttrs.patches or [] ++ [
+      ./patches/rpcs3_clang.patch
+    ];
 
     preConfigure = ''
       cat > ./rpcs3/git-version.h <<EOF
@@ -121,6 +123,8 @@ self: super: {
       #define RPCS3_GIT_VERSION_NO_UPDATE 1
       EOF
     '';
+
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -O3";
   });
 
   the-powder-toy = (super.the-powder-toy.override {
