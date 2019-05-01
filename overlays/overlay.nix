@@ -254,13 +254,17 @@ self: super: {
     NIX_CFLAGS_COMPILE = "-Ofast -march=native";
   });
 
-  faudio = super.callPackage ./pkgs/faudio.nix {
+  faudio = (super.callPackage ./pkgs/faudio.nix {
     stdenv = super.llvmPackages_latest.stdenv;
-  };
+  }).overrideAttrs (oldAttrs: {
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -march=native";
+  });
 
   faudio_32 = self.faudio.overrideDerivation (o: rec {
     stdenv = super.overrideCC
       super.stdenv
       (super.wrapClangMulti super.llvmPackages_latest.clang);
+
+    NIX_CFLAGS_COMPILE = o.NIX_CFLAGS_COMPILE or "" + " -march=native";
   });
 }
