@@ -244,12 +244,6 @@
       "incoming.telemetry.mozilla.org" # This is normally disabled, but added just to be safe
       "ocsp.sca1b.amazontrust.com"
 
-      # VS Code (https://www.reddit.com/r/privacy/comments/80d8wu/just_realised_that_visual_studio_code_sends/duvaf76/)
-      "dc.services.visualstudio.com"
-      "dc.trafficmanager.net"
-      "vortex.data.microsoft.com"
-      "weu-breeziest-in.cloudapp.net"
-
       # Unity Games
       "config.uca.cloud.unity3d.com"
       "api.uca.cloud.unity3d.com"
