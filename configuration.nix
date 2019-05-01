@@ -236,20 +236,20 @@
     networkmanager.enable = true;
 
     # Block ads / tracking from desktop applications
-    # This mainly serves as a backup incase my Pi-hole fails, or if connected to a different network
+    # This mainly serves as a backup incase I can't use my Pi-hole
     hosts."0.0.0.0" = [
       # Firefox
       "location.services.mozilla.com"
       "shavar.services.mozilla.com"
-      "incoming.telemetry.mozilla.org" # This is normally disabled, but added just to be safe
+      "incoming.telemetry.mozilla.org"
       "ocsp.sca1b.amazontrust.com"
 
-      # Unity Games
+      # Unity games
       "config.uca.cloud.unity3d.com"
       "api.uca.cloud.unity3d.com"
       "cdp.cloud.unity3d.com"
 
-      # Unreal Engine 4 (not confirmed, but added to be safe)
+      # Unreal Engine 4 (not sure if games actually connect to these)
       "tracking.epicgames.com"
       "tracking.unrealengine.com"
 
