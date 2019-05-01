@@ -259,6 +259,11 @@
       "tracking.epicgames.com"
       "tracking.unrealengine.com"
 
+      # Redshell (game analytics)
+      "api.redshell.io"
+      "treasuredata.com"
+      "api.treasuredata.com"
+
       # General
       "www.google-analytics.com"
       "ssl.google-analytics.com"
