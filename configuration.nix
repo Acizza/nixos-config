@@ -259,6 +259,10 @@
       "api.treasuredata.com"
       "in.treasuredata.com"
 
+      # GameAnalytics
+      "api.gameanalytics.com"
+      "rubick.gameanalytics.com"
+
       # General
       "www.google-analytics.com"
       "ssl.google-analytics.com"
