@@ -257,6 +257,7 @@
       "api.redshell.io"
       "treasuredata.com"
       "api.treasuredata.com"
+      "in.treasuredata.com"
 
       # General
       "www.google-analytics.com"
