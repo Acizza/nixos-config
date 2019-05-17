@@ -21,7 +21,7 @@
     };
     
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_0;
+    kernelPackages = pkgs.linuxPackages_5_1;
   };
 
   systemd.extraConfig = "DefaultLimitNOFILE=1048576";
