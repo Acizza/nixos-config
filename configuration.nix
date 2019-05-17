@@ -78,7 +78,6 @@
       ripgrep # Improved version of grep
       psmisc # killall
       pywal
-      easytag
       gnome3.networkmanagerapplet
       feh
       atool
@@ -100,6 +99,7 @@
       the-powder-toy
       qemu
       srm
+      puddletag
 
       # Compression
       unzip
