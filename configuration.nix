@@ -129,6 +129,7 @@
   programs = {
     fish.enable = true;
     adb.enable = true;
+    firejail.enable = true;
 
     # lollypop needs this in order to save settings
     dconf.enable = true;
