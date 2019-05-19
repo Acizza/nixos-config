@@ -9,7 +9,7 @@
 }:
 
 let
-  version = "v1.2";
+  version = "v1.2.1";
 in
   multiStdenv.mkDerivation {
     name = "dxvk-${version}";
@@ -18,12 +18,14 @@ in
       owner = "doitsujin";
       repo = "dxvk";
       rev = "${version}";
-      sha256 = "00whrpwnynz87v6nyfvb5sfh6002nh2q81xkqm54r4912irc5qg1";
+      sha256 = "1826a8a6yiys49jy8grzlnlf6hqzkycbpya8i76ja3n7dp2l8zkn";
     };
 
     buildInputs = [ meson ninja glslang ] ++ [ winePackage ];
 
-    phases = "unpackPhase buildPhase installPhase fixupPhase";
+    phases = "unpackPhase patchPhase buildPhase installPhase fixupPhase";
+
+    patches = [ ../../patches/dxvk_fix_setup_script_hang.patch ];
 
     buildPhase =
       let
