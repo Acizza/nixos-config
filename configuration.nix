@@ -5,8 +5,8 @@
 
   fileSystems = {
     # SSD
-    "/".options = [ "noatime" "nodiratime" "discard" ];
-    "/home".options = [ "noatime" "nodiratime" "discard" ];
+    "/".options = [ "noatime" "nodiratime" ];
+    "/home".options = [ "noatime" "nodiratime" ];
 
     # HDD
     "/media/data".options = [ "noatime" "nodiratime" "defaults" ];
