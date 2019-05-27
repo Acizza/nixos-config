@@ -136,6 +136,8 @@
   };
 
   services = {
+    fstrim.enable = true;
+
     compton = {
       enable = true;
       backend = "glx";
