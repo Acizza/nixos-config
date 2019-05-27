@@ -167,7 +167,7 @@
       enable = true;
       latitude = "38.58";
       longitude = "-121.49";
-      temperature.night = 2600;
+      temperature.night = 2400;
     };
 
     xserver = {
