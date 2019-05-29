@@ -141,15 +141,13 @@
     compton = {
       enable = true;
       backend = "glx";
-      vSync = "opengl-swc";
+      vSync = true;
         
       extraOptions = ''
-        paint-on-overlay = true;
+        unredir-if-possible = true;
+        use-damage = true;
 
         glx-no-stencil = true;
-        glx-swap-method = 1;
-
-        unredir-if-possible = true;
 
         blur-background = true;
         blur-background-fixed = true;
