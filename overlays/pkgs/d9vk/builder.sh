@@ -16,6 +16,9 @@ _configure_d9vk() {
         --buildtype release \
         --prefix $PWD/build${1} \
         --strip \
+        -Denable_d3d11=false \
+        -Denable_d3d10=false \
+        -Denable_dxgi=false \
         build.wine${1}
 }
 
