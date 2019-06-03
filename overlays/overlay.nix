@@ -72,14 +72,14 @@ self: super: {
   }).overrideAttrs (oldAttrs: rec {
     name = "rpcs3-${version}";
 
-    commit = "be6d9af1abef5dd2d9a4bd38c56facf0440358de";
-    gitVersion = "8034-${builtins.substring 0 7 commit}";
+    commit = "790962425cfb893529f72b3ef0dd1424fcc42973";
+    gitVersion = "8187-${builtins.substring 0 7 commit}";
     version = "0.0.6-${gitVersion}";
 
     src = super.fetchgit {
       url = "https://github.com/RPCS3/rpcs3";
       rev = "${commit}";
-      sha256 = "1fcyfm90cc41qs117q48p5bkk7qg2qk5zskmlq3345d4sc0crf0r";
+      sha256 = "154ys29b9xdws3bp4b7rb3kc0h9hd49g2yf3z9268cdq8aclahaa";
     };
 
     # https://github.com/NixOS/nixpkgs/commit/b11558669ebc7472ecaaaa7cafa2729a22b37c17
@@ -103,7 +103,7 @@ self: super: {
       EOF
     '';
 
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -O3";
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -O3 -pthread";
   });
 
   the-powder-toy = (super.the-powder-toy.override {
