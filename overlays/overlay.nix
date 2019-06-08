@@ -139,9 +139,11 @@ self: super: {
   });
 
   vscode = super.vscode.overrideAttrs (oldAttrs: rec {
+    version = "1.35.0";
+
     src = super.fetchurl {
-      url = "https://github.com/VSCodium/vscodium/releases/download/${oldAttrs.version}/VSCodium-linux-x64-${oldAttrs.version}.tar.gz";
-      sha256 = "1vqq365zw44ll22i06bxxviyywv1v2f71c2mricrz3faz25c3lvm";
+      url = "https://github.com/VSCodium/vscodium/releases/download/${version}/VSCodium-linux-x64-${version}.tar.gz";
+      sha256 = "1bdfb8nc4qszdvl412iqdqk8dhvcilra2571wyikdn6gmf6b0w4s";
     };
 
     unpackPhase = ''
@@ -149,7 +151,7 @@ self: super: {
     '';
 
     patchPhase = oldAttrs.patchPhase or "" + ''
-      mv bin/vscodium bin/code
+      mv bin/codium bin/code
     '';
   });
 
