@@ -61,7 +61,6 @@
       ranger
       mpv
       vscode
-      steam
       git
       deluge
       rustup
