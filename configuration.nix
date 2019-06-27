@@ -24,8 +24,6 @@
     kernelPackages = pkgs.linuxPackages_5_1;
   };
 
-  systemd.extraConfig = "DefaultLimitNOFILE=1048576";
-
   i18n = {
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
