@@ -92,7 +92,6 @@
       youtube-dl
       ffmpeg
       rpcs3
-      python36Packages.ds4drv
       the-powder-toy
       qemu
       srm
@@ -201,15 +200,6 @@
         Option "OffTime" "16"
       '';
     };
-
-    # Allows ds4drv to be ran without root
-    udev.extraRules = ''
-      KERNEL=="uinput", MODE="0666"
-      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="05c4", MODE="0666"
-      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:05C4.*", MODE="0666"
-      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0666"
-      KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:09CC.*", MODE="0666"
-    '';
 
     # This is required for lollypop to scrobble to services like last.fm
     gnome3.gnome-keyring.enable = true;
