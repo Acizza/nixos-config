@@ -1,4 +1,33 @@
-self: super: {
+self: super: let
+  llvmNativeStdenv = super.impureUseNativeOptimizations super.llvmPackages_latest.stdenv;
+  gcc9NativeStdenv = super.impureUseNativeOptimizations super.gcc9Stdenv;
+  multiNativeStdenv = super.impureUseNativeOptimizations super.multiStdenv;
+
+  withFlags = pkg: flags:
+    pkg.overrideAttrs (old: {
+      NIX_CFLAGS_COMPILE = old.NIX_CFLAGS_COMPILE or "" +
+        super.lib.concatMapStrings (x: " " + x) flags;
+    });
+
+  withStdenvAndFlags = newStdenv: pkg:
+    let
+      newPkg = pkg.override { stdenv = newStdenv; };
+    in withFlags newPkg;
+
+  with32BitNativeAndFlags = withStdenvAndFlags super.pkgsi686Linux.stdenv;
+  withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
+  withGCC9NativeAndFlags = withStdenvAndFlags gcc9NativeStdenv;
+  withMultiNativeAndFlags = withStdenvAndFlags multiNativeStdenv;
+
+  withRustNative = pkg: pkg.overrideAttrs (old: {
+    RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
+  });
+
+  withRustNativeAndPatches = pkg: patches: pkg.overrideAttrs (old: {
+    patches = old.patches or [] ++ patches;
+    RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
+  });
+in {
   qemu = super.qemu.override {
     hostCpuOnly = true;
     smbdSupport = true;
