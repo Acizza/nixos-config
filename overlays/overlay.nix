@@ -136,7 +136,7 @@ in {
   });
 
   the-powder-toy = (super.the-powder-toy.override {
-    stdenv = super.llvmPackages_latest.stdenv;
+    stdenv = llvmNativeStdenv;
   }).overrideAttrs (oldAttrs: rec {
     name = "the-powder-toy-${version}";
     version = "94.1";
@@ -150,7 +150,7 @@ in {
 
     buildInputs = oldAttrs.buildInputs ++ [ super.SDL2 ];
 
-    NIX_CFLAGS_COMPILE = "-O3 -march=native";
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE + " -Ofast -flto";
   });
 
   # lollypop seems to need glib-networking in order to make HTTP(S) requests
@@ -186,37 +186,20 @@ in {
 
   ### Modifications to make some packages run as fast as possible
 
-  awesome = (super.awesome.override {
-    stdenv = super.llvmPackages_latest.stdenv;
-  }).overrideAttrs (_: {
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
-  });
+  awesome = withLLVMNativeAndFlags super.awesome [ "-O3" "-flto" ];
+  lua = withGCC9NativeAndFlags super.lua [ "-O3" ];
 
-  lua = (super.lua.override {
-    stdenv = super.gcc8Stdenv;
-  }).overrideAttrs (_: {
-    NIX_CFLAGS_COMPILE = "-O3 -march=native";
-  });
+  alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
+  ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
-  mpv = (super.mpv.override {
-    vapoursynthSupport = true;
-    stdenv = super.llvmPackages_latest.stdenv;
-  }).overrideAttrs (oldAttrs: {
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
-  });
+  mpv = let
+    mpvPkg = super.mpv.override {
+      vapoursynthSupport = true;
+    };
+  in withLLVMNativeAndFlags mpvPkg [ "-O3" "-flto" ];
 
-
-  vapoursynth = (super.vapoursynth.override {
-    stdenv = super.llvmPackages_latest.stdenv;
-  }).overrideAttrs (oldAttrs: {
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
-  });
-
-  vapoursynth-mvtools = (super.vapoursynth-mvtools.override {
-    stdenv = super.llvmPackages_latest.stdenv;
-  }).overrideAttrs (_: {
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -flto";
-  });
+  vapoursynth = withLLVMNativeAndFlags super.vapoursynth [ "-O3" "-flto" ];
+  vapoursynth-mvtools = withLLVMNativeAndFlags super.vapoursynth-mvtools [ "-O3" "-flto" ];
 
   vapoursynth-plugins = super.buildEnv {
     name = "vapoursynth-plugins";
@@ -224,57 +207,27 @@ in {
     pathsToLink = [ "/lib" ];
   };
 
-  alacritty = super.alacritty.overrideAttrs (oldAttrs: {
-    patches = oldAttrs.patches or [] ++ [ ./patches/alacritty.patch ];
-    RUSTFLAGS = "-C target-cpu=native";
-  });
-
-  ripgrep = super.ripgrep.overrideAttrs (oldAttrs: {
-    patches = oldAttrs.patches or [] ++ [ ./patches/ripgrep.patch ];
-    RUSTFLAGS = "-C target-cpu=native";
-  });
-
   ### Custom packages
 
-  anup = (super.callPackage ./pkgs/anup.nix { }).overrideAttrs (_: {
-    RUSTFLAGS = "-C target-cpu=native";
-  });
-
-  bcnotif = (super.callPackage ./pkgs/bcnotif.nix { }).overrideAttrs (_: {
-    RUSTFLAGS = "-C target-cpu=native";
-  });
-
-  wpfxm = (super.callPackage ./pkgs/wpfxm.nix { }).overrideAttrs (_: {
-    RUSTFLAGS = "-C target-cpu=native";
-  });
-
-  nixup = (super.callPackage ./pkgs/nixup.nix { }).overrideAttrs (_: {
-    RUSTFLAGS = "-C target-cpu=native";
-  });
+  anup = withRustNative (super.callPackage ./pkgs/anup.nix { });
+  bcnotif = withRustNative (super.callPackage ./pkgs/bcnotif.nix { });
+  wpfxm = withRustNative (super.callPackage ./pkgs/wpfxm.nix { });
+  nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
 
   dxvk = (super.callPackage ./pkgs/dxvk {
     winePackage = self.wine;
-  }).overrideDerivation (old: rec {
-    NIX_CFLAGS_COMPILE = "-Ofast -march=native";
+    multiStdenv = multiNativeStdenv;
+  }).overrideAttrs (oldAttrs: {
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE + " -Ofast";
   });
 
   d9vk = (super.callPackage ./pkgs/d9vk {
     winePackage = self.wine;
+    multiStdenv = multiNativeStdenv;
   }).overrideAttrs (oldAttrs: {
-    NIX_CFLAGS_COMPILE = "-Ofast -march=native";
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE + " -Ofast";
   });
 
-  faudio = (super.callPackage ./pkgs/faudio.nix {
-    stdenv = super.llvmPackages_latest.stdenv;
-  }).overrideAttrs (oldAttrs: {
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -march=native";
-  });
-
-  faudio_32 = self.faudio.overrideDerivation (o: rec {
-    stdenv = super.overrideCC
-      super.stdenv
-      (super.wrapClangMulti super.llvmPackages_latest.clang);
-
-    NIX_CFLAGS_COMPILE = o.NIX_CFLAGS_COMPILE or "" + " -march=native";
-  });
+  faudio = withLLVMNativeAndFlags (super.callPackage ./pkgs/faudio.nix { }) [ "-O3" ];
+  faudio_32 = with32BitNativeAndFlags (super.pkgsi686Linux.callPackage ./pkgs/faudio.nix { }) [ "-O3" ];
 }
