@@ -101,14 +101,13 @@
       unzip
       unrar
       p7zip
-      zlib
         
       # Themes
       arc-icon-theme
       arc-theme
       gnome3.adwaita-icon-theme
-    ] ++ [
-      # Overlay packages
+
+      # Custom packages
       dxvk
       d9vk
       bcnotif
