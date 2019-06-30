@@ -29,10 +29,10 @@ self: super: let
     RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
   });
 in {
-  qemu = super.qemu.override {
+  qemu = withLLVMNative (super.qemu.override {
     hostCpuOnly = true;
     smbdSupport = true;
-  };
+  });
 
   sudo = super.sudo.override {
     withInsults = true;
