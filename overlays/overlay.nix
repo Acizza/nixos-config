@@ -215,19 +215,17 @@ in {
   wpfxm = withRustNative (super.callPackage ./pkgs/wpfxm.nix { });
   nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
 
-  dxvk = (super.callPackage ./pkgs/dxvk {
-    winePackage = self.wine;
-    multiStdenv = multiNativeStdenv;
-  }).overrideAttrs (oldAttrs: {
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE + " -Ofast";
-  });
+  dxvk = let
+    pkg = super.callPackage ./pkgs/dxvk {
+      multiStdenv = multiNativeStdenv;
+    };
+  in withFlags pkg [ "-Ofast" ];
 
-  d9vk = (super.callPackage ./pkgs/d9vk {
-    winePackage = self.wine;
-    multiStdenv = multiNativeStdenv;
-  }).overrideAttrs (oldAttrs: {
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE + " -Ofast";
-  });
+  d9vk = let
+    pkg = super.callPackage ./pkgs/d9vk {
+      multiStdenv = multiNativeStdenv;
+    };
+  in withFlags pkg [ "-Ofast" ];
 
   faudio = withLLVMNativeAndFlags (super.callPackage ./pkgs/faudio.nix { }) [ "-O3" ];
   faudio_32 = with32BitNativeAndFlags (super.pkgsi686Linux.callPackage ./pkgs/faudio.nix { }) [ "-O3" ];

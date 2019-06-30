@@ -5,7 +5,7 @@
   meson,
   ninja,
   glslang,
-  winePackage ? pkgs.wineWowPackages.unstable,
+  wine,
 }:
 
 let
@@ -25,7 +25,7 @@ in
       sha256 = "089vyy687iai1s6i6fphy992b673frjl4j1wlvhb99w62xr7pk3g";
     };
 
-    buildInputs = [ meson ninja glslang ] ++ [ winePackage ];
+    buildInputs = [ meson ninja glslang wine ];
     patches = [ ./only_copy_d3d9_dll.patch ../../patches/dxvk_fix_setup_script_hang.patch ];
 
     phases = "unpackPhase patchPhase buildPhase installPhase fixupPhase";

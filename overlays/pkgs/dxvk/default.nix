@@ -5,7 +5,7 @@
   meson,
   ninja,
   glslang,
-  winePackage ? pkgs.wineWowPackages.unstable,
+  wine,
 }:
 
 let
@@ -21,7 +21,7 @@ in
       sha256 = "1v09j260z067zyyq29i666b6jsr8n7r1sz22539mnqvh0dlqzq5y";
     };
 
-    buildInputs = [ meson ninja glslang ] ++ [ winePackage ];
+    buildInputs = [ meson ninja glslang wine ];
 
     phases = "unpackPhase patchPhase buildPhase installPhase fixupPhase";
 
