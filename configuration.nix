@@ -174,7 +174,7 @@
         xterm.enable = false;
       };
 
-      displayManager.lightdm = {
+      displayManager.sddm = {
         enable = true;
         autoLogin.enable = true;
         autoLogin.user = "jonathan";
