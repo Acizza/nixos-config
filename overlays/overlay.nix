@@ -9,15 +9,16 @@ self: super: let
         super.lib.concatMapStrings (x: " " + x) flags;
     });
 
+  withStdenv = newStdenv: pkg:
+    pkg.override { stdenv = newStdenv; };
+
   withStdenvAndFlags = newStdenv: pkg:
-    let
-      newPkg = pkg.override { stdenv = newStdenv; };
-    in withFlags newPkg;
+    withFlags (withStdenv newStdenv pkg);
 
   with32BitNativeAndFlags = withStdenvAndFlags super.pkgsi686Linux.stdenv;
+  withLLVMNative = withStdenv llvmNativeStdenv;
   withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
   withGCC9NativeAndFlags = withStdenvAndFlags gcc9NativeStdenv;
-  withMultiNativeAndFlags = withStdenvAndFlags multiNativeStdenv;
 
   withRustNative = pkg: pkg.overrideAttrs (old: {
     RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
