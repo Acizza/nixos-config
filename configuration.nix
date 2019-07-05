@@ -60,7 +60,7 @@
       alacritty
       ranger
       mpv
-      vscode
+      vscodium
       git
       deluge
       rustup

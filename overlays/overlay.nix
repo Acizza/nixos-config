@@ -168,23 +168,6 @@ in {
     '';
   });
 
-  vscode = super.vscode.overrideAttrs (oldAttrs: rec {
-    version = "1.35.1";
-
-    src = super.fetchurl {
-      url = "https://github.com/VSCodium/vscodium/releases/download/${version}/VSCodium-linux-x64-${version}.tar.gz";
-      sha256 = "0577lqpfrjgwbj27hm59kflb558mkl2nx00ys0hwndayqv0bfnvg";
-    };
-
-    unpackPhase = ''
-      tar xvf ${src}
-    '';
-
-    patchPhase = oldAttrs.patchPhase or "" + ''
-      mv bin/codium bin/code
-    '';
-  });
-
   ### Modifications to make some packages run as fast as possible
 
   awesome = withLLVMNativeAndFlags super.awesome [ "-O3" "-flto" ];
