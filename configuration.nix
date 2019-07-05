@@ -96,6 +96,9 @@
       qemu
       srm
       puddletag
+      cargo-outdated
+      cargo-bloat
+      loc
 
       # Compression
       unzip
@@ -117,7 +120,6 @@
       vapoursynth-plugins
     ];
 
-    variables.PATH = [ "/home/jonathan/.cargo/bin" ];
     variables.TERM = "alacritty";
   };
   
