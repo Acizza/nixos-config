@@ -34,9 +34,9 @@ in {
     smbdSupport = true;
   });
 
-  sudo = super.sudo.override {
+  sudo = withLLVMNative (super.sudo.override {
     withInsults = true;
-  };
+  });
 
   winetricks = super.winetricks.override {
     wine = self.wine;
