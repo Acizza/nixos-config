@@ -51,18 +51,18 @@ in {
     # https://github.com/NixOS/nixpkgs/issues/28486#issuecomment-324859956
     gstreamerSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.11";
+    version = "4.12";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "1rmyfwlynzs2niz7l2lwjs2axm6in6gb43ldbzyzsflxsmk5fl9f";
+      sha256 = "1az5pcczq2zl1cvfdggzf89n0sf77m3fjkc8rnna8qr3n585q4h0";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "0h8qldqr9w1kwn48qgg5m1cs2xqkv8xxg2c66cvfka91hy886jcf";
+      sha256 = "1drsrps6bd5gcafzcfrr9pzajhh5s6qg5la7q4qpwzlng9969f3r";
     };
 
     # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
