@@ -1,7 +1,7 @@
 {stdenv, fetchFromGitHub, cmake, SDL2, ffmpeg}:
 
 let
-  version = "19.06.07";
+  version = "19.07";
 in
   stdenv.mkDerivation {
     name = "faudio-${version}";
@@ -10,7 +10,7 @@ in
       owner = "FNA-XNA";
       repo = "FAudio";
       rev = "${version}";
-      sha256 = "1w37qp279lgpyvslwz3wlb4fp0i68ncd411rqdlk5s71b1zz466n";
+      sha256 = "1wf6skc5agaikc9qgwk8bx56sad31fafs53lqqn4jmx8i76pl0lw";
     };
 
     buildInputs = [ cmake SDL2.dev ffmpeg ];
