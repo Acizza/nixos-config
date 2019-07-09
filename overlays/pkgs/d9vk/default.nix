@@ -9,7 +9,7 @@
 }:
 
 let
-  version = "0.12";
+  version = "0.13";
 in
   # Note: D9VK builds its own copy of DXVK, but in this implementation we're only using the
   # D3D9 library it produces. This may cause problems if the DXVK version used does not match
@@ -22,7 +22,7 @@ in
       owner = "Joshua-Ashton";
       repo = "d9vk";
       rev = "${version}";
-      sha256 = "089vyy687iai1s6i6fphy992b673frjl4j1wlvhb99w62xr7pk3g";
+      sha256 = "0cpbw98vdkg6nwdh4jldvn4p28v1zdfr7ldm0sphgs7yil4g3r7s";
     };
 
     buildInputs = [ meson ninja glslang wine ];
