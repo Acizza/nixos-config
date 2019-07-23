@@ -86,7 +86,6 @@
       libcaca
       highlight
       file
-      notify-osd
       pavucontrol
       winetricks
       youtube-dl
@@ -151,9 +150,9 @@
         blur-kern = "7x7box";
 
         blur-background-exclude = [
-            "!window_type = 'dock' &&
-                !window_type = 'popup_menu' &&
-                !class_g = 'Alacritty'"
+          "!window_type = 'dock' &&
+            !window_type = 'popup_menu' &&
+            !class_g = 'Alacritty'"
         ];
       '';
     };
@@ -183,14 +182,18 @@
       };
 
       windowManager = {
-        awesome = {
+        i3 = {
           enable = true;
-          luaModules = with pkgs.luaPackages; [
-            luafilesystem
+          package = pkgs.i3-gaps;
+          extraPackages = with pkgs; [
+            polybar
+            i3lock
+            rofi
+            dunst
           ];
         };
 
-        default = "awesome";
+        default = "i3";
       };
 
       # Monitor sleep times

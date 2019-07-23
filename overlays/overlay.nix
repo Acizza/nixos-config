@@ -42,6 +42,17 @@ in {
     wine = self.wine;
   };
 
+  i3 = withLLVMNativeAndFlags super.i3 [ "-O3" ];
+
+  polybar = withLLVMNativeAndFlags (super.polybar.override {
+    i3GapsSupport = true;
+    pulseSupport = true;
+  }) [ "-O3" ];
+
+  rofi-unwrapped = withLLVMNativeAndFlags super.rofi-unwrapped [ "-O3" ];
+
+  dunst = withLLVMNativeAndFlags super.dunst [ "-O3" "-flto" ];
+
   # Latest Wine staging with FAudio
   wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
@@ -170,8 +181,7 @@ in {
 
   ### Modifications to make some packages run as fast as possible
 
-  awesome = withLLVMNativeAndFlags super.awesome [ "-O3" "-flto" ];
-  lua = withGCC9NativeAndFlags super.lua [ "-O3" ];
+  ### Modifications to make some packages run as fast as possible
 
   alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
