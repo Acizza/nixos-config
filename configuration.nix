@@ -21,7 +21,7 @@
     };
     
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_1;
+    kernelPackages = pkgs.linuxPackages_5_2;
   };
 
   i18n = {
