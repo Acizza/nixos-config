@@ -207,6 +207,7 @@ in {
   bcnotif = withRustNative (super.callPackage ./pkgs/bcnotif.nix { });
   wpfxm = withRustNative (super.callPackage ./pkgs/wpfxm.nix { });
   nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
+  nixos-update-status = withRustNative (super.callPackage ./pkgs/nixos-update-status.nix { });
 
   dxvk = let
     pkg = super.callPackage ./pkgs/dxvk {

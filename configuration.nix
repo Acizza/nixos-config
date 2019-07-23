@@ -116,6 +116,7 @@
       anup
       wpfxm
       nixup
+      nixos-update-status
       vapoursynth-plugins
     ];
 
