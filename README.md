@@ -1,1 +1,7 @@
-Personal NixOS configuration files. Contains custom packages for [protonvpn-cli](https://github.com/protonvpn/protonvpn-cli), D3D9 version of [dxup](https://github.com/Joshua-Ashton/dxup/tree/d3d9-dev), [dxvk](https://github.com/doitsujin/dxvk), and several of my own applications.
+Personal system configuration for [NixOS](https://nixos.org).
+Contains an overlay that packages the following applications:
+
+1. [DXVK](https://gitlab.com/Acizza/nixos-config/tree/desktop/overlays/pkgs/dxvk)
+2. [D9VK](https://gitlab.com/Acizza/nixos-config/tree/desktop/overlays/pkgs/d9vk)
+3. [FAudio](https://gitlab.com/Acizza/nixos-config/blob/desktop/overlays/pkgs/faudio.nix)
+4. My own applications that I can't be bothered to list :)
