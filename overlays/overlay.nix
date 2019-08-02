@@ -59,6 +59,12 @@ in {
 
     # https://github.com/NixOS/nixpkgs/issues/28486#issuecomment-324859956
     gstreamerSupport = false;
+    netapiSupport = false;
+    cupsSupport = false;
+    gphoto2Support = false;
+    saneSupport = false;
+    openclSupport = false;
+    xmlSupport = false;
   }).overrideAttrs (oldAttrs: rec {
     version = "4.12.1";
 
