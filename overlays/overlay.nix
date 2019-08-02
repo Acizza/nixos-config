@@ -185,8 +185,6 @@ in {
 
   ### Modifications to make some packages run as fast as possible
 
-  ### Modifications to make some packages run as fast as possible
-
   alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
