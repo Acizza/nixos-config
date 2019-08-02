@@ -139,8 +139,8 @@
       enable = true;
       backend = "glx";
       vSync = true;
-        
-      extraOptions = ''
+
+      settings = {
         unredir-if-possible = true;
         use-damage = true;
 
@@ -148,14 +148,19 @@
 
         blur-background = true;
         blur-background-fixed = true;
-        blur-kern = "7x7box";
+
+        blur = {
+          method = "gaussian";
+          size = 10;
+          deviation = 5.0;
+        };
 
         blur-background-exclude = [
           "!window_type = 'dock' &&
-            !window_type = 'popup_menu' &&
-            !class_g = 'Alacritty'"
+           !window_type = 'popup_menu' &&
+           !class_g = 'Alacritty'"
         ];
-      '';
+      };
     };
 
     redshift = {
