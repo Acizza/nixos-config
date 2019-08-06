@@ -15,6 +15,10 @@ in
 
     buildInputs = [ cmake SDL2.dev ffmpeg ];
 
+    cmakeFlags = [
+      "-DFFMPEG=ON"
+    ];
+
     patches = [ ../patches/faudio_take_dir_for_sdl_includes.patch ];
 
     NIX_CFLAGS_COMPILE = "-I${SDL2.dev}/include/SDL2";
