@@ -66,18 +66,18 @@ in {
     openclSupport = false;
     xmlSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.12.1";
+    version = "4.13";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "09yjfb2k14y11k19lm8dqmb8qwxyhh67d5q1gqv480y64mljvkx0";
+      sha256 = "0rqx8g394aj5q913cd18zsi60sldvxarrp178w6ja0y4rd8l25vr";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "1bvpvj6vcw2p6vcjm6mw5maarbs4lfw1ix3pj020w4n3kg4nmmc4";
+      sha256 = "0bbwsd2qpjilxpjscqbp78p0gl0awj1yj62g0wvybh4x89fzy8zj";
     };
 
     # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
@@ -90,7 +90,7 @@ in {
   })).overrideDerivation (drv: {
     name = "wine-wow-${drv.version}-staging";
 
-    buildInputs = drv.buildInputs ++ [ super.perl super.utillinux super.autoconf super.libtxc_dxtn_s2tc ];
+    buildInputs = drv.buildInputs ++ [ super.git super.perl super.utillinux super.autoconf super.libtxc_dxtn_s2tc ];
 
     postPatch = ''
       # staging patches
@@ -99,11 +99,7 @@ in {
       chmod +w patches
       cd patches
       patchShebangs gitapply.sh
-      ./patchinstall.sh DESTDIR="$PWD/.." --all \
-          -W xaudio2-revert \
-          -W xaudio2_7-CreateFX-FXEcho \
-          -W xaudio2_7-WMA_support \
-          -W xaudio2_CommitChanges
+      ./patchinstall.sh DESTDIR="$PWD/.." --all
       cd ..
     '';
   });
