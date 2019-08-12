@@ -218,6 +218,12 @@
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:09CC.*", MODE="0666"
     '';
 
+    earlyoom = {
+      enable = true;
+      freeMemThreshold = 3;
+      ignoreOOMScoreAdjust = true;
+    };
+
     # This is required for lollypop to scrobble to services like last.fm
     gnome3.gnome-keyring.enable = true;
 
