@@ -22,6 +22,19 @@
     
     cleanTmpDir = true;
     kernelPackages = pkgs.linuxPackages_5_2;
+
+    # Add fsync patch for Wine
+    kernelPatches =
+      let
+        fsync = rec {
+          name = "v5.2-fsync";
+          patch = pkgs.fetchpatch {
+            name = name + ".patch";
+            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux52-tkg/linux52-tkg-patches/0012-v5.2-fsync.patch";
+            sha256 = "19vi6rjlp0aj7bxb5y7hlzyyvkqjla8s4i57czfgw803xanhqil4";
+          };
+        };
+      in [ fsync ];
   };
 
   i18n = {

@@ -65,6 +65,8 @@ in {
     saneSupport = false;
     openclSupport = false;
     xmlSupport = false;
+    ldapSupport = false;
+    gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
     version = "4.13";
 
@@ -92,16 +94,34 @@ in {
 
     buildInputs = drv.buildInputs ++ [ super.git super.perl super.utillinux super.autoconf super.libtxc_dxtn_s2tc ];
 
-    postPatch = ''
-      # staging patches
-      patchShebangs tools
-      cp -r ${drv.staging}/patches .
-      chmod +w patches
-      cd patches
-      patchShebangs gitapply.sh
-      ./patchinstall.sh DESTDIR="$PWD/.." --all
-      cd ..
-    '';
+    postPatch =
+      let
+        # fetchpatch produces invalid patches here (https://github.com/NixOS/nixpkgs/issues/37375)
+        fsyncStagingPatch = super.fetchurl {
+          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging.patch";
+          sha256 = "0z1q07p67c8gczfak4m8wraap4sylphxigsj3h0bam0xv73p61bf";
+        };
+
+        fsyncNoAllocHandlePatch = super.fetchurl {
+          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging-no_alloc_handle.patch";
+          sha256 = "17xaqdymqwrdg8bw612xw5kaa23mi57n6csipngk85bd4v1gffrh";
+        };
+      in ''
+        # staging patches
+        patchShebangs tools
+        cp -r ${drv.staging}/patches .
+        chmod +w patches
+        cd patches
+        patchShebangs gitapply.sh
+        ./patchinstall.sh DESTDIR="$PWD/.." --all
+        cd ..
+
+        # fsync patches
+        echo "applying fsync patches.."
+
+        patch -Np1 < "${fsyncStagingPatch}"
+        patch -Np1 < "${fsyncNoAllocHandlePatch}"
+      '';
   });
 
   # Latest version of RPCS3 + compilation with clang
