@@ -68,18 +68,18 @@ in {
     ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.13";
+    version = "4.14";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "0rqx8g394aj5q913cd18zsi60sldvxarrp178w6ja0y4rd8l25vr";
+      sha256 = "1rl1a3k5sr0hyxc61d68kwandhxcnxwv6b77vh7x2rkl1h4nxmfs";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "0bbwsd2qpjilxpjscqbp78p0gl0awj1yj62g0wvybh4x89fzy8zj";
+      sha256 = "1s17hcrp1aa0v99y5iav2s0lxdx2rzgm7z0c4zhxyydqxj399f5j";
     };
 
     # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
