@@ -199,6 +199,22 @@ in {
     '';
   });
 
+  arc-theme = super.arc-theme.overrideAttrs (oldAttrs: {
+    configureFlags = oldAttrs.configureFlags or [] ++ [
+      "--disable-light"
+      "--disable-cinnamon"
+      "--disable-gnome-shell"
+      "--disable-metacity"
+      "--disable-unity"
+      "--disable-xfwm"
+      "--disable-plank"
+      "--disable-openbox"
+    ];
+
+    # Since we disabled gnome shell support, we can remove the dependency on it
+    nativeBuildInputs = super.lib.remove super.gnome3.gnome-shell oldAttrs.nativeBuildInputs;
+  });
+
   ### Modifications to make some packages run as fast as possible
 
   alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
