@@ -1,27 +1,33 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ./hardware-configuration.nix ];
 
   fileSystems = {
-    # SSD
     "/".options = [ "noatime" "nodiratime" ];
-    "/home".options = [ "noatime" "nodiratime" ];
-
-    # HDD
-    "/media/data".options = [ "noatime" "nodiratime" "defaults" ];
   };
 
   boot = {
-    loader.grub = {
-      enable = true;
-      version = 2;
-      useOSProber = false;
-      device = "/dev/sdb";
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
     };
-    
+
+    extraModulePackages = [ pkgs.linuxPackages_5_2.rtl8821ce ];
+
+    # This enables the touchpad
+    kernelPatches = lib.singleton {
+      name = "enable-gpio-amd";
+      patch = null;
+      extraConfig = ''
+        X86_AMD_PLATFORM_DEVICE y
+        GPIO_AMDPT y
+        PINCTRL_AMD y
+      '';
+    };
+
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_1;
+    kernelPackages = pkgs.linuxPackages_5_2;
   };
 
   i18n = {
@@ -60,15 +66,13 @@
       alacritty
       ranger
       mpv
-      vscode
+      vscodium
       git
       deluge
       rustup
-      wine
-      gnome3.gnome-system-monitor
       gnome3.eog
       veracrypt
-      soulseekqt
+      #soulseekqt
       lollypop
         
       # Misc Applications
@@ -88,14 +92,13 @@
       file
       notify-osd
       pavucontrol
-      winetricks
       youtube-dl
       ffmpeg
-      rpcs3
       the-powder-toy
-      qemu
       srm
-      puddletag
+      kcalc
+      libreoffice
+      kate
 
       # Compression
       unzip
@@ -108,16 +111,15 @@
       gnome3.adwaita-icon-theme
 
       # Custom packages
-      dxvk
-      d9vk
+      #dxvk
+      #d9vk
       bcnotif
-      anup
-      wpfxm
+      #anup
+      #wpfxm
       nixup
       vapoursynth-plugins
     ];
 
-    variables.PATH = [ "/home/jonathan/.cargo/bin" ];
     variables.TERM = "alacritty";
   };
   
@@ -130,81 +132,56 @@
     dconf.enable = true;
   };
 
+  # Temp
+  location = {
+    latitude = 38.58;
+    longitude = -121.49;
+  };
+
   services = {
-    fstrim.enable = true;
-
-    compton = {
-      enable = true;
-      backend = "glx";
-      vSync = true;
-        
-      extraOptions = ''
-        unredir-if-possible = true;
-        use-damage = true;
-
-        glx-no-stencil = true;
-
-        blur-background = true;
-        blur-background-fixed = true;
-        blur-kern = "7x7box";
-
-        blur-background-exclude = [
-            "!window_type = 'dock' &&
-                !window_type = 'popup_menu' &&
-                !class_g = 'Alacritty'"
-        ];
-      '';
-    };
-
     redshift = {
       enable = true;
-      latitude = "38.58";
-      longitude = "-121.49";
       temperature.night = 2400;
+    };
+
+    plex = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    printing = {
+      enable = true;
+      drivers = [ pkgs.hplip ];
     };
 
     xserver = {
       enable = true;
       layout = "us";
-      dpi = 161;
-      videoDrivers = [ "nvidiaBeta" ];
+      videoDrivers = [ "amdgpu" ];
 
       desktopManager = {
-        default = "none";
         xterm.enable = false;
+        plasma5.enable = true;
       };
 
-      displayManager.lightdm = {
+      displayManager.sddm = {
         enable = true;
         autoLogin.enable = true;
-        autoLogin.user = "jonathan";
+        autoLogin.user = "wendy";
       };
 
-      windowManager = {
-        awesome = {
-          enable = true;
-          luaModules = with pkgs.luaPackages; [
-            luafilesystem
-          ];
-        };
-
-        default = "awesome";
+      libinput = {
+        enable = true;
+        scrollMethod = "edge";
       };
-
-      # Monitor sleep times
-      serverFlagsSection = ''
-        Option "BlankTime" "15"
-        Option "StandbyTime" "16"
-        Option "SuspendTime" "16"
-        Option "OffTime" "16"
-      '';
     };
+
+    ntp.enable = true;
 
     # This is required for lollypop to scrobble to services like last.fm
     gnome3.gnome-keyring.enable = true;
 
     sshd.enable = true;
-    searx.enable = true;
   };
 
   networking = {
@@ -218,7 +195,7 @@
     };
 
     enableIPv6 = false;
-    hostName = "jonathan-desktop";
+    hostName = "wendy-laptop";
 
     networkmanager.enable = true;
 
@@ -270,6 +247,14 @@
     isNormalUser = true;
     home = "/home/jonathan";
     description = "Jonathan";
+    extraGroups = [ "wheel" "networkmanager" "adbusers" ];
+    shell = "/run/current-system/sw/bin/fish";
+  };
+
+  users.extraUsers.wendy = {
+    isNormalUser = true;
+    home = "/home/wendy";
+    description = "Wendy";
     extraGroups = [ "wheel" "networkmanager" "adbusers" ];
     shell = "/run/current-system/sw/bin/fish";
   };

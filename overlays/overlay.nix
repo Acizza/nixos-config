@@ -41,6 +41,18 @@ in {
     wine = self.wine;
   };
 
+  linuxPackages_5_2 = super.linuxPackages_5_2.extend (lself: lsuper: rec {
+    # TODO: pin to specific commit
+    rtl8821ce = lsuper.rtl8821ce.overrideAttrs (old: rec {
+      src = super.fetchFromGitHub {
+        owner = "tomaspinho";
+        repo = "rtl8821ce";
+        rev = "master";
+        sha256 = "16mjjncd90f6sz9phz271v49jcx44xfln0v4pfiddnfqzjpkga1x";
+      };
+    });
+  });
+
   # Latest Wine staging with FAudio
   wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
@@ -164,23 +176,6 @@ in {
     fixupPhase = oldAttrs.fixupPhase or "" + ''
       wrapProgram "$out/bin/SoulseekQt" \
         --prefix QT_PLUGIN_PATH : ${super.qt5.qtbase}/${super.qt5.qtbase.qtPluginPrefix}
-    '';
-  });
-
-  vscode = super.vscode.overrideAttrs (oldAttrs: rec {
-    version = "1.35.1";
-
-    src = super.fetchurl {
-      url = "https://github.com/VSCodium/vscodium/releases/download/${version}/VSCodium-linux-x64-${version}.tar.gz";
-      sha256 = "0577lqpfrjgwbj27hm59kflb558mkl2nx00ys0hwndayqv0bfnvg";
-    };
-
-    unpackPhase = ''
-      tar xvf ${src}
-    '';
-
-    patchPhase = oldAttrs.patchPhase or "" + ''
-      mv bin/codium bin/code
     '';
   });
 
