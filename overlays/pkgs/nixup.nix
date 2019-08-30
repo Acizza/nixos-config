@@ -2,16 +2,16 @@
 
 rustPlatform.buildRustPackage rec {
     name = "nixup-${version}";
-    version = "cf83a14e3999659aad6ce46594cfc0408defc5d0";
+    version = "58cecb3c9c7d9045e39fbab49f02f417299f7f26";
     
     src = fetchFromGitLab {
       owner = "Acizza";
       repo = "nixup";
       rev = "${version}";
-      sha256 = "10l2qgcvh8s8n2hsm9wdh58mnb7bqbd1jb34nax6cpyi5xy0z6aa";
+      sha256 = "0bf7k2drca0db73kzy9glxwzwl5sfkggbjs9zphzbvgpdxaccvig";
     };
     
-    cargoSha256 = "138hdk00qashkwqx1gpkg4pfdgcyd3w4w4l4d0ldb24m0h8i87ka";
+    cargoSha256 = "0dnhcgrp641gjrfsmahmswrpwjiq2ilpn6i3zgjw7p4v501p1hms";
     
     buildInputs = [ stdenv.cc.cc ];
     
