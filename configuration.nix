@@ -132,7 +132,6 @@
     dconf.enable = true;
   };
 
-  # Temp
   location = {
     latitude = 38.58;
     longitude = -121.49;
@@ -176,6 +175,7 @@
       };
     };
 
+    fstrim.enable = true;
     ntp.enable = true;
 
     # This is required for lollypop to scrobble to services like last.fm
