@@ -111,6 +111,7 @@
       cargo-outdated
       cargo-bloat
       loc
+      spotify
 
       # Compression
       unzip
@@ -257,6 +258,10 @@
       interfaces.tun0 = {
         allowedTCPPorts = [ 5504 20546 ];
       };
+
+      # For Spotify
+      allowedTCPPorts = [ 57621 ];
+      allowedUDPPorts = [ 57621 ];
     };
 
     enableIPv6 = false;
@@ -291,6 +296,11 @@
       # GameAnalytics
       "api.gameanalytics.com"
       "rubick.gameanalytics.com"
+
+      # Spotify
+      "apresolve.spotify.com"
+      "heads4-ak.spotify.com.edgesuite.net"
+      "redirector.gvt1.com"
 
       # General
       "www.google-analytics.com"
