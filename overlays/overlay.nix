@@ -124,36 +124,32 @@ in {
       '';
   });
 
-  # Latest version of RPCS3 + compilation with clang
+  # git version of RPCS3
   rpcs3 = (super.rpcs3.override {
     waylandSupport = false;
     alsaSupport = false;
 
-    stdenv = super.llvmPackages_latest.stdenv;
+    stdenv = super.gcc9Stdenv;
   }).overrideAttrs (oldAttrs: rec {
     name = "rpcs3-${version}";
 
-    commit = "790962425cfb893529f72b3ef0dd1424fcc42973";
-    gitVersion = "8187-${builtins.substring 0 7 commit}";
-    version = "0.0.6-${gitVersion}";
+    commit = "9dc06cef7fb8482d15483904157fec99a574f786";
+    gitVersion = "8639-${builtins.substring 0 7 commit}";
+    version = "0.0.7-${gitVersion}";
 
     src = super.fetchgit {
       url = "https://github.com/RPCS3/rpcs3";
       rev = "${commit}";
-      sha256 = "154ys29b9xdws3bp4b7rb3kc0h9hd49g2yf3z9268cdq8aclahaa";
+      sha256 = "1jwl3w087gf6zw2wdlqjfqzcmgsc3m4mip78k1fw607n4xiwzrai";
     };
 
-    # https://github.com/NixOS/nixpkgs/commit/b11558669ebc7472ecaaaa7cafa2729a22b37c17
-    # RPCS3 no longer detects Vulkan due to the above commit
-    buildInputs = oldAttrs.buildInputs ++ [ super.vulkan-headers ];
+    buildInputs = oldAttrs.buildInputs ++ [ super.vulkan-headers super.libglvnd ];
+
+    patches = [ ./patches/rpcs3_fix_compile.patch ];
 
     cmakeFlags = oldAttrs.cmakeFlags ++ [
       "-DUSE_DISCORD_RPC=OFF"
       "-DUSE_NATIVE_INSTRUCTIONS=ON"
-    ];
-
-    patches = oldAttrs.patches or [] ++ [
-      ./patches/rpcs3_clang.patch
     ];
 
     preConfigure = ''
@@ -163,8 +159,6 @@ in {
       #define RPCS3_GIT_VERSION_NO_UPDATE 1
       EOF
     '';
-
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -O3 -pthread";
   });
 
   the-powder-toy = (super.the-powder-toy.override {
