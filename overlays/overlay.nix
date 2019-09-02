@@ -68,18 +68,18 @@ in {
     ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.14";
+    version = "4.15";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "1rl1a3k5sr0hyxc61d68kwandhxcnxwv6b77vh7x2rkl1h4nxmfs";
+      sha256 = "0bfh4vd99zwj7f4108zvs80dfvmmnnsap7i6gmf21jgcly3paygq";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "1s17hcrp1aa0v99y5iav2s0lxdx2rzgm7z0c4zhxyydqxj399f5j";
+      sha256 = "13g40h2ybcl6vab4zbl1ksqfqyly5hzxssza9dv8r5pmp8x54hgr";
     };
 
     # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
@@ -99,7 +99,7 @@ in {
         # fetchpatch produces invalid patches here (https://github.com/NixOS/nixpkgs/issues/37375)
         fsyncStagingPatch = super.fetchurl {
           url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging.patch";
-          sha256 = "0z1q07p67c8gczfak4m8wraap4sylphxigsj3h0bam0xv73p61bf";
+          sha256 = "1028sk5xcmhbchmri86n7qppjgc8pq4v0zmdb18f89gsbn5i97f4";
         };
 
         fsyncNoAllocHandlePatch = super.fetchurl {
