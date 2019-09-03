@@ -19,6 +19,9 @@
       useOSProber = false;
       device = "/dev/sdb";
     };
+
+    # Disable core dumps
+    kernel.sysctl."kernel.core_pattern" = "core";
     
     cleanTmpDir = true;
     kernelPackages = pkgs.linuxPackages_5_2;
