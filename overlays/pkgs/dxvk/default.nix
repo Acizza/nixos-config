@@ -1,6 +1,5 @@
 { multiStdenv,
   fetchFromGitHub,
-  pkgs,
   stdenv,
   meson,
   ninja,
@@ -9,7 +8,7 @@
 }:
 
 let
-  version = "v1.3.3";
+  version = "v1.3.4";
 in
   multiStdenv.mkDerivation {
     name = "dxvk-${version}";
@@ -18,7 +17,7 @@ in
       owner = "doitsujin";
       repo = "dxvk";
       rev = "${version}";
-      sha256 = "0g9864fmg7hb64kzzx59cblvgzkj8aqijn6hz4iry9vq5lwfcr0b";
+      sha256 = "0r7vcig0scnh22lll5a0zivlq1pmg24jrxb0ga1digvj3r31nn8f";
     };
 
     buildInputs = [ meson ninja glslang wine ];
