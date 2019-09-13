@@ -85,7 +85,6 @@
       gnome3.eog
       veracrypt
       soulseekqt
-      lollypop
         
       # Misc Applications
       ripgrep # Improved version of grep
