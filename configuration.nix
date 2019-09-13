@@ -191,10 +191,7 @@
       dpi = 161;
       videoDrivers = [ "nvidiaBeta" ];
 
-      desktopManager = {
-        default = "none";
-        xterm.enable = false;
-      };
+      desktopManager.default = "none";
 
       displayManager.sddm = {
         enable = true;
