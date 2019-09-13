@@ -84,7 +84,6 @@
       gnome3.gnome-system-monitor
       gnome3.eog
       veracrypt
-      soulseekqt
         
       # Misc Applications
       ripgrep # Improved version of grep
