@@ -317,7 +317,11 @@
   hardware = {
     cpu.amd.updateMicrocode = true;
     opengl.driSupport32Bit = true;
-    pulseaudio.enable = true;
+
+    pulseaudio = {
+      enable = true;
+      support32Bit = true;
+    };
   };
 
   users.extraUsers.jonathan = {
