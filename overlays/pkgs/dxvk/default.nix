@@ -8,7 +8,7 @@
 }:
 
 let
-  version = "v1.3.4";
+  version = "v1.4";
 in
   multiStdenv.mkDerivation {
     name = "dxvk-${version}";
@@ -17,7 +17,7 @@ in
       owner = "doitsujin";
       repo = "dxvk";
       rev = "${version}";
-      sha256 = "0r7vcig0scnh22lll5a0zivlq1pmg24jrxb0ga1digvj3r31nn8f";
+      sha256 = "1rjr9i993bdhg36ldc9384flmxk9nsjq2ln34ykzcizh9qpicgj1";
     };
 
     buildInputs = [ meson ninja glslang wine ];
