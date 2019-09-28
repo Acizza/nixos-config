@@ -167,23 +167,7 @@ in {
     '';
   });
 
-  the-powder-toy = (super.the-powder-toy.override {
-    stdenv = llvmNativeStdenv;
-  }).overrideAttrs (oldAttrs: rec {
-    name = "the-powder-toy-${version}";
-    version = "94.1";
-
-    src = super.fetchFromGitHub {
-      owner = "simtr";
-      repo = "The-Powder-Toy";
-      rev = "v${version}";
-      sha256 = "0w3i4zjkw52qbv3s9cgcwxrdbb1npy0ka7wygyb76xcb17bj0l0b";
-    };
-
-    buildInputs = oldAttrs.buildInputs ++ [ super.SDL2 ];
-
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE + " -Ofast -flto";
-  });
+  the-powder-toy = withLLVMNativeAndFlags super.the-powder-toy [ "-O3" "-flto" ];
 
   # lollypop seems to need glib-networking in order to make HTTP(S) requests
   lollypop = super.lollypop.overrideAttrs (old: {
