@@ -1,6 +1,5 @@
 self: super: let
   llvmNativeStdenv = super.impureUseNativeOptimizations super.llvmPackages_latest.stdenv;
-  gcc9NativeStdenv = super.impureUseNativeOptimizations super.gcc9Stdenv;
   multiNativeStdenv = super.impureUseNativeOptimizations super.multiStdenv;
 
   withFlags = pkg: flags:
@@ -18,7 +17,6 @@ self: super: let
   with32BitNativeAndFlags = withStdenvAndFlags super.pkgsi686Linux.stdenv;
   withLLVMNative = withStdenv llvmNativeStdenv;
   withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
-  withGCC9NativeAndFlags = withStdenvAndFlags gcc9NativeStdenv;
 
   withRustNative = pkg: pkg.overrideAttrs (old: {
     RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
