@@ -169,11 +169,6 @@ in {
 
   the-powder-toy = withLLVMNativeAndFlags super.the-powder-toy [ "-O3" "-flto" ];
 
-  # lollypop seems to need glib-networking in order to make HTTP(S) requests
-  lollypop = super.lollypop.overrideAttrs (old: {
-    buildInputs = old.buildInputs ++ [ super.glib-networking ];
-  });
-
   soulseekqt = super.soulseekqt.overrideAttrs (oldAttrs: {
     buildInputs = oldAttrs.buildInputs ++ [ super.makeWrapper ];
 
