@@ -120,6 +120,10 @@ in {
 
         patch -Np1 < "${fsyncStagingPatch}"
         patch -Np1 < "${fsyncNoAllocHandlePatch}"
+
+        # Fixes X-Plane 11 not launching with Mesa
+        # https://gitlab.freedesktop.org/mesa/mesa/issues/106
+        patch -Np1 < ${./patches/wine_xplane.patch}
       '';
   });
 
