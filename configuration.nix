@@ -24,17 +24,17 @@
     kernel.sysctl."kernel.core_pattern" = "core";
     
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_2;
+    kernelPackages = pkgs.linuxPackages_5_3;
 
     # Add fsync patch for Wine
     kernelPatches =
       let
         fsync = rec {
-          name = "v5.2-fsync";
+          name = "v5.3-fsync";
           patch = pkgs.fetchpatch {
             name = name + ".patch";
-            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux52-tkg/linux52-tkg-patches/0012-v5.2-fsync.patch";
-            sha256 = "19vi6rjlp0aj7bxb5y7hlzyyvkqjla8s4i57czfgw803xanhqil4";
+            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux53-tkg/linux53-tkg-patches/0007-v5.3-fsync.patch";
+            sha256 = "15zgjjn3ighh2cfgj3904z9hdbdk69z58xfyjdlj5dfh094p0kv2";
           };
         };
       in [ fsync ];
