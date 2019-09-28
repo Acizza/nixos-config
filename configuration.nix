@@ -187,7 +187,7 @@
       enable = true;
       layout = "us";
       dpi = 161;
-      videoDrivers = [ "nvidiaBeta" ];
+      videoDrivers = [ "amdgpu" ];
 
       desktopManager.default = "none";
 
