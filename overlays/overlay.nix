@@ -169,15 +169,6 @@ in {
 
   the-powder-toy = withLLVMNativeAndFlags super.the-powder-toy [ "-O3" "-flto" ];
 
-  soulseekqt = super.soulseekqt.overrideAttrs (oldAttrs: {
-    buildInputs = oldAttrs.buildInputs ++ [ super.makeWrapper ];
-
-    fixupPhase = oldAttrs.fixupPhase or "" + ''
-      wrapProgram "$out/bin/SoulseekQt" \
-        --prefix QT_PLUGIN_PATH : ${super.qt5.qtbase}/${super.qt5.qtbase.qtPluginPrefix}
-    '';
-  });
-
   arc-theme = super.arc-theme.overrideAttrs (oldAttrs: {
     configureFlags = oldAttrs.configureFlags or [] ++ [
       "--disable-light"
