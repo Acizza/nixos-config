@@ -213,17 +213,13 @@ in {
   nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
   nixos-update-status = withRustNative (super.callPackage ./pkgs/nixos-update-status.nix { });
 
-  dxvk = let
-    pkg = super.callPackage ./pkgs/dxvk {
-      multiStdenv = multiNativeStdenv;
-    };
-  in withFlags pkg [ "-Ofast" ];
+  dxvk = super.callPackage ./pkgs/dxvk {
+    multiStdenv = multiNativeStdenv;
+  };
 
-  d9vk = let
-    pkg = super.callPackage ./pkgs/d9vk {
-      multiStdenv = multiNativeStdenv;
-    };
-  in withFlags pkg [ "-Ofast" ];
+  d9vk = super.callPackage ./pkgs/d9vk {
+    multiStdenv = multiNativeStdenv;
+  };
 
   faudio = withLLVMNativeAndFlags (super.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
   faudio_32 = with32BitNativeAndFlags (super.pkgsi686Linux.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
