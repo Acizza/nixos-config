@@ -1,6 +1,5 @@
 { multiStdenv,
   fetchFromGitHub,
-  pkgs,
   stdenv,
   meson,
   ninja,
@@ -9,7 +8,7 @@
 }:
 
 let
-  version = "0.20";
+  version = "0.22";
 in
   # Note: D9VK builds its own copy of DXVK, but in this implementation we're only using the
   # D3D9 library it produces. This may cause problems if the DXVK version used does not match
@@ -22,7 +21,7 @@ in
       owner = "Joshua-Ashton";
       repo = "d9vk";
       rev = "${version}";
-      sha256 = "1bnay1ljddhclzslizv68mh7fgwb3f95fmr1kjxj15hq83gklvv9";
+      sha256 = "0hcmk51zgrp4vc1s8nyzh98n3w5iffzpi1g31nh8gf4zy93pf02i";
     };
 
     buildInputs = [ meson ninja glslang wine ];
