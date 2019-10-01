@@ -1,7 +1,7 @@
 {stdenv, fetchFromGitHub, cmake, SDL2, ffmpeg}:
 
 let
-  version = "19.07";
+  version = "19.10";
 in
   stdenv.mkDerivation {
     name = "faudio-${version}";
@@ -10,7 +10,7 @@ in
       owner = "FNA-XNA";
       repo = "FAudio";
       rev = "${version}";
-      sha256 = "1wf6skc5agaikc9qgwk8bx56sad31fafs53lqqn4jmx8i76pl0lw";
+      sha256 = "1z7j803nxhgvjwpxr1m5d490yji727v7pn0ghhipbrfxlwzkw1sz";
     };
 
     buildInputs = [ cmake SDL2.dev ffmpeg ];
@@ -18,8 +18,4 @@ in
     cmakeFlags = [
       "-DFFMPEG=ON"
     ];
-
-    patches = [ ../patches/faudio_take_dir_for_sdl_includes.patch ];
-
-    NIX_CFLAGS_COMPILE = "-I${SDL2.dev}/include/SDL2";
   }

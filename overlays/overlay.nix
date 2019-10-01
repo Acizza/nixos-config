@@ -14,6 +14,7 @@ self: super: let
   withStdenvAndFlags = newStdenv: pkg:
     withFlags (withStdenv newStdenv pkg);
 
+  withNativeAndFlags = withStdenvAndFlags super.stdenv;
   with32BitNativeAndFlags = withStdenvAndFlags super.pkgsi686Linux.stdenv;
   withLLVMNative = withStdenv llvmNativeStdenv;
   withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
@@ -219,6 +220,6 @@ in {
     multiStdenv = multiNativeStdenv;
   };
 
-  faudio = withLLVMNativeAndFlags (super.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
+  faudio = withNativeAndFlags (super.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
   faudio_32 = with32BitNativeAndFlags (super.pkgsi686Linux.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
 }
