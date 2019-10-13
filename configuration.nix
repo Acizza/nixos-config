@@ -85,13 +85,10 @@
       # Misc Applications
       ripgrep # Improved version of grep
       psmisc # killall
-      pywal
       gnome3.networkmanagerapplet
-      feh
       atool
       gnupg1
       python3
-      numlockx
       binutils
       mediainfo
       libcaca
