@@ -21,16 +21,16 @@
     };
     
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_3;
+    kernelPackages = pkgs.linuxPackages_testing;
 
     # Add fsync patch for Wine
     kernelPatches =
       let
         fsync = rec {
-          name = "v5.3-fsync";
+          name = "v5.4-fsync";
           patch = pkgs.fetchpatch {
             name = name + ".patch";
-            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux53-tkg/linux53-tkg-patches/0007-v5.3-fsync.patch";
+            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux54-rc-tkg/linux54-tkg-patches/0007-v5.4-fsync.patch";
             sha256 = "15zgjjn3ighh2cfgj3904z9hdbdk69z58xfyjdlj5dfh094p0kv2";
           };
         };
