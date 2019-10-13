@@ -79,15 +79,6 @@ in {
     };
   });
 
-  i3 = withLLVMNativeAndFlags super.i3 [ "-O3" ];
-  rofi-unwrapped = withLLVMNativeAndFlags super.rofi-unwrapped [ "-O3" ];
-  dunst = withLLVMNativeAndFlags super.dunst [ "-O3" "-flto" ];
-
-  polybar = withLLVMNativeAndFlags (super.polybar.override {
-    i3GapsSupport = true;
-    pulseSupport = true;
-  }) [ "-O3" ];
-
   # Latest Wine staging with FAudio
   wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
