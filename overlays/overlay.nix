@@ -37,6 +37,48 @@ in {
     withInsults = true;
   });
 
+  ibus = super.ibus.override {
+    withWayland = true;
+  };
+
+  # TODO: these packages refuse to detect clang, even when the stdenv is properly set
+  sway = withNativeAndFlags super.sway [ "-O3" ];
+  wlroots = withNativeAndFlags super.wlroots [ "-O3" ];
+  mako = withNativeAndFlags super.mako [ "-O3" ];
+
+  waybar = (super.waybar.override {
+    pulseSupport = true;
+    mpdSupport = false;
+    nlSupport = false;
+  }).overrideAttrs (oldAttrs: rec {
+    version = "97e3226801680211081abce54fe099c8b0bf5c18";
+
+    src = super.fetchFromGitHub {
+      owner = "Alexays";
+      repo = "Waybar";
+      rev = version;
+      sha256 = "07zj7yswb0dgnsik5jnnsnq071xb10b3mf0ra0ppcbrq1m9sqnrp";
+    };
+
+    mesonFlags = oldAttrs.mesonFlags or [] ++ [
+      "-Dsystemd=disabled"
+    ];
+
+    NIX_CFLAGS_COMPILE = "-O3 -march=native";
+  });
+
+  redshift = super.redshift.overrideAttrs (oldAttrs: rec {
+    pname = "redshift-wlr";
+    version = "2019-04-17";
+
+    src = super.fetchFromGitHub {
+      owner = "minus7";
+      repo = "redshift";
+      rev = "eecbfedac48f827e96ad5e151de8f41f6cd3af66";
+      sha256 = "0rs9bxxrw4wscf4a8yl776a8g880m5gcm75q06yx2cn3lw2b7v22";
+    };
+  });
+
   i3 = withLLVMNativeAndFlags super.i3 [ "-O3" ];
   rofi-unwrapped = withLLVMNativeAndFlags super.rofi-unwrapped [ "-O3" ];
   dunst = withLLVMNativeAndFlags super.dunst [ "-O3" "-flto" ];
