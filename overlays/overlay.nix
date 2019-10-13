@@ -233,6 +233,11 @@ in {
     pathsToLink = [ "/lib" ];
   };
 
+  qbittorrent = super.qbittorrent.overrideAttrs (oldAttrs: rec {
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or []
+      ++ [ "-O3" "-flto" "-march=native" ];
+  });
+
   ### Custom packages
 
   anup = withRustNative (super.callPackage ./pkgs/anup.nix { });
