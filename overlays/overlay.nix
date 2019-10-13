@@ -37,10 +37,6 @@ in {
     withInsults = true;
   });
 
-  winetricks = super.winetricks.override {
-    wine = self.wine;
-  };
-
   i3 = withLLVMNativeAndFlags super.i3 [ "-O3" ];
   rofi-unwrapped = withLLVMNativeAndFlags super.rofi-unwrapped [ "-O3" ];
   dunst = withLLVMNativeAndFlags super.dunst [ "-O3" "-flto" ];
