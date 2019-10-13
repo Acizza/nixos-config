@@ -75,7 +75,7 @@
       mpv
       vscodium
       git
-      deluge
+      qbittorrent
       rustup
       wine
       gnome3.gnome-system-monitor
