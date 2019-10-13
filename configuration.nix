@@ -137,40 +137,42 @@
     adb.enable = true;
     firejail.enable = true;
 
-    # lollypop needs this in order to save settings
-    dconf.enable = true;
+    sway = {
+      enable = true;
+
+      extraPackages = with pkgs; [
+        xwayland
+        swayidle
+        waybar
+        mako
+        rofi
+
+        # Needed for sway config to set GTK theme options
+        gnome3.glib.bin
+        gsettings-desktop-schemas
+      ];
+
+      extraSessionCommands = let
+        schema = pkgs.gsettings-desktop-schemas;
+        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+      in ''
+        export SDL_VIDEODRIVER=wayland
+        export MOZ_ENABLE_WAYLAND=1
+        export QT_QPA_PLATFORM=wayland-egl
+        export QT_WAYLAND_FORCE_DPI=physical
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+        export _JAVA_AWT_WM_NONREPARENTING=1
+
+        export GDK_DPI_SCALE=2
+        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+      '';
+    };
   };
 
   services = {
     fstrim.enable = true;
 
-    compton = {
-      enable = true;
-      backend = "glx";
-      vSync = true;
-
-      settings = {
-        unredir-if-possible = true;
-        use-damage = true;
-
-        glx-no-stencil = true;
-
-        blur-background = true;
-        blur-background-fixed = true;
-
-        blur = {
-          method = "gaussian";
-          size = 10;
-          deviation = 5.0;
-        };
-
-        blur-background-exclude = [
-          "!window_type = 'dock' &&
-           !window_type = 'popup_menu' &&
-           !class_g = 'Alacritty'"
-        ];
-      };
-    };
+    mingetty.autologinUser = "jonathan";
 
     redshift = {
       enable = true;
@@ -178,41 +180,8 @@
     };
 
     xserver = {
-      enable = true;
-      layout = "us";
-      dpi = 161;
+      enable = false;
       videoDrivers = [ "amdgpu" ];
-
-      desktopManager.default = "none";
-
-      displayManager.sddm = {
-        enable = true;
-        autoLogin.enable = true;
-        autoLogin.user = "jonathan";
-      };
-
-      windowManager = {
-        i3 = {
-          enable = true;
-          package = pkgs.i3-gaps;
-          extraPackages = with pkgs; [
-            polybar
-            i3lock
-            rofi
-            dunst
-          ];
-        };
-
-        default = "i3";
-      };
-
-      # Monitor sleep times
-      serverFlagsSection = ''
-        Option "BlankTime" "15"
-        Option "StandbyTime" "16"
-        Option "SuspendTime" "16"
-        Option "OffTime" "16"
-      '';
     };
 
     # This allows PS4 controllers to be used without root access for things like RPCS3
@@ -231,9 +200,6 @@
     };
 
     ntp.enable = true;
-
-    # This is required for lollypop to scrobble to services like last.fm
-    gnome3.gnome-keyring.enable = true;
 
     sshd.enable = true;
     searx.enable = true;
