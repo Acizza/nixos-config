@@ -79,13 +79,12 @@ in {
     };
   });
 
-  # Latest Wine staging with FAudio
+  # Latest Wine staging with fsync
   wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
     # to use overrideAttrs
     wineBuild = "wineWow";
 
-    # https://github.com/NixOS/nixpkgs/issues/28486#issuecomment-324859956
     gstreamerSupport = false;
     netapiSupport = false;
     cupsSupport = false;
@@ -95,25 +94,19 @@ in {
     ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.17";
+    version = "4.19";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "1bmj4l84q29h4km5ab5zzypns3mpf7pizybcpab6jj47cr1s303l";
+      sha256 = "086fd6h8qzd9rjxvxxw9hsyaglpvlybdrg5jzp55miknnvmvw6in";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "0cb0w6jwqs70854g1ixfj8r53raln0spyy1l96qv72ymbhzc353h";
+      sha256 = "0dln4pdvwfy0lclzvdy9pw93ankn946nxz8a0j2ldwrppl5gap4r";
     };
-
-    # TODO: remove when NixOS packages FAudio and the Wine version is >= 4.3
-    buildInputs = oldAttrs.buildInputs ++ [ self.faudio self.faudio_32 ];
-
-    # This saves a bit of build time
-    configureFlags = oldAttrs.configureFlags or [] ++ [ "--disable-tests" ];
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
   })).overrideDerivation (drv: {
@@ -126,7 +119,7 @@ in {
         # fetchpatch produces invalid patches here (https://github.com/NixOS/nixpkgs/issues/37375)
         fsyncStagingPatch = super.fetchurl {
           url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging.patch";
-          sha256 = "1hndiydrx466lv994bfr4ms69pmwg5sanp18hah330mv1b31v563";
+          sha256 = "0mxd22yclbggbrjkmiq75gk89x7gkxc0srpgmhsxwmxasa36j0i1";
         };
 
         fsyncNoAllocHandlePatch = super.fetchurl {
@@ -152,9 +145,6 @@ in {
         # Fixes X-Plane 11 not launching with Mesa
         # https://gitlab.freedesktop.org/mesa/mesa/issues/106
         patch -Np1 < ${./patches/wine_xplane.patch}
-
-        # Regenerated OpenGL bindings without traces (*may* improve performance ever so slightly)
-        patch -Np1 < ${./patches/wine_regen_opengl.patch}
       '';
   });
 
