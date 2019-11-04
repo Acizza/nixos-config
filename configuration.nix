@@ -136,6 +136,7 @@
     fish.enable = true;
     adb.enable = true;
     firejail.enable = true;
+    gnupg.agent.enable = true;
 
     sway = {
       enable = true;
