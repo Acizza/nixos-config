@@ -94,18 +94,18 @@ in {
     ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "4.19";
+    version = "4.20";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/4.x/wine-${version}.tar.xz";
-      sha256 = "086fd6h8qzd9rjxvxxw9hsyaglpvlybdrg5jzp55miknnvmvw6in";
+      sha256 = "1lwq4v54fwjm9c45mgrny8gs2fqb3mf7nqyqan6r84xcyw5hd830";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "0dln4pdvwfy0lclzvdy9pw93ankn946nxz8a0j2ldwrppl5gap4r";
+      sha256 = "1p6wa4rkqmdjq9c3v0rp80l5j4zwjrz8rw45bgnzljpsmgazjkkj";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -119,7 +119,7 @@ in {
         # fetchpatch produces invalid patches here (https://github.com/NixOS/nixpkgs/issues/37375)
         fsyncStagingPatch = super.fetchurl {
           url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging.patch";
-          sha256 = "0mxd22yclbggbrjkmiq75gk89x7gkxc0srpgmhsxwmxasa36j0i1";
+          sha256 = "0dw8jqbm18qcqnz4yx8lnkrfsxj9r4q7nc97na9qi905llg331jn";
         };
 
         fsyncNoAllocHandlePatch = super.fetchurl {
