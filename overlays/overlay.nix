@@ -150,26 +150,24 @@ in {
 
   # git version of RPCS3
   rpcs3 = (super.rpcs3.override {
-    waylandSupport = false;
+    waylandSupport = true;
     alsaSupport = false;
 
-    stdenv = super.gcc9Stdenv;
+    stdenv = llvmNativeStdenv;
   }).overrideAttrs (oldAttrs: rec {
     name = "rpcs3-${version}";
 
-    commit = "9dc06cef7fb8482d15483904157fec99a574f786";
-    gitVersion = "8639-${builtins.substring 0 7 commit}";
+    commit = "8ca53f9c843712c25988f44761417f526fc26212";
+    gitVersion = "9165-${builtins.substring 0 7 commit}";
     version = "0.0.7-${gitVersion}";
 
     src = super.fetchgit {
       url = "https://github.com/RPCS3/rpcs3";
       rev = "${commit}";
-      sha256 = "1jwl3w087gf6zw2wdlqjfqzcmgsc3m4mip78k1fw607n4xiwzrai";
+      sha256 = "0gmirrs8j7kzjjp01d7n1nlmjc78lcj4zdn2jk6j853spcf44jb1";
     };
 
     buildInputs = oldAttrs.buildInputs ++ [ super.vulkan-headers super.libglvnd ];
-
-    patches = [ ./patches/rpcs3_fix_compile.patch ];
 
     cmakeFlags = oldAttrs.cmakeFlags ++ [
       "-DUSE_DISCORD_RPC=OFF"
