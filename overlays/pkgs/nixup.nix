@@ -1,17 +1,17 @@
-{ rustPlatform, fetchFromGitLab, stdenv }:
+{ rustPlatform, fetchFromGitHub, stdenv }:
 
 rustPlatform.buildRustPackage rec {
     name = "nixup-${version}";
-    version = "a5834e677a1c8c395c56c1505dd1761985f6f787";
+    version = "35fa0fb245725f6337a7066c71287d6e9c91701c";
     
-    src = fetchFromGitLab {
+    src = fetchFromGitHub {
       owner = "Acizza";
       repo = "nixup";
       rev = "${version}";
-      sha256 = "0dwh15dnc57350f6ggg6nf3iiwq5dd5r0mspprkpyynzzs6jriag";
+      sha256 = "087ci7bq2n7y99g5cj3xmkfig9fkriclb87brjw1splxssallb2w";
     };
     
-    cargoSha256 = "13dh4mmxg72dxcp9lczn0k9aawlnxq6mhfry0d7pha47ljab7d23";
+    cargoSha256 = "1xxdk8zwdxp1lnj8j79m1gy4j0pc6nmx7gv3kn99ym0n07rjw3vv";
     
     buildInputs = [ stdenv.cc.cc ];
     
