@@ -9,13 +9,13 @@
 
 multiStdenv.mkDerivation rec {
   pname = "dxvk";
-  version = "v1.4.5";
+  version = "v1.4.6";
 
   src = fetchFromGitHub {
     owner = "doitsujin";
     repo = "dxvk";
     rev = version;
-    sha256 = "12ycn529q2jy4lfg3sjd6v7xn5qla3m1xgdjr5h402gdpvjk3kk0";
+    sha256 = "0lqz3fp6rfb4r7sxwq1p8k8h45nqxdljd8r7sdn1z89lgbaiv9md";
   };
 
   buildInputs = [ meson ninja glslang wine ];
