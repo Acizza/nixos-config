@@ -1,19 +1,19 @@
-{ rustPlatform, fetchFromGitHub, stdenv }:
+{ rustPlatform, fetchFromGitHub, stdenv, sqlite }:
 
 rustPlatform.buildRustPackage rec {
     name = "nixup-${version}";
-    version = "35fa0fb245725f6337a7066c71287d6e9c91701c";
+    version = "f5718f0565e18a2b2b5c06dd2f2178b708cde7f9";
     
     src = fetchFromGitHub {
       owner = "Acizza";
       repo = "nixup";
       rev = "${version}";
-      sha256 = "087ci7bq2n7y99g5cj3xmkfig9fkriclb87brjw1splxssallb2w";
+      sha256 = "0wkhivqrz703978fh7hy9yryhpz8klmxgandp1qkais815sckjq4";
     };
     
-    cargoSha256 = "1xxdk8zwdxp1lnj8j79m1gy4j0pc6nmx7gv3kn99ym0n07rjw3vv";
+    cargoSha256 = "18nzqdaa42p6xz6cvrhcw1ww3ysawd3zr8nx3j6fjsr83ig9fg51";
     
-    buildInputs = [ stdenv.cc.cc ];
+    buildInputs = [ stdenv.cc.cc sqlite.dev ];
     
     meta = with stdenv.lib; {
       license = licenses.asl20;
