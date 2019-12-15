@@ -13,13 +13,13 @@
 # That also means that DXVK must be installed separately in a prefix if D9VK is going to be used.
 multiStdenv.mkDerivation rec {
   pname = "d9vk";
-  version = "0.30";
+  version = "0.40.1";
 
   src = fetchFromGitHub {
     owner = "Joshua-Ashton";
     repo = "d9vk";
     rev = version;
-    sha256 = "0hqvhs42wzvr5kd122nfcj045i2a6s5d8gyrwgxw7xj2jy1926w6";
+    sha256 = "043vfrnr47y4hx20pwxa5110kdzaw3xsc2qr7ghvzra7rkbl3sv9";
   };
 
   buildInputs = [ meson ninja glslang wine ];
