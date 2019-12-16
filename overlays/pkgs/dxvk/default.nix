@@ -22,7 +22,7 @@ multiStdenv.mkDerivation rec {
 
   phases = "unpackPhase patchPhase buildPhase installPhase fixupPhase";
 
-  patches = [ ../../patches/dxvk_fix_setup_script_hang.patch ];
+  patches = [ ./fix_setup_script_hang.patch ];
 
   buildPhase =
     let
