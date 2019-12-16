@@ -120,7 +120,6 @@
 
       # Custom packages
       dxvk
-      d9vk
       bcnotif
       anup
       wpfxm
