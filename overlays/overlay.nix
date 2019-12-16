@@ -226,6 +226,7 @@ in {
   });
 
   faudio = withNativeAndFlags super.faudio [ "-O3" ];
+  vkd3d = withNativeAndFlags super.vkd3d [ "-O3" ];
 
   ### Custom packages
 
