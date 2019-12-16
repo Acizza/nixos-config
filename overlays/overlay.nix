@@ -1,6 +1,5 @@
 self: super: let
   llvmNativeStdenv = super.impureUseNativeOptimizations super.llvmPackages_latest.stdenv;
-  multiNativeStdenv = super.impureUseNativeOptimizations super.multiStdenv;
 
   withFlags = pkg: flags:
     pkg.overrideAttrs (old: {
@@ -234,14 +233,5 @@ in {
   nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
   nixos-update-status = withRustNative (super.callPackage ./pkgs/nixos-update-status.nix { });
 
-  dxvk = super.callPackage ./pkgs/dxvk {
-    multiStdenv = multiNativeStdenv;
-  };
-
-  d9vk = super.callPackage ./pkgs/d9vk {
-    multiStdenv = multiNativeStdenv;
-  };
-
-  faudio = withNativeAndFlags (super.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
-  faudio_32 = with32BitNativeAndFlags (super.pkgsi686Linux.callPackage ./pkgs/faudio.nix { }) [ "-O3" "-flto" ];
+  dxvk = super.callPackage ./pkgs/dxvk {};
 }
