@@ -43,6 +43,7 @@ _install_dxvk() {
     cp lib/d3d10.dll.so $lib_dir/d3d10.dll
     cp lib/d3d10core.dll.so $lib_dir/d3d10core.dll
     cp lib/d3d10_1.dll.so $lib_dir/d3d10_1.dll
+    cp lib/d3d9.dll.so $lib_dir/d3d9.dll
 
     cd ..
 }
