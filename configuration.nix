@@ -269,6 +269,8 @@
       "www.googletagmanager.com"
       "www.googletagservices.com"
     ];
+
+    hosts."192.168.0.100" = [ "rasp.pi" ];
   };
 
   sound.enable = true;
