@@ -225,6 +225,8 @@ in {
       ++ [ "-O3" "-flto" "-march=native" ];
   });
 
+  faudio = withNativeAndFlags super.faudio [ "-O3" ];
+
   ### Custom packages
 
   anup = withRustNative (super.callPackage ./pkgs/anup.nix { });
