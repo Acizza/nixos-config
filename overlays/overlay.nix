@@ -93,18 +93,18 @@ in {
     ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "5.0-rc2";
+    version = "5.0-rc5";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/5.0/wine-${version}.tar.xz";
-      sha256 = "1dj2z7yikab0hc06hf2kafanbaa49ignghzxq5a3la5mg8ya4vd7";
+      sha256 = "12yk9pjvfliad5wmqyd5k3gx7q8wbanxi3y74bwr74ccm6lj06ma";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "0zzlzz2nagrkq3m2v900w5j7k0vvxbdqffvsnjxxha8k6axl4z53";
+      sha256 = "164gzk13abw446w7iyvblpszr9qh71s47w7qh7dav806q9rjhvgv";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
