@@ -93,18 +93,18 @@ in {
     ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "5.0-rc5";
+    version = "5.0";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/5.0/wine-${version}.tar.xz";
-      sha256 = "12yk9pjvfliad5wmqyd5k3gx7q8wbanxi3y74bwr74ccm6lj06ma";
+      sha256 = "1d0kcy338radq07hrnzcpc9lc9j2fvzjh37q673002x8d6x5058q";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "164gzk13abw446w7iyvblpszr9qh71s47w7qh7dav806q9rjhvgv";
+      sha256 = "054m2glvav29qnlgr3p36kahyv3kbxzba82djzqpc7cmsrin0d3f";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -132,7 +132,11 @@ in {
         chmod +w patches
         cd patches
         patchShebangs gitapply.sh
-        ./patchinstall.sh DESTDIR="$PWD/.." --all
+        ./patchinstall.sh DESTDIR="$PWD/.." --all \
+          -W user32-rawinput-hid \
+          -W user32-rawinput-mouse \
+          -W user32-rawinput-mouse-experimental \
+          -W user32-rawinput-nolegacy
         cd ..
 
         # fsync patches
