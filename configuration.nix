@@ -131,6 +131,8 @@
     ];
 
     variables.TERM = "alacritty";
+    variables.RADV_PERFTEST = "aco,cswave32,gewave32,pswave32";
+    variables.PATH = [ "/home/jonathan/.cargo/bin/" ];
   };
   
   programs = {
