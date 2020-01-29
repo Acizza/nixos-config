@@ -224,8 +224,8 @@ in {
   };
 
   qbittorrent = super.qbittorrent.overrideAttrs (oldAttrs: rec {
-    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or []
-      ++ [ "-O3" "-flto" "-march=native" ];
+    NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" +
+      " -O3 -flto -march=native";
   });
 
   faudio = withNativeAndFlags super.faudio [ "-O3" ];
