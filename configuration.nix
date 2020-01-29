@@ -16,6 +16,8 @@
       useOSProber = false;
       device = "/dev/sdb";
     };
+
+    kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     
     cleanTmpDir = true;
     kernelPackages = pkgs.linuxPackages_5_4;
