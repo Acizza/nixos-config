@@ -196,9 +196,7 @@
     };
 
     ntp.enable = true;
-
     sshd.enable = true;
-    searx.enable = true;
   };
 
   location = {
