@@ -49,13 +49,13 @@ in {
     mpdSupport = false;
     nlSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "97e3226801680211081abce54fe099c8b0bf5c18";
+    version = "2277ddd156fd12aa4da0b0c6f4a164552f4eb7df";
 
     src = super.fetchFromGitHub {
       owner = "Alexays";
       repo = "Waybar";
       rev = version;
-      sha256 = "07zj7yswb0dgnsik5jnnsnq071xb10b3mf0ra0ppcbrq1m9sqnrp";
+      sha256 = "09a45waflnfxin3fzzai8gggv111aq2dbqanw5ik26sf74vhgkib";
     };
 
     mesonFlags = oldAttrs.mesonFlags or [] ++ [
