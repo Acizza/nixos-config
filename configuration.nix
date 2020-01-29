@@ -242,12 +242,16 @@
       "tracking.unrealengine.com"
 
       # Redshell (game analytics)
+      "redshell.io"
+      "www.redshell.io"
       "api.redshell.io"
       "treasuredata.com"
+      "www.treasuredata.com"
       "api.treasuredata.com"
       "in.treasuredata.com"
 
       # GameAnalytics
+      "gameanalytics.com"
       "api.gameanalytics.com"
       "rubick.gameanalytics.com"
 
@@ -261,6 +265,8 @@
       "ssl.google-analytics.com"
       "www.googletagmanager.com"
       "www.googletagservices.com"
+      "api.facepunch.com"
+      "files.facepunch.com"
     ];
 
     hosts."192.168.0.100" = [ "rasp.pi" ];
