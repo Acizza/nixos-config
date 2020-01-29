@@ -14,7 +14,6 @@ self: super: let
     withFlags (withStdenv newStdenv pkg);
 
   withNativeAndFlags = withStdenvAndFlags super.stdenv;
-  with32BitNativeAndFlags = withStdenvAndFlags super.pkgsi686Linux.stdenv;
   withLLVMNative = withStdenv llvmNativeStdenv;
   withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
 
