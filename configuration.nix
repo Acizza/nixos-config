@@ -4,12 +4,9 @@
   imports = [ ./hardware-configuration.nix ];
 
   fileSystems = {
-    # SSD
     "/".options = [ "noatime" "nodiratime" ];
     "/home".options = [ "noatime" "nodiratime" ];
-
-    # HDD
-    "/media/data".options = [ "noatime" "nodiratime" "defaults" ];
+    "/media".options = [ "noatime" "nodiratime" ];
   };
 
   boot = {
