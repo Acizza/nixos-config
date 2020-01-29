@@ -37,8 +37,6 @@
   };
 
   i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
 
     supportedLocales = [
@@ -49,6 +47,9 @@
     inputMethod.enabled = "ibus";
     inputMethod.ibus.engines = [ pkgs.ibus-engines.mozc ];
   };
+
+  console.keyMap = "us";
+  console.font = "Lat2-Terminus16";
 
   time.timeZone = "America/Los_Angeles";
   
