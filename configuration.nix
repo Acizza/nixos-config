@@ -20,16 +20,16 @@
     kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_4;
+    kernelPackages = pkgs.linuxPackages_5_5;
 
     # Add fsync patch for Wine
     kernelPatches =
       let
         fsync = rec {
-          name = "v5.4-fsync";
+          name = "v5.5-fsync";
           patch = pkgs.fetchpatch {
             name = name + ".patch";
-            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux54-tkg/linux54-tkg-patches/0007-v5.4-fsync.patch";
+            url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/linux55-tkg/linux55-tkg-patches/0007-v5.5-fsync.patch";
             sha256 = "15zgjjn3ighh2cfgj3904z9hdbdk69z58xfyjdlj5dfh094p0kv2";
           };
         };
