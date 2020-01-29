@@ -148,16 +148,11 @@
         waybar
         mako
         rofi
-
-        # Needed for sway config to set GTK theme options
-        gnome3.glib.bin
-        gsettings-desktop-schemas
       ];
 
-      extraSessionCommands = let
-        schema = pkgs.gsettings-desktop-schemas;
-        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-      in ''
+      wrapperFeatures.gtk = true;
+
+      extraSessionCommands = ''
         export SDL_VIDEODRIVER=wayland
         export MOZ_ENABLE_WAYLAND=1
         export QT_QPA_PLATFORM=wayland-egl
@@ -166,7 +161,6 @@
         export _JAVA_AWT_WM_NONREPARENTING=1
 
         export GDK_DPI_SCALE=2
-        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
       '';
     };
   };
