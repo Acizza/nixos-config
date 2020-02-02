@@ -124,6 +124,11 @@ in {
           url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging-no_alloc_handle.patch";
           sha256 = "17xaqdymqwrdg8bw612xw5kaa23mi57n6csipngk85bd4v1gffrh";
         };
+
+        childWindowRenderingPatch = super.fetchurl {
+          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/misc/childwindow.patch";
+          sha256 = "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l";
+        };
       in ''
         # staging patches
         patchShebangs tools
@@ -143,6 +148,8 @@ in {
 
         patch -Np1 < "${fsyncStagingPatch}"
         patch -Np1 < "${fsyncNoAllocHandlePatch}"
+
+        patch -Np1 < "${childWindowRenderingPatch}"
 
         # Fixes X-Plane 11 not launching with Mesa
         # https://gitlab.freedesktop.org/mesa/mesa/issues/106
