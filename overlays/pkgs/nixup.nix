@@ -1,22 +1,26 @@
-{ rustPlatform, fetchFromGitHub, stdenv, sqlite }:
+{ rustPlatform, fetchFromGitHub, stdenv, pkgs }:
 
 rustPlatform.buildRustPackage rec {
     name = "nixup-${version}";
-    version = "f5718f0565e18a2b2b5c06dd2f2178b708cde7f9";
+    version = "055897d233cb0c443215e3e7849799134e4e6bef";
     
     src = fetchFromGitHub {
       owner = "Acizza";
       repo = "nixup";
       rev = "${version}";
-      sha256 = "0wkhivqrz703978fh7hy9yryhpz8klmxgandp1qkais815sckjq4";
+      sha256 = "0a6kcsrwq9pphn4j5j4nva1s3rdhzks861b77m47ki093s1lq1a6";
     };
     
-    cargoSha256 = "18nzqdaa42p6xz6cvrhcw1ww3ysawd3zr8nx3j6fjsr83ig9fg51";
+    cargoSha256 = "0lbz6n3pzjkr0ymlk7nhybbcd2rdr6fq77mnbx6qsiy5cjbxmwlb";
     
-    buildInputs = [ stdenv.cc.cc sqlite.dev ];
-    
+    buildInputs = let
+      sqlite = pkgs.sqlite.overrideAttrs (oldAttrs: rec {
+        NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" + " -DSQLITE_USE_URI=1";
+      });
+    in [ stdenv.cc.cc sqlite.dev ];
+
     meta = with stdenv.lib; {
-      license = licenses.asl20;
+      license = licenses.agpl3;
       platforms = platforms.linux;
     };
 }
