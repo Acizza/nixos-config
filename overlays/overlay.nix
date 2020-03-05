@@ -89,7 +89,6 @@ in {
     gphoto2Support = false;
     saneSupport = false;
     openclSupport = false;
-    ldapSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
     version = "5.2";
