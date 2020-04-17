@@ -77,7 +77,8 @@ in {
     };
   });
 
-  # Latest Wine staging with fsync
+  # Latest Wine staging with fsync and Proton patches from GloriousEggroll.
+  # When Wine is updated, changed patches should be checked for at https://github.com/GloriousEggroll/proton-ge-custom/blob/proton-ge-5/patches/protonprep.sh
   wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
     # to use overrideAttrs
@@ -109,55 +110,110 @@ in {
   })).overrideDerivation (drv: {
     name = "wine-wow-${drv.version}-staging";
 
-    buildInputs = drv.buildInputs ++ [ super.git super.perl super.utillinux super.autoconf super.libtxc_dxtn_s2tc ];
+    buildInputs = drv.buildInputs ++ [
+      super.git
+      super.perl
+      super.utillinux
+      super.autoconf
+      super.libtxc_dxtn_s2tc
+      super.python3
+      super.perl
+    ];
 
     postPatch =
       let
-        # fetchpatch produces invalid patches here (https://github.com/NixOS/nixpkgs/issues/37375)
-        fsyncStagingPatch = super.fetchurl {
-          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging.patch";
-          sha256 = "0jgw1n2hjcwhb7n0hjb249fr50c4b5j87235cxi0f0jgg6p9ir0v";
-        };
+        vulkanVersion = "1.2.134";
 
-        fsyncNoAllocHandlePatch = super.fetchurl {
-          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/fsync-staging-no_alloc_handle.patch";
-          sha256 = "17xaqdymqwrdg8bw612xw5kaa23mi57n6csipngk85bd4v1gffrh";
-        };
+        patch = name: sha256:
+          # fetchpatch produces invalid patches(https://github.com/NixOS/nixpkgs/issues/37375)
+          super.fetchurl {
+            url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/proton-ge-5/patches/${name}.patch";
+            inherit sha256;
+          };
 
-        childWindowRenderingPatch = super.fetchurl {
-          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/misc/childwindow.patch";
-          sha256 = "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l";
-        };
+        protonPatches = [
+          patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1"
+          patch "wine-hotfixes/winevulkan-childwindow" "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l"
+          patch "proton/proton-fsync_staging" "0jgw1n2hjcwhb7n0hjb249fr50c4b5j87235cxi0f0jgg6p9ir0v"
+          patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb"
+          patch "proton/proton-LAA_staging" "0kk3lckm8k477bmhcazw3p7dy8jdmy3ajjxzk3zfpnhi8kl6q9ir"
+          patch "proton-hotfixes/wine-winex11.drv_Calculate_mask_in_X11DRV_resize_desktop" "09swin3v9wryrm7v19cls7kaha969ihn650qbhjfz62qj3ksklg9"
+          patch "proton/valve_proton_fullscreen_hack-staging" "05djicxvbi8vpximlrf4r0sr4ncmq2cjxnrvy55jddhmxlzfd28k"
+          patch "proton/proton-rawinput" "1ja8hcf5y6lc8h1lzmc0lc232m2dbx685wci01c0brp0376pyjj7"
+          patch "proton/proton-protonify_staging_rpc" "1ayr4cxd8x3zpi9lza412swkbjfy0vgzv22igs54yza13xpgnrsl"
+          patch "proton/proton-protonify_staging" "1hqf59gqsqpfqc991bdbyw6nviq6f7iyn030h0a16v0iagss68z3"
+          patch "proton/proton-vk-bits-4.5" "1wv9w2lpsw97y3442zjg1vmjpg7pvv74g0piiz7aid2732ib3him"
+          patch "proton/proton_fs_hack_integer_scaling" "0c6732hr68fxkpabvj14qs1zia0mfjh6gp58xqr9v6ca9k8gc2j7"
+          patch "proton/proton-winevulkan" "1imr4m5z09kzlblqf3cs6628xyas5adrc2gfcvi3aimqqpyyap80"
+        ];
 
-        laaStagingPatch = super.fetchurl {
-          url = "https://raw.githubusercontent.com/Tk-Glitch/PKGBUILDS/master/wine-tkg-git/wine-tkg-patches/proton/LAA-staging.patch";
-          sha256 = "0dkakjncvwp1dgajijs5vfc6xmn2japgijlrm2kasci4qjldp8l7";
+        stagingRevertsPatch = patch "wine-hotfixes/staging-44d1a45-localreverts" "01qjnb6r5pjk2rhgqzf0m59fam2jvd1iw2msizjbs618b7z4qbiq";
+
+        vkXmlFile = super.fetchurl {
+          name = "vk-${vulkanVersion}.xml";
+          url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
+          sha256 = "1rg0ghfnscah60h9vkpza0sjz17xrc5r2rbh49cskyhpram9bqrn";
         };
       in ''
         # staging patches
         patchShebangs tools
         cp -r ${drv.staging}/patches .
-        chmod +w patches
+        chmod +w -R patches/
+        patch -Np1 < "${stagingRevertsPatch}"
         cd patches
         patchShebangs gitapply.sh
         ./patchinstall.sh DESTDIR="$PWD/.." --all \
-          -W user32-rawinput-hid \
+          -W server-Desktop_Refcount \
+          -W ws2_32-TransmitFile \
+          -W winex11.drv-mouse-coorrds \
+          -W winex11-MWM_Decorations \
+          -W winex11-_NET_ACTIVE_WINDOW \
+          -W winex11-WM_WINDOWPOSCHANGING \
           -W user32-rawinput-mouse \
+          -W user32-rawinput-nolegacy \
           -W user32-rawinput-mouse-experimental \
-          -W user32-rawinput-nolegacy
+          -W user32-rawinput-hid \
+          -W winex11-key_translation \
+          -W ntdll-avoid-fstatat
         cd ..
 
-        # fsync patches
-        echo "applying fsync patches.."
+        echo "applying Proton patches.."
 
-        patch -Np1 < "${fsyncStagingPatch}"
-        patch -Np1 < "${fsyncNoAllocHandlePatch}"
-        patch -Np1 < "${childWindowRenderingPatch}"
-        patch -Np1 < "${laaStagingPatch}"
+        for $patch in $protonPatches; do
+          echo "applying ''${patch}"
+          patch -Np1 < "$patch"
+        done
+
+        echo "applying custom patches.."
 
         # Fixes X-Plane 11 not launching with Mesa
         # https://gitlab.freedesktop.org/mesa/mesa/issues/106
         patch -Np1 < ${./patches/wine_xplane.patch}
+
+        # confirm that Wine's vulkan version matches our set one
+        localVulkanVersion=$(grep -oP "VK_XML_VERSION = \"\K(.+?)(?=\")" ./dlls/winevulkan/make_vulkan)
+
+        if [ -z "$localVulkanVersion" ]; then
+          echo "error: failed to detect Wine Vulkan version"
+          exit 1
+        fi
+
+        if [[ "$localVulkanVersion" != "${vulkanVersion}" ]]; then
+          echo error: detected Wine vulkan version of $localVulkanVersion
+          echo .. currently set vulkan version is ${vulkanVersion}
+          exit 1
+        fi
+
+        patchShebangs ./dlls/winevulkan/make_vulkan
+        patchShebangs ./tools/make_requests
+
+        substituteInPlace ./dlls/winevulkan/make_vulkan --replace \
+          "vk_xml = \"vk-{0}.xml\".format(VK_XML_VERSION)" \
+          "vk_xml = \"${vkXmlFile}\""
+
+        ./dlls/winevulkan/make_vulkan
+        ./tools/make_requests
+        autoreconf -f
       '';
   });
 
