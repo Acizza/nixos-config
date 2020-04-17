@@ -91,20 +91,18 @@ in {
     openclSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "5.4";
+    version = "5.6";
 
     src = super.fetchurl {
       url = "https://dl.winehq.org/wine/source/5.x/wine-${version}.tar.xz";
-      sha256 = "0b052xrjb7099b7v5gx53vlzqxirik152q0fajcz25alz87jngjb";
+      sha256 = "1rh0pk8mbi3bb0di13swzxn7nwnrbfsfizdv472vv3ymf5z8l6ah";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      # TODO: revert back to "v${version}" when Wine 5.5 is released.
-      # We currently need this specific version to fix a compilation failure with x3daudio1_7.
-      rev = "a1246b5e921ea950851e4a971fb3dae535d7b982";
-      sha256 = "0pj49wzryaaj0zxz7zzza9b36yhhwmap485qsk145sd4q2jlfhcr";
+      rev = "v${version}";
+      sha256 = "1i9yiwbyxl0vshc4gbgnhp53m1ray8pkiii876gbiaf93k1irk0d";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
