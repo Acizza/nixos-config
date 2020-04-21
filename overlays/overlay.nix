@@ -115,7 +115,6 @@ in {
       super.perl
       super.utillinux
       super.autoconf
-      super.libtxc_dxtn_s2tc
       super.python3
       super.perl
     ];
