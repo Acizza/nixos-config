@@ -254,6 +254,15 @@ in {
   the-powder-toy = withLLVMNativeAndFlags super.the-powder-toy [ "-O3" "-flto" ];
 
   arc-theme = super.arc-theme.overrideAttrs (oldAttrs: {
+    version = "20200417";
+
+    src = super.fetchFromGitHub {
+      owner = "jnsh";
+      repo = "arc-theme";
+      rev = "0779e1ca84141d8b443cf3e60b85307a145169b6";
+      sha256 = "1ddyi8g4rkd4mxadjvl66wc0lxpa4qdr98nbbhm5abaqfs2yldd4";
+    };
+
     configureFlags = oldAttrs.configureFlags or [] ++ [
       "--disable-light"
       "--disable-cinnamon"
@@ -265,8 +274,9 @@ in {
       "--disable-openbox"
     ];
 
-    # Since we disabled gnome shell support, we can remove the dependency on it
-    nativeBuildInputs = super.lib.remove super.gnome3.gnome-shell oldAttrs.nativeBuildInputs;
+    meta = oldAttrs.meta // {
+      broken = false;
+    };
   });
 
   ### Modifications to make some packages run as fast as possible
