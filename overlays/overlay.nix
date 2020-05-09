@@ -44,26 +44,11 @@ in {
   wlroots = withNativeAndFlags super.wlroots [ "-O3" ];
   mako = withNativeAndFlags super.mako [ "-O3" ];
 
-  waybar = (super.waybar.override {
+  waybar = withLLVMNativeAndFlags (super.waybar.override {
     pulseSupport = true;
     mpdSupport = false;
     nlSupport = false;
-  }).overrideAttrs (oldAttrs: rec {
-    version = "2277ddd156fd12aa4da0b0c6f4a164552f4eb7df";
-
-    src = super.fetchFromGitHub {
-      owner = "Alexays";
-      repo = "Waybar";
-      rev = version;
-      sha256 = "09a45waflnfxin3fzzai8gggv111aq2dbqanw5ik26sf74vhgkib";
-    };
-
-    mesonFlags = oldAttrs.mesonFlags or [] ++ [
-      "-Dsystemd=disabled"
-    ];
-
-    NIX_CFLAGS_COMPILE = "-O3 -march=native";
-  });
+  }) [ "-O3" ];
 
   redshift = super.redshift.overrideAttrs (oldAttrs: rec {
     pname = "redshift-wlr";
