@@ -124,7 +124,6 @@ in {
       (patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb")
       (patch "proton-hotfixes/wine-winex11.drv_Calculate_mask_in_X11DRV_resize_desktop" "09swin3v9wryrm7v19cls7kaha969ihn650qbhjfz62qj3ksklg9")
       (patch "proton/valve_proton_fullscreen_hack-staging" "1bm49g3m3ad80xn5id79zm27xcp4dhgcqzl59kksd5np252plkb7")
-      #(patch "proton/proton-rawinput" "1g7kqmzkskqwcjchajgzmfs2ch2zymd0g6q9szysvflkzbs1vl9g")
       (patch "proton/proton-LAA_staging" "1dhgxwv2cgp9mm1wikidvxyxcakv5para4m5x57d6xq2z4p84aza")
       (patch "proton-hotfixes/proton-staging_winex11-MWM_Decorations" "0950gflsn6i7cdgbbmwnz6x9icgyxvrmi0cphd4y2w5jbmqplmhg")
       (patch "proton/proton-protonify_staging" "1f0p3b4q3rjvgs9dap0jzs0w65bba7p41qrh926rlniam3rk270q")
