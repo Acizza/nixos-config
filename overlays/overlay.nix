@@ -79,7 +79,14 @@ in {
 
   # Latest Wine staging with fsync and Proton patches from GloriousEggroll.
   # When Wine is updated, changed patches should be checked for at https://github.com/GloriousEggroll/proton-ge-custom/blob/proton-ge-5/patches/protonprep.sh
-  wine = ((super.wine.override {
+  wine = let
+    patch = name: sha256:
+      # fetchpatch produces invalid patches(https://github.com/NixOS/nixpkgs/issues/37375)
+      super.fetchurl {
+        url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/proton-ge-5/patches/${name}.patch";
+        inherit sha256;
+      };
+  in ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
     # to use overrideAttrs
     wineBuild = "wineWow";
@@ -92,18 +99,22 @@ in {
     openclSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "5.6";
+    version = "5.7";
 
-    src = super.fetchurl {
-      url = "https://dl.winehq.org/wine/source/5.x/wine-${version}.tar.xz";
-      sha256 = "1rh0pk8mbi3bb0di13swzxn7nwnrbfsfizdv472vv3ymf5z8l6ah";
+    src = super.fetchFromGitHub {
+      owner = "wine-mirror";
+      repo = "wine";
+      # TODO: revert to "wine-${version}" for Wine 5.8
+      rev = "28ec2795186c7db83637b3b17e4fa95095ebb77d";
+      sha256 = "1m4l1w0ls2vqz62s82rs3khidsqz9m8vs20pz1pxv4bn9fabfm0k";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      rev = "v${version}";
-      sha256 = "1i9yiwbyxl0vshc4gbgnhp53m1ray8pkiii876gbiaf93k1irk0d";
+      # TODO: revert to "v${version}" for Wine 5.8
+      rev = "69a4e4baa2679972b1170a95cb9b86d08a493b54";
+      sha256 = "1lwf128hzw5jz5ssd02f5jc48s87ms8fhf1isaanypj0zvgxcvxn";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -119,39 +130,37 @@ in {
       super.perl
     ];
 
+    protonPatches = [
+      (patch "proton/proton-use_clock_monotonic" "000bpjyclz93xfybvwxgpfk2s8fkxh125sjrxijijryaxgq1khvj")
+      (patch "proton/proton-amd_ags" "0phhvka6rzrxl3i44w4y97c6sphsif0zh4v7iw3izg2nak2rmhi9")
+      (patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1")
+      (patch "wine-hotfixes/winevulkan-childwindow" "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l")
+      (patch "proton/proton-fsync_staging" "1ws2skavabpy8x151hw88mwlplyhr0x7693shk98hcp6g5h5yi8f")
+      (patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb")
+      (patch "proton-hotfixes/wine-winex11.drv_Calculate_mask_in_X11DRV_resize_desktop" "09swin3v9wryrm7v19cls7kaha969ihn650qbhjfz62qj3ksklg9")
+      (patch "proton/valve_proton_fullscreen_hack-staging" "1bm49g3m3ad80xn5id79zm27xcp4dhgcqzl59kksd5np252plkb7")
+      #(patch "proton/proton-rawinput" "1g7kqmzkskqwcjchajgzmfs2ch2zymd0g6q9szysvflkzbs1vl9g")
+      (patch "proton/proton-LAA_staging" "1dhgxwv2cgp9mm1wikidvxyxcakv5para4m5x57d6xq2z4p84aza")
+      (patch "proton-hotfixes/proton-staging_winex11-MWM_Decorations" "0950gflsn6i7cdgbbmwnz6x9icgyxvrmi0cphd4y2w5jbmqplmhg")
+      (patch "proton/proton-protonify_staging" "1f0p3b4q3rjvgs9dap0jzs0w65bba7p41qrh926rlniam3rk270q")
+      (patch "proton/proton-pa-staging" "1ixh8gbiqdn0nf1gyzxyni83s3969d7l21inmnj1bwq0shhwnbyv")
+      (patch "proton/proton-vk-bits-4.5" "1wv9w2lpsw97y3442zjg1vmjpg7pvv74g0piiz7aid2732ib3him")
+      (patch "proton/proton_fs_hack_integer_scaling" "0c6732hr68fxkpabvj14qs1zia0mfjh6gp58xqr9v6ca9k8gc2j7")
+      (patch "proton/proton-winevulkan" "16725iy8sgvvm0kzwhja55f3kikwahl7lnngdizxy8jhlfdmwhdb")
+      (patch "wine-hotfixes/user32-Set_PAINTSTRUCT_fErase_field_depending_on_the_last_WM_ERASEBKGND_result" "0lkivn0lq2f8ph0qwq76p8n51bwkbqmh43nczzlw5fzvikirsz5v")
+      (patch "wine-hotfixes/ntdll-Use_the_free_ranges_in_find_reserved_free_area" "1i9a7psh5f7mh7d0qxw38394xnayrs7q6chsb9dwnmdi9i1lmhjb")
+    ];
+
     postPatch =
       let
-        vulkanVersion = "1.2.134";
+        vulkanVersion = "1.2.139";
 
-        patch = name: sha256:
-          # fetchpatch produces invalid patches(https://github.com/NixOS/nixpkgs/issues/37375)
-          super.fetchurl {
-            url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/proton-ge-5/patches/${name}.patch";
-            inherit sha256;
-          };
-
-        protonPatches = [
-          patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1"
-          patch "wine-hotfixes/winevulkan-childwindow" "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l"
-          patch "proton/proton-fsync_staging" "0jgw1n2hjcwhb7n0hjb249fr50c4b5j87235cxi0f0jgg6p9ir0v"
-          patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb"
-          patch "proton/proton-LAA_staging" "0kk3lckm8k477bmhcazw3p7dy8jdmy3ajjxzk3zfpnhi8kl6q9ir"
-          patch "proton-hotfixes/wine-winex11.drv_Calculate_mask_in_X11DRV_resize_desktop" "09swin3v9wryrm7v19cls7kaha969ihn650qbhjfz62qj3ksklg9"
-          patch "proton/valve_proton_fullscreen_hack-staging" "05djicxvbi8vpximlrf4r0sr4ncmq2cjxnrvy55jddhmxlzfd28k"
-          patch "proton/proton-rawinput" "1ja8hcf5y6lc8h1lzmc0lc232m2dbx685wci01c0brp0376pyjj7"
-          patch "proton/proton-protonify_staging_rpc" "1ayr4cxd8x3zpi9lza412swkbjfy0vgzv22igs54yza13xpgnrsl"
-          patch "proton/proton-protonify_staging" "1hqf59gqsqpfqc991bdbyw6nviq6f7iyn030h0a16v0iagss68z3"
-          patch "proton/proton-vk-bits-4.5" "1wv9w2lpsw97y3442zjg1vmjpg7pvv74g0piiz7aid2732ib3him"
-          patch "proton/proton_fs_hack_integer_scaling" "0c6732hr68fxkpabvj14qs1zia0mfjh6gp58xqr9v6ca9k8gc2j7"
-          patch "proton/proton-winevulkan" "1imr4m5z09kzlblqf3cs6628xyas5adrc2gfcvi3aimqqpyyap80"
-        ];
-
-        stagingRevertsPatch = patch "wine-hotfixes/staging-44d1a45-localreverts" "01qjnb6r5pjk2rhgqzf0m59fam2jvd1iw2msizjbs618b7z4qbiq";
+        stagingRevertsPatch = patch "wine-hotfixes/staging-44d1a45-localreverts" "0gs3gxiqz87jskbcvwzb1k1kf3hb66qrary3pd2vipiqah8j0f9b";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "1rg0ghfnscah60h9vkpza0sjz17xrc5r2rbh49cskyhpram9bqrn";
+          sha256 = "192jvrvgqm1141g5w7bdxyb6kyrfnm03lyyy20afqbbfwcnss5ln";
         };
       in ''
         # staging patches
@@ -168,17 +177,22 @@ in {
           -W winex11-MWM_Decorations \
           -W winex11-_NET_ACTIVE_WINDOW \
           -W winex11-WM_WINDOWPOSCHANGING \
+          -W winex11-key_translation \
           -W user32-rawinput-mouse \
           -W user32-rawinput-nolegacy \
           -W user32-rawinput-mouse-experimental \
           -W user32-rawinput-hid \
-          -W winex11-key_translation \
+          -W dinput-SetActionMap-genre \
+          -W dinput-axis-recalc \
+          -W dinput-joy-mappings \
+          -W dinput-reconnect-joystick \
+          -W dinput-remap-joystick \
           -W ntdll-avoid-fstatat
         cd ..
 
         echo "applying Proton patches.."
 
-        for $patch in $protonPatches; do
+        for patch in $protonPatches; do
           echo "applying ''${patch}"
           patch -Np1 < "$patch"
         done
