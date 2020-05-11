@@ -64,14 +64,7 @@ in {
 
   # Latest Wine staging with fsync and Proton patches from GloriousEggroll.
   # When Wine is updated, changed patches should be checked for at https://github.com/GloriousEggroll/proton-ge-custom/blob/proton-ge-5/patches/protonprep.sh
-  wine = let
-    patch = name: sha256:
-      # fetchpatch produces invalid patches(https://github.com/NixOS/nixpkgs/issues/37375)
-      super.fetchurl {
-        url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/proton-ge-5/patches/${name}.patch";
-        inherit sha256;
-      };
-  in ((super.wine.override {
+  wine = ((super.wine.override {
     # Note: we cannot set wineRelease to staging here, as it will no longer allow us
     # to use overrideAttrs
     wineBuild = "wineWow";
@@ -84,26 +77,31 @@ in {
     openclSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "5.7";
+    version = "5.8";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
-      # TODO: revert to "wine-${version}" for Wine 5.8
-      rev = "28ec2795186c7db83637b3b17e4fa95095ebb77d";
-      sha256 = "1m4l1w0ls2vqz62s82rs3khidsqz9m8vs20pz1pxv4bn9fabfm0k";
+      rev = "wine-${version}";
+      sha256 = "02wyyv0qqx7widjhn9k49fwkgfzn7ka7lg6bqynfq2nlc0f78zmf";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      # TODO: revert to "v${version}" for Wine 5.8
-      rev = "69a4e4baa2679972b1170a95cb9b86d08a493b54";
-      sha256 = "1lwf128hzw5jz5ssd02f5jc48s87ms8fhf1isaanypj0zvgxcvxn";
+      rev = "v${version}";
+      sha256 = "07i11alcymkfj1vgadcxd6khvjk1ay0x2dddwrvnc4gag9lvkddr";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
-  })).overrideDerivation (drv: {
+  })).overrideDerivation (drv: let
+    patch = name: sha256:
+      # fetchpatch produces invalid patches(https://github.com/NixOS/nixpkgs/issues/37375)
+      super.fetchurl {
+        url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/${drv.version}-GE-1-MF/patches/${name}.patch";
+        inherit sha256;
+      };
+  in {
     name = "wine-wow-${drv.version}-staging";
 
     buildInputs = drv.buildInputs ++ [
@@ -120,31 +118,33 @@ in {
       (patch "proton/proton-amd_ags" "0phhvka6rzrxl3i44w4y97c6sphsif0zh4v7iw3izg2nak2rmhi9")
       (patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1")
       (patch "wine-hotfixes/winevulkan-childwindow" "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l")
-      (patch "proton/proton-fsync_staging" "1ws2skavabpy8x151hw88mwlplyhr0x7693shk98hcp6g5h5yi8f")
+      (patch "proton/proton-fsync_staging" "1ylm6x9qj8xwrr4wxzq1dbbd7dfx13d3nv3d8m1xans85i4z48yl")
       (patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb")
       (patch "proton-hotfixes/wine-winex11.drv_Calculate_mask_in_X11DRV_resize_desktop" "09swin3v9wryrm7v19cls7kaha969ihn650qbhjfz62qj3ksklg9")
       (patch "proton/valve_proton_fullscreen_hack-staging" "1bm49g3m3ad80xn5id79zm27xcp4dhgcqzl59kksd5np252plkb7")
       (patch "proton/proton-LAA_staging" "1dhgxwv2cgp9mm1wikidvxyxcakv5para4m5x57d6xq2z4p84aza")
       (patch "proton-hotfixes/proton-staging_winex11-MWM_Decorations" "0950gflsn6i7cdgbbmwnz6x9icgyxvrmi0cphd4y2w5jbmqplmhg")
-      (patch "proton/proton-protonify_staging" "1f0p3b4q3rjvgs9dap0jzs0w65bba7p41qrh926rlniam3rk270q")
+      (patch "proton/proton-protonify_staging" "196i7jlcswd1c9bqa4990wbpc76nmlm3vqmvrrpajn2hw9b9xscl")
       (patch "proton/proton-pa-staging" "1ixh8gbiqdn0nf1gyzxyni83s3969d7l21inmnj1bwq0shhwnbyv")
       (patch "proton/proton-vk-bits-4.5" "1wv9w2lpsw97y3442zjg1vmjpg7pvv74g0piiz7aid2732ib3him")
       (patch "proton/proton_fs_hack_integer_scaling" "0c6732hr68fxkpabvj14qs1zia0mfjh6gp58xqr9v6ca9k8gc2j7")
-      (patch "proton/proton-winevulkan" "16725iy8sgvvm0kzwhja55f3kikwahl7lnngdizxy8jhlfdmwhdb")
+      (patch "proton/proton-winevulkan" "0jixz54w7iha10in21b1p4zzcfps81zpahav81s5sp34avb3l3ml")
+      (patch "wine-hotfixes/media_foundation_alpha" "1nzb2h3pyap16sqlv53b1mhb70nxzp3fwzks9nvfzr8bgq543zjs")
+      (patch "wine-hotfixes/proton_mediafoundation_dllreg" "0wcrh99skvrag7j34sf519yjypcr1n431pq9kqkya14hn4jxij86")
       (patch "wine-hotfixes/user32-Set_PAINTSTRUCT_fErase_field_depending_on_the_last_WM_ERASEBKGND_result" "0lkivn0lq2f8ph0qwq76p8n51bwkbqmh43nczzlw5fzvikirsz5v")
-      (patch "wine-hotfixes/ntdll-Use_the_free_ranges_in_find_reserved_free_area" "1i9a7psh5f7mh7d0qxw38394xnayrs7q6chsb9dwnmdi9i1lmhjb")
+      (patch "wine-hotfixes/dll_loader_fix" "1qsfsgphrbl951vk6f1n6x4fqcl5xiip74lzmngld4wyhnb05g5k")
     ];
 
     postPatch =
       let
-        vulkanVersion = "1.2.139";
+        vulkanVersion = "1.2.140";
 
         stagingRevertsPatch = patch "wine-hotfixes/staging-44d1a45-localreverts" "0gs3gxiqz87jskbcvwzb1k1kf3hb66qrary3pd2vipiqah8j0f9b";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "192jvrvgqm1141g5w7bdxyb6kyrfnm03lyyy20afqbbfwcnss5ln";
+          sha256 = "0x4s8y7il4f8wmsjzgpi0ljmams32zr7c08bcwdvqljndsf4myvc";
         };
       in ''
         # staging patches
@@ -177,8 +177,8 @@ in {
         echo "applying Proton patches.."
 
         for patch in $protonPatches; do
-          echo "applying ''${patch}"
-          patch -Np1 < "$patch"
+          echo "!! applying ''${patch}"
+          patch -Np1 < "$patch" || true
         done
 
         echo "applying custom patches.."
