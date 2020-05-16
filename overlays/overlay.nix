@@ -313,5 +313,5 @@ in {
   nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
   nixos-update-status = withRustNative (super.callPackage ./pkgs/nixos-update-status.nix { });
 
-  dxvk = super.callPackage ./pkgs/dxvk {};
+  dxvk = super.callPackage ./pkgs/dxvk.nix { };
 }
