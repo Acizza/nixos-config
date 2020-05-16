@@ -82,6 +82,7 @@
       gnome3.gnome-system-monitor
       gnome3.eog
       veracrypt
+      mullvad-vpn
         
       # Misc Applications
       ripgrep # Improved version of grep
@@ -181,6 +182,8 @@
       enable = false;
       videoDrivers = [ "amdgpu" ];
     };
+
+    mullvad-vpn.enable = true;
 
     # This allows PS4 controllers to be used without root access for things like RPCS3
     udev.extraRules = ''
