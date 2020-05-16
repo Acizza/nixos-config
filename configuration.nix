@@ -112,9 +112,7 @@
       spotify
 
       # Compression
-      unzip
-      unrar
-      p7zip
+      unar
         
       # Themes
       arc-icon-theme
