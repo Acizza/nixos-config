@@ -17,6 +17,10 @@
       device = "/dev/sdb";
     };
 
+    # Fixes sway randomly not being able to start with amdgpu
+    # https://bbs.archlinux.org/viewtopic.php?pid=1873238#p1873238
+    initrd.kernelModules = [ "drm" ];
+
     kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     
     cleanTmpDir = true;
