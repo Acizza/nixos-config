@@ -77,20 +77,20 @@ in {
     openclSupport = false;
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
-    version = "5.8";
+    version = "5.9";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
       rev = "wine-${version}";
-      sha256 = "02wyyv0qqx7widjhn9k49fwkgfzn7ka7lg6bqynfq2nlc0f78zmf";
+      sha256 = "1a35d8c79ibl91jz9b25fqvl42cmnwfs3zbm6s1mqim2ykfns9lk";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "07i11alcymkfj1vgadcxd6khvjk1ay0x2dddwrvnc4gag9lvkddr";
+      sha256 = "1hc49crn6dd5ycg7v4rbqxncbp3svs8facm0fzxy44akslfmcxaz";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -114,7 +114,7 @@ in {
     ];
 
     protonPatches = [
-      (patch "proton/proton-use_clock_monotonic" "000bpjyclz93xfybvwxgpfk2s8fkxh125sjrxijijryaxgq1khvj")
+      (patch "proton/proton-use_clock_monotonic" "0vlx3gji487mn7kwfmrx7gaxa590bysbpd73gz96x30mgrzmzh6f")
       (patch "proton/proton-amd_ags" "0phhvka6rzrxl3i44w4y97c6sphsif0zh4v7iw3izg2nak2rmhi9")
       (patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1")
       (patch "wine-hotfixes/winevulkan-childwindow" "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l")
@@ -129,10 +129,28 @@ in {
       (patch "proton/proton-vk-bits-4.5" "1wv9w2lpsw97y3442zjg1vmjpg7pvv74g0piiz7aid2732ib3him")
       (patch "proton/proton_fs_hack_integer_scaling" "0c6732hr68fxkpabvj14qs1zia0mfjh6gp58xqr9v6ca9k8gc2j7")
       (patch "proton/proton-winevulkan" "0jixz54w7iha10in21b1p4zzcfps81zpahav81s5sp34avb3l3ml")
-      (patch "wine-hotfixes/media_foundation_alpha" "1nzb2h3pyap16sqlv53b1mhb70nxzp3fwzks9nvfzr8bgq543zjs")
+      (patch "wine-hotfixes/media_foundation_alpha" "0w68k1kxbrdkmpfqkvyyf5qlr6wamvsi3jz70axnyvy7z7mi4yny")
       (patch "wine-hotfixes/proton_mediafoundation_dllreg" "0wcrh99skvrag7j34sf519yjypcr1n431pq9kqkya14hn4jxij86")
       (patch "wine-hotfixes/user32-Set_PAINTSTRUCT_fErase_field_depending_on_the_last_WM_ERASEBKGND_result" "0lkivn0lq2f8ph0qwq76p8n51bwkbqmh43nczzlw5fzvikirsz5v")
-      (patch "wine-hotfixes/dll_loader_fix" "1qsfsgphrbl951vk6f1n6x4fqcl5xiip74lzmngld4wyhnb05g5k")
+      (patch "wine-hotfixes/winemono-update_to_5.0.1" "1g9hvagffb2pf8ip5dpvqnnk317cvwgnwllbjsl27g8y3kg43dr3")
+    ];
+
+    reverts = let
+      commit = hash: sha256: super.fetchurl {
+        url = "https://github.com/wine-mirror/wine/commit/${hash}.patch";
+        inherit sha256;
+      };
+    in [
+      # Proton gamepad changes
+      (commit "da7d60bf97fb8726828e57f852e8963aacde21e9" "00hk1n0zk2pp9z4m58qypjnjmzw7h41dawkdy2wdk9x600hyxbyk")
+      # fshack
+      (commit "26b26a2e0efcb776e7b0115f15580d2507b10400" "15msa775ph399m4i9z46xzfjckmlrbvqc2rnwy70cxd4h44a2z8d")
+      (commit "fd6f50c0d3e96947846ca82ed0c9bd79fd8e5b80" "1g7fi342h91ah7nb3xidyc89mrxhk2q9z7jg7jd7yk6kk1yzvpfa")
+      # Time hotfix
+      (commit "7cc9ccbd22511d71d23ee298cd9718da1e448dbc" "17pfznyci7ykqj6h9mzgl834ngsay3mkn01zhiydnzd3mwkibll0")
+      (commit "79e3c21c3cca822efedff3092df42f9044da10fe" "0n5bcmsm445dq44alc89axzplldbxygp0nmxwgxh09bwvdq3pg7h")
+      (commit "75e2f79b684f70e7184592db16d819b778d575ae" "05kv9ldim1hkqgjzydmk51jncfqii4cc3lbkiqzxsyp4nnrb21pw")
+      (commit "4ccc3e52852447198a8b81fc91472bfa3b614914" "1if47f1c492xyjdqvghp827wx3mw10md4x7nynvlbb883d3ypshv")
     ];
 
     postPatch =
@@ -140,6 +158,7 @@ in {
         vulkanVersion = "1.2.140";
 
         stagingRevertsPatch = patch "wine-hotfixes/staging-44d1a45-localreverts" "0gs3gxiqz87jskbcvwzb1k1kf3hb66qrary3pd2vipiqah8j0f9b";
+        timeHotfixPatch = patch "wine-hotfixes/time_hotfix" "0rxm65wh8xpizvq8p0xplxli4i3iz57zd6nn9glk72bl0y4l0n9q";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
@@ -147,11 +166,17 @@ in {
           sha256 = "0x4s8y7il4f8wmsjzgpi0ljmams32zr7c08bcwdvqljndsf4myvc";
         };
       in ''
+        for revert in $reverts; do
+          echo "!! applying revert ''${revert}"
+          patch -NRp1 < "$revert"
+        done
+
         # staging patches
         patchShebangs tools
         cp -r ${drv.staging}/patches .
         chmod +w -R patches/
         patch -Np1 < "${stagingRevertsPatch}"
+        patch -Np1 < "${timeHotfixPatch}"
         cd patches
         patchShebangs gitapply.sh
         ./patchinstall.sh DESTDIR="$PWD/.." --all \
@@ -170,8 +195,7 @@ in {
           -W dinput-axis-recalc \
           -W dinput-joy-mappings \
           -W dinput-reconnect-joystick \
-          -W dinput-remap-joystick \
-          -W ntdll-avoid-fstatat
+          -W dinput-remap-joystick
         cd ..
 
         echo "applying Proton patches.."
