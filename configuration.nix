@@ -21,6 +21,9 @@
     # https://bbs.archlinux.org/viewtopic.php?pid=1873238#p1873238
     initrd.kernelModules = [ "drm" ];
 
+    # Prevents some Wine games from crashing
+    kernelParams = [ "clearcpuid=514" ];
+
     kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     
     cleanTmpDir = true;
