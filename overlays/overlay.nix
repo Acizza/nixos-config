@@ -18,13 +18,12 @@ self: super: let
   withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
 
   withRustNative = pkg: pkg.overrideAttrs (old: {
-    RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
+    RUSTFLAGS = old.RUSTFLAGS or "" + " -Ctarget-cpu=native -Copt-level=3 -Cdebuginfo=0 -Ccodegen-units=1";
   });
 
-  withRustNativeAndPatches = pkg: patches: pkg.overrideAttrs (old: {
+  withRustNativeAndPatches = pkg: patches: withRustNative (pkg.overrideAttrs (old: {
     patches = old.patches or [] ++ patches;
-    RUSTFLAGS = old.RUSTFLAGS or "" + " -C target-cpu=native";
-  });
+  }));
 in {
   qemu = withLLVMNative (super.qemu.override {
     hostCpuOnly = true;
@@ -303,7 +302,7 @@ in {
 
   ### Modifications to make some packages run as fast as possible
 
-  alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
+  alacritty = withRustNative super.alacritty;
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
   mpv = let
