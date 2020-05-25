@@ -121,6 +121,7 @@
       cargo-tree
       loc
       spotify
+      rust-analyzer
 
       # Compression
       unar
