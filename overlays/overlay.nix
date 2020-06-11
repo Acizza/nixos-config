@@ -38,20 +38,13 @@ in {
     withWayland = true;
   };
 
-  rust-analyzer-unwrapped = withRustNative ((super.rust-analyzer-unwrapped.override rec {
-    version = "2020-05-25";
+  rust-analyzer-unwrapped = withRustNative (super.rust-analyzer-unwrapped.override rec {
+    version = "2020-06-08";
     rev = version;
-    sha256 = "19m07vra847ssg5xlpi5gw8m39z90pfs327xswh79x0f55zlk1ni";
-    cargoSha256 = "03jfc5bsx2bsfaghhsarhsr5kxbic3nqsn46kszhz1vm3vh6x6j9";
+    sha256 = "0ywwsb717d1rwcy2yij58sj123pan0fb80sbsiqqprcln0aaspip";
+    cargoSha256 = "1a5vdrz0i1dnhbi9181d1krrldpx4aivdyhbrnclr93ilsvfyrbp";
     doCheck = false;
-  }).overrideAttrs (oldAttrs: rec {
-    # Remove when Rust 1.43 is merged
-    patchPhase = oldAttrs.patchPhase or "" + ''
-      substituteInPlace crates/ra_hir_ty/src/traits/chalk/mapping.rs --replace \
-        "PlaceholderIndex { ui: UniverseIndex::ROOT, idx: usize::MAX };" \
-        "PlaceholderIndex { ui: UniverseIndex::ROOT, idx: std::usize::MAX };"
-    '';
-  }));
+  });
 
   # TODO: these packages refuse to detect clang, even when the stdenv is properly set
   sway = withNativeAndFlags super.sway [ "-O3" ];
