@@ -118,7 +118,6 @@
       puddletag
       cargo-outdated
       cargo-bloat
-      cargo-tree
       loc
       spotify
       rust-analyzer
