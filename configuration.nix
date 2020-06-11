@@ -27,17 +27,17 @@
     kernel.sysctl."fs.inotify.max_user_watches" = 524288;
     
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_6;
+    kernelPackages = pkgs.linuxPackages_5_7;
 
     # Add fsync patch for Wine
     kernelPatches =
       let
         fsync = rec {
-          name = "v5.6-fsync";
+          name = "v5.7-fsync";
           patch = pkgs.fetchpatch {
             name = name + ".patch";
-            url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/9df993642a3a87f7a4027d2e03195359b1355158/linux56-tkg/linux56-tkg-patches/0007-v5.6-fsync.patch";
-            sha256 = "15zgjjn3ighh2cfgj3904z9hdbdk69z58xfyjdlj5dfh094p0kv2";
+            url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux57-tkg/linux57-tkg-patches/0007-v5.7-fsync.patch";
+            sha256 = "0lm6zx2r6q24222qacxf536zhk9kgfp9m8091wqyi30vb8621l81";
           };
         };
       in [ fsync ];
