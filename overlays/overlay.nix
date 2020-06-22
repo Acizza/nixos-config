@@ -40,17 +40,12 @@ in {
   };
 
   rust-analyzer-unwrapped = withRustNative (super.rust-analyzer-unwrapped.override rec {
-    version = "2020-06-08";
+    version = "2020-06-22";
     rev = version;
-    sha256 = "0ywwsb717d1rwcy2yij58sj123pan0fb80sbsiqqprcln0aaspip";
-    cargoSha256 = "1a5vdrz0i1dnhbi9181d1krrldpx4aivdyhbrnclr93ilsvfyrbp";
+    sha256 = "1cxsdc4b1823i5dx7nvh584araqbhpj8lx3jc0cc8qgm9hdbphz8";
+    cargoSha256 = "0gn0gmzzxwbrbv5csrqz59mk9pkj54mljf9cam75f8mx1kv6472r";
     doCheck = false;
   });
-
-  # TODO: these packages refuse to detect clang, even when the stdenv is properly set
-  sway = withNativeAndFlags super.sway [ "-O3" ];
-  wlroots = withNativeAndFlags super.wlroots [ "-O3" ];
-  mako = withNativeAndFlags super.mako [ "-O3" ];
 
   waybar = withLLVMNativeAndFlags (super.waybar.override {
     pulseSupport = true;
