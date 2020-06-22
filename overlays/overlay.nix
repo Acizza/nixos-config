@@ -1,4 +1,5 @@
 self: super: let
+  nativeStdenv = super.impureUseNativeOptimizations super.stdenv;
   llvmNativeStdenv = super.impureUseNativeOptimizations super.llvmPackages_latest.stdenv;
 
   withFlags = pkg: flags:
@@ -13,7 +14,7 @@ self: super: let
   withStdenvAndFlags = newStdenv: pkg:
     withFlags (withStdenv newStdenv pkg);
 
-  withNativeAndFlags = withStdenvAndFlags super.stdenv;
+  withNativeAndFlags = withStdenvAndFlags nativeStdenv;
   withLLVMNative = withStdenv llvmNativeStdenv;
   withLLVMNativeAndFlags = withStdenvAndFlags llvmNativeStdenv;
 
@@ -332,6 +333,10 @@ in {
     NIX_CFLAGS_COMPILE = oldAttrs.NIX_CFLAGS_COMPILE or "" +
       " -O3 -flto -march=native";
   });
+
+  sway = withNativeAndFlags super.sway [ "-O3" "-flto" ];
+  wlroots = withNativeAndFlags super.wlroots [ "-O3" "-flto" ];
+  mako = withNativeAndFlags super.mako [ "-O3" ];
 
   faudio = withNativeAndFlags super.faudio [ "-O3" ];
   vkd3d = withNativeAndFlags super.vkd3d [ "-O3" ];
