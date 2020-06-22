@@ -118,7 +118,7 @@
       puddletag
       cargo-outdated
       cargo-bloat
-      loc
+      tokei
       spotify
       rust-analyzer
 
