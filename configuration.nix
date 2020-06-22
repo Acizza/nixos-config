@@ -110,7 +110,7 @@
       pavucontrol
       winetricks
       youtube-dl
-      ffmpeg
+      ffmpeg_4
       rpcs3
       the-powder-toy
       qemu
