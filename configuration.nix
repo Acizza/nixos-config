@@ -120,6 +120,7 @@
       cargo-bloat
       tokei
       spotify
+      nodejs-14_x
       rust-analyzer
       anki
 
