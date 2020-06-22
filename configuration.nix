@@ -121,6 +121,7 @@
       tokei
       spotify
       rust-analyzer
+      anki
 
       # Compression
       unar
