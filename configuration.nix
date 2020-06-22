@@ -134,15 +134,17 @@
       # Custom packages
       dxvk
       bcnotif
-      anup
+      #anup
       wpfxm
       nixup
-      nixos-update-status
+      #nixos-update-status
       vapoursynth-plugins
     ];
 
+    shells = with pkgs; [ nushell ];
+
     variables.TERM = "alacritty";
-    variables.RADV_PERFTEST = "aco,cswave32,gewave32,pswave32";
+    variables.RADV_PERFTEST = "aco";
     variables.PATH = [ "/home/jonathan/.cargo/bin/" ];
   };
   
