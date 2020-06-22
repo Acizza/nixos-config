@@ -121,6 +121,7 @@
       tokei
       spotify
       nodejs-14_x
+      steam
       rust-analyzer
       anki
 
