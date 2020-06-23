@@ -47,6 +47,40 @@ in {
     doCheck = false;
   });
 
+  vscode-with-extensions = super.vscode-with-extensions.override {
+    vscode = super.vscodium;
+
+    vscodeExtensions = with super.vscode-extensions; [
+      bbenoist.Nix
+      matklad.rust-analyzer
+    ] ++ super.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "vscode-todo-plus";
+        publisher = "fabiospampinato";
+        version = "4.17.1";
+        sha256 = "00gcv66plxalmipmbhv11b1q3dhjs81ry0k4p5313m4kbn9s7dg2";
+      }
+      {
+        name = "graphql-for-vscode";
+        publisher = "kumar-harsh";
+        version = "1.15.3";
+        sha256 = "1x4vwl4sdgxq8frh8fbyxj5ck14cjwslhb0k2kfp6hdfvbmpw2fh";
+      }
+      {
+        name = "vetur";
+        publisher = "octref";
+        version = "0.24.0";
+        sha256 = "025zf47sblcx93mymg9dfca5f9pfi8sg7a0ycsmnagnzq5l1ccjw";
+      }
+      {
+        name = "better-toml";
+        publisher = "bungcip";
+        version = "0.3.2";
+        sha256 = "08lhzhrn6p0xwi0hcyp6lj9bvpfj87vr99klzsiy8ji7621dzql3";
+      }
+    ];
+  };
+
   waybar = withLLVMNativeAndFlags (super.waybar.override {
     pulseSupport = true;
     mpdSupport = false;

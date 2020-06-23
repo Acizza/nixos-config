@@ -85,7 +85,7 @@
       alacritty
       ranger
       mpv
-      vscodium
+      vscode-with-extensions
       git
       qbittorrent
       rustup
