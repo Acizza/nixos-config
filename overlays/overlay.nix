@@ -78,6 +78,12 @@ in {
         version = "0.3.2";
         sha256 = "08lhzhrn6p0xwi0hcyp6lj9bvpfj87vr99klzsiy8ji7621dzql3";
       }
+      {
+        name = "errorlens";
+        publisher = "usernamehw";
+        version = "3.1.1";
+        sha256 = "1dlkxp54pxc92sm6zs24nwcss9204w1k977k9gh1dqfzsaacg9kj";
+      }
     ];
   };
 
