@@ -24,7 +24,10 @@
     # Prevents some Wine games from crashing
     kernelParams = [ "clearcpuid=514" ];
 
-    kernel.sysctl."fs.inotify.max_user_watches" = 524288;
+    kernel.sysctl = {
+      "fs.inotify.max_user_watches" = 524288;
+      "vm.swappiness" = 10;
+    };
     
     cleanTmpDir = true;
     kernelPackages = pkgs.linuxPackages_5_7;
