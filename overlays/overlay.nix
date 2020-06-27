@@ -132,15 +132,17 @@ in {
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
-      rev = "wine-${version}";
-      sha256 = "1xznnjfb1v2mab1ab6w2l4b2gwnrn85akngjg53jqqlff2p6nycd";
+      # TODO: revert back to "wine-${version}" for wine 5.12
+      rev = "1f6423f778f7036a3875613e10b9c8c3b84584f0";
+      sha256 = "1s4jz9axprw8zbggg4qg7kb2b4ivnzxqb8p351bckifwfnk8fp2m";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      rev = "v${version}";
-      sha256 = "050npck8mdck8m2rs9xn6mszzj2fv9ql80g08j2ahinf792svrid";
+      # TODO: revert back to "v${version}" for wine 5.12
+      rev = "df2fd22e4de96b28eb0ced5e8aa9bf4c421b5ed8";
+      sha256 = "0fb5j07jvwkblg88rm060qiyxrvbd3rvl26vcfz42lx9ir264n30";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -166,22 +168,25 @@ in {
     ];
 
     protonPatches = [
-      (patch "proton/proton-use_clock_monotonic" "018nlnqpg3zmfhphycfjnqrk90j895ndl5y406hziq6nd1srkqp5")
+      (patch "proton/proton-use_clock_monotonic" "0rdskjrbyjbbni2jfrl8ljpkrpwlkgqbc14x3yv6c9jj5wqcmv31")
       (patch "proton/proton-amd_ags" "0phhvka6rzrxl3i44w4y97c6sphsif0zh4v7iw3izg2nak2rmhi9")
-      (patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1")
       (patch "wine-hotfixes/winevulkan-childwindow" "1hnc413100ggsq4pxad0ih2n51p435kkzn5bv642mf8dmsh0yk1l")
+      (patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1")
       # Broken in 5.10
       #(patch "proton/proton-fsync_staging" "1ylm6x9qj8xwrr4wxzq1dbbd7dfx13d3nv3d8m1xans85i4z48yl")
       #(patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb")
+      (patch "proton/valve_proton_fullscreen_hack-staging" "0i5nr7n7ncf11h312shxsn67vbgcxa7myavn2ydq3728cvmjgm0z")
+      (patch "proton/proton-rawinput" "0san1n1cc5xdgl8vfgm7d2vy2z71mzf71av1cl008qxxsrlq87wx")
       (patch "proton/proton-LAA_staging" "1z1nii80vqa2g3ni4rv100x2j0alvashca42k4d6camfzqv86vv0")
-      (patch "proton/proton-protonify_staging" "1s74690g64awgqh75g8f51fknf91rrm5swfzqxwcqfdgvvj0xr0c")
+      (patch "proton-hotfixes/proton-staging_winex11-MWM_Decorations" "0950gflsn6i7cdgbbmwnz6x9icgyxvrmi0cphd4y2w5jbmqplmhg")
+      (patch "proton/proton-protonify_staging" "06sy6240xxqpm2wrrjyzg9640n9jkqsnq4gjhh6xi6pd0hvvis14")
       (patch "proton/proton-pa-staging" "1ixh8gbiqdn0nf1gyzxyni83s3969d7l21inmnj1bwq0shhwnbyv")
       (patch "proton/proton-sdl_joy" "0xrlh95vrvqas53yhqp56w4r18c4p823z35smd41b4l0hc0x1dn5")
       (patch "proton/proton-sdl_joy_2" "1spafkrzyvs6m7rgw5v6jdw09qsxd7w0r5syw1rv89xm5cc26b18")
       (patch "proton/proton-gamepad-additions" "0ypswj4cvqrksw9vrf40zaimkv90amilbjqclfsxjy4vfsl3j469")
-      (patch "proton/proton-vk-bits-4.5-nofshack" "1gpgpsf8rk3q9qmi4rslh9w9gs0vznpb1x744q87515a5c8djvir")
-      (patch "proton/proton-winevulkan-nofshack" "031y2zzirygnlrf5gz2s45gf6310zaxm59infzr0jq97yxkf44ah")
-      (patch "wine-hotfixes/media_foundation/media_foundation_wine_pending" "03jprk5dwxqfxip02hp158fpqwqbz3ndl1zzvmvxn29v6wywyxxh")
+      (patch "proton/proton-vk-bits-4.5" "0v03dc0d9hwck0lf8r90mnlbl10z9vxkp1b99df7dcd0vg7k1mjz")
+      (patch "proton/proton_fs_hack_integer_scaling" "0c6732hr68fxkpabvj14qs1zia0mfjh6gp58xqr9v6ca9k8gc2j7")
+      (patch "proton/proton-winevulkan" "07ywa96m18h0ywy7yr2rp38glx1in5wklyb2jd2grwx99x8kmamf")
       (patch "wine-hotfixes/media_foundation/media_foundation_alpha" "0x3nijdsgvdvyq0mpv5vn120nj66sb0h0frl9h5sjpsbyfyp76jm")
       (patch "wine-hotfixes/media_foundation/proton_mediafoundation_dllreg" "0wcrh99skvrag7j34sf519yjypcr1n431pq9kqkya14hn4jxij86")
     ];
@@ -194,16 +199,28 @@ in {
     in [
       # Proton gamepad changes
       (commit "da7d60bf97fb8726828e57f852e8963aacde21e9" "00hk1n0zk2pp9z4m58qypjnjmzw7h41dawkdy2wdk9x600hyxbyk")
+      # fshack reverts
+      (commit "6f9d20806e821ab07c8adf81ae6630fae94b00ef" "04xfxx7gn20p5imdmskazp0xw0qk4q1lvmd4jgjmy42mm7cxda00")
+      (commit "145cfce1135a7e59cc4c89cd05b572403f188161" "1s6b8nxi4rxmb3yw0kwsdpag36qymk9pzvg7g9d304wi2rwzd4ld")
+      (commit "e3eb89d5ebb759e975698b97ed8b547a9de3853f" "1kxbw86xgwzwxn4bir18v2ypp06494znmj7f9ajh243qnlpj4n4m")
+      (commit "707fcb99a60015fcbb20c83e9031bc5be7a58618" "0ncmq528cp5pc3zy0x9dmnbwpccgq4ib2h5wlc6kdzhrxb5ysl85")
+      (commit "8cd6245b7633abccd68f73928544ae4de6f76d52" "1v6mw53z2ld460c9c45bpkwfccigknki2sxgqnfhm2bnyql6jdpf")
+      (commit "26b26a2e0efcb776e7b0115f15580d2507b10400" "15msa775ph399m4i9z46xzfjckmlrbvqc2rnwy70cxd4h44a2z8d")
+      (commit "fd6f50c0d3e96947846ca82ed0c9bd79fd8e5b80" "1g7fi342h91ah7nb3xidyc89mrxhk2q9z7jg7jd7yk6kk1yzvpfa")
+      (commit "2538b0100fbbe1223e7c18a52bade5cfe5f8d3e3" "1qgvgx4f9f10j24j1ff943vppkm64rg06ap2y7lh1c2faa8pxygp")
+      # rawinput reverts
+      (commit "306c40e67319cae8e4c448ec8fc8d3996f87943f" "1p4zfimlkd2y83alq0pw4qzv3kr2dj07ghyss3jcyx8am5945rld")
+      (commit "26c1131201f8fd9918a01231a7eb6f1989400858" "1qr0zh2da7zlvqqcnflcrafrwa48yi7mlxcwbai8x6jvwwl7li66")
     ];
 
     postPatch =
       let
-        vulkanVersion = "1.2.142";
+        vulkanVersion = "1.2.145";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "1kbzqglsh4v8h9nzs7vb4n64kmna999g060b5wa7l8hnzl67z4b5";
+          sha256 = "1jw80s1nhazfv88hy1w38n85facgwkirfxdxsa6p0bra0y4nh24g";
         };
       in ''
         for revert in $reverts; do
@@ -220,6 +237,16 @@ in {
         ./patchinstall.sh DESTDIR="$PWD/.." --all \
           -W server-Desktop_Refcount \
           -W ws2_32-TransmitFile \
+          -W winex11.drv-mouse-coorrds \
+          -W winex11-MWM_Decorations \
+          -W winex11-_NET_ACTIVE_WINDOW \
+          -W winex11-WM_WINDOWPOSCHANGING \
+          -W winex11-key_translation \
+          -W user32-rawinput-mouse \
+          -W user32-rawinput-nolegacy \
+          -W user32-rawinput-mouse-experimental \
+          -W user32-rawinput-hid \
+          -W winevulkan-vkGetPhysicalDeviceSurfaceCapabilitiesKHR \
           -W dinput-SetActionMap-genre \
           -W dinput-axis-recalc \
           -W dinput-joy-mappings \
