@@ -84,6 +84,12 @@ in {
         version = "3.1.1";
         sha256 = "1dlkxp54pxc92sm6zs24nwcss9204w1k977k9gh1dqfzsaacg9kj";
       }
+      {
+        name = "tokyo-night";
+        publisher = "enkia";
+        version = "0.5.6";
+        sha256 = "096dpvi8ja1qandhp53gmcqrkj5k8gjyab3nhjl4lz3jqdav13bs";
+      }
     ];
   };
 
