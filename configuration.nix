@@ -221,6 +221,8 @@
     sshd.enable = true;
   };
 
+  systemd.services.NetworkManager-wait-online.enable = false;
+
   location = {
     latitude = 38.58;
     longitude = -121.49;
