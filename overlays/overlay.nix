@@ -126,7 +126,7 @@ in {
     gsmSupport = false;
   }).overrideAttrs (oldAttrs: rec {
     version = "5.11";
-    geVersion = "${version}-GE-2-MF";
+    geVersion = "${version}-GE-3-MF";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
@@ -167,6 +167,8 @@ in {
     ];
 
     protonPatches = [
+      (patch "wine-hotfixes/pending/evr_mf_quartz_pending" "11scjf9xm2f8yjp1qnw3dsxiqqmhg34ivspgjllz7psw4ndwpfsl")
+      (patch "wine-hotfixes/pending/winhttp_backports" "0zjjw8n6r4y3gizfa2afm3sg58jg2y384i4ciccs9gk25vssipb5")
       (patch "proton/proton-use_clock_monotonic" "0rdskjrbyjbbni2jfrl8ljpkrpwlkgqbc14x3yv6c9jj5wqcmv31")
       (patch "proton/proton-amd_ags" "0phhvka6rzrxl3i44w4y97c6sphsif0zh4v7iw3izg2nak2rmhi9")
       (patch "proton/proton-FS_bypass_compositor" "0n8w2yrdrg9nfnnis50jnax5xh7yxvx0zw1kgg782n9mxjr2j0x1")
@@ -176,7 +178,8 @@ in {
       #(patch "proton/proton-fsync-spincounts" "0q0nm98xvpy5i0963giwsjrv3fy28g2649v7yivyvpv7is91w0pb")
       (patch "proton/proton-LAA_staging" "1z1nii80vqa2g3ni4rv100x2j0alvashca42k4d6camfzqv86vv0")
       (patch "proton/proton-staging-rawinput-overlay" "1zwjqf5gwdxl4mg1d2lpn3yy0anc8hjyzzc1b1d4pp2vl90nm9hp")
-      (patch "proton/proton-protonify_staging" "12i5zyjmyaap9m9bsd2mnsfwgizvg9bww08wa1w163ybvshps3md")
+      (patch "proton/proton-nofshack-force-fullscreen-grab-mouse" "19r51z2syycwfywalafnbl3k0zycdgrrllcrpj72c0l55vpm7lvi")
+      (patch "proton/proton-protonify_staging" "06dv51ppip0wbqkvi8j6hxc3z2f1lfszmq25d51ny9582zzqanwp")
       (patch "proton/proton-pa-staging" "1ixh8gbiqdn0nf1gyzxyni83s3969d7l21inmnj1bwq0shhwnbyv")
       (patch "proton/proton-sdl_joy" "0xrlh95vrvqas53yhqp56w4r18c4p823z35smd41b4l0hc0x1dn5")
       (patch "proton/proton-sdl_joy_2" "1spafkrzyvs6m7rgw5v6jdw09qsxd7w0r5syw1rv89xm5cc26b18")
@@ -184,6 +187,12 @@ in {
       (patch "proton/proton-winevulkan-nofshack" "05d3bzgxr7ykm611vqwnvvpqxaw39ws60wfd8jsr3f0h97030hlc")
       (patch "wine-hotfixes/media_foundation/media_foundation_alpha" "0x3nijdsgvdvyq0mpv5vn120nj66sb0h0frl9h5sjpsbyfyp76jm")
       (patch "wine-hotfixes/media_foundation/proton_mediafoundation_dllreg" "0wcrh99skvrag7j34sf519yjypcr1n431pq9kqkya14hn4jxij86")
+    ];
+
+    preStagingPatches = [
+      (patch "wine-hotfixes/staging-restore-rawinput-hidewineexports-threadtime" "089wwjyi9yklmwanbgd8rrc6jslv2acljxrzsaixgcynhg9rm844")
+      (patch "wine-hotfixes/pending/winevulkan-dont_initialize_vulkan_driver_in_dllmain" "0cadwayyr43d9ggmc9w2vj1yban3fa205ndw6in9ag9ihgr7l9r4")
+      (patch "wine-hotfixes/pending/rawinput_backports" "13di42b9x05hdyxmbg9z033399lq5cdzscld4ym99c096yjszdjv")
     ];
 
     reverts = let
@@ -215,6 +224,12 @@ in {
         patchShebangs tools
         cp -r ${drv.staging}/patches .
         chmod +w -R patches/
+
+        for patch in $preStagingPatches; do
+          echo "!! applying pre-staging patch ''${patch}"
+          patch -Np1 < "$patch"
+        done
+
         cd patches
         patchShebangs gitapply.sh
         ./patchinstall.sh DESTDIR="$PWD/.." --all \
