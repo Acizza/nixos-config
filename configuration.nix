@@ -74,10 +74,6 @@
     packageOverrides = import ./overlays/overlay.nix pkgs;
 
     android_sdk.accept_license = true;
-
-    permittedInsecurePackages =  [
-      "p7zip-16.02"
-    ];
   };
   
   environment = {
