@@ -92,6 +92,7 @@
       gnome3.eog
       veracrypt
       mullvad-vpn
+      nushell
         
       # Misc Applications
       ripgrep # Improved version of grep

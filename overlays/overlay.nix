@@ -349,6 +349,11 @@ in {
   ### Modifications to make some packages run as fast as possible
 
   alacritty = withRustNative super.alacritty;
+
+  nushell = withRustNativeAndPatches (super.nushell.overrideAttrs (oldAttrs: rec {
+    doCheck = false;
+  })) [ ./patches/nushell.patch ];
+
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
   mpv = let
