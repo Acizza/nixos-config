@@ -296,7 +296,40 @@
 
   hardware = {
     cpu.amd.updateMicrocode = true;
-    opengl.driSupport32Bit = true;
+
+    opengl = let
+      # latest git version of mesa
+      # TODO: enable building with b_lto
+      mesaDrivers = pkgs: ((pkgs.mesa.override {
+        stdenv = if !pkgs.stdenv.is32bit then
+          pkgs.impureUseNativeOptimizations pkgs.llvmPackages_latest.stdenv
+        else
+          # Using LLVM for 32-bit builds requires us to build GCC and LLVM, which isn't very nice
+          pkgs.stdenv;
+      }).overrideAttrs (oldAttrs: rec {
+        version = "20.2.0";
+
+        src = pkgs.fetchgit {
+          url = "https://gitlab.freedesktop.org/mesa/mesa.git";
+          # 07-13-20
+          rev = "be8a8edb1e40d9a716e56961142edd4d29e2a4a3";
+          sha256 = "09443jdm73glsl1bvbfvvndv5lcyqsz0s5zvhnglfj2ynqpy5bsb";
+        };
+
+        nativeBuildInputs = [ pkgs.patchelf_0_9 ] ++ oldAttrs.nativeBuildInputs or [];
+
+        patches = let
+          tail = (builtins.tail oldAttrs.patches);
+        in (pkgs.lib.take 1 tail) ++ [
+          ./overlays/patches/disk_cache-include-dri-driver-path-in-cache-key.patch
+        ] ++ (pkgs.lib.drop 2 tail);
+      })).drivers;
+    in {
+      driSupport32Bit = true;
+
+      package = mesaDrivers pkgs;
+      package32 = mesaDrivers pkgs.pkgsi686Linux;
+    };
 
     pulseaudio = {
       enable = true;
