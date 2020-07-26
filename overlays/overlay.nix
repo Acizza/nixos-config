@@ -346,6 +346,8 @@ in {
     };
   });
 
+  nativeFfmpeg = withLLVMNative super.ffmpeg_4;
+
   ### Modifications to make some packages run as fast as possible
 
   alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
