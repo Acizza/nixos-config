@@ -39,13 +39,13 @@ in {
     withWayland = true;
   };
 
-  rust-analyzer-unwrapped = withRustNative (super.rust-analyzer-unwrapped.override rec {
-    version = "2020-06-22";
+  rust-analyzer-unwrapped = withRustNativeAndPatches (super.rust-analyzer-unwrapped.override rec {
+    version = "2020-07-20";
     rev = version;
-    sha256 = "1cxsdc4b1823i5dx7nvh584araqbhpj8lx3jc0cc8qgm9hdbphz8";
-    cargoSha256 = "0gn0gmzzxwbrbv5csrqz59mk9pkj54mljf9cam75f8mx1kv6472r";
+    sha256 = "0bp6byaq9g3y2nxpflyj703q3bjfr2lf0wlb1b2kkjvzfnyygj5w";
+    cargoSha256 = "08f3cgjxfz5qd982mwxgrxr1hgmmnq54axcvfxyz32walf1z2hgn";
     doCheck = false;
-  });
+  }) [ ./patches/rust-analyzer.patch ];
 
   vscode-with-extensions = super.vscode-with-extensions.override {
     vscode = super.vscodium;
