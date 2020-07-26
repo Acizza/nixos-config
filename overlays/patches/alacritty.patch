@@ -1,0 +1,14 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index b904b2f..acd7734 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -6,6 +6,7 @@ members = [
+ ]
+ 
+ [profile.release]
+-lto = true
+-debug = 1
++lto = "thin"
++debug = 0
++codegen-units = 1
+ incremental = false

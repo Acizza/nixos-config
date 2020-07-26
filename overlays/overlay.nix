@@ -348,7 +348,7 @@ in {
 
   ### Modifications to make some packages run as fast as possible
 
-  alacritty = withRustNative super.alacritty;
+  alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
 
   nushell = withRustNativeAndPatches (super.nushell.overrideAttrs (oldAttrs: rec {
     doCheck = false;
