@@ -93,6 +93,7 @@
       veracrypt
       mullvad-vpn
       nushell
+      sshfs
         
       # Misc Applications
       ripgrep # Improved version of grep
