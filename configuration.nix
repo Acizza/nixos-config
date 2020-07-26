@@ -214,7 +214,7 @@
       ignoreOOMScoreAdjust = true;
     };
 
-    ntp.enable = true;
+    chrony.enable = true;
     sshd.enable = true;
   };
 
