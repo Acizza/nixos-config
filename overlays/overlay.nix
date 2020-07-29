@@ -40,10 +40,10 @@ in {
   };
 
   rust-analyzer-unwrapped = withRustNativeAndPatches (super.rust-analyzer-unwrapped.override rec {
-    version = "2020-07-20";
+    version = "2020-07-27";
     rev = version;
-    sha256 = "0bp6byaq9g3y2nxpflyj703q3bjfr2lf0wlb1b2kkjvzfnyygj5w";
-    cargoSha256 = "08f3cgjxfz5qd982mwxgrxr1hgmmnq54axcvfxyz32walf1z2hgn";
+    sha256 = "0wh4m4ljfyr3bs2svh93zrgvpm00j7vchncch90mk6viiryr2733";
+    cargoSha256 = "1cg1gvv4sg98c9cm21hcq0xm2cnpyzpdnrf32rlkdhf5270f3yh0";
     doCheck = false;
   }) [ ./patches/rust-analyzer.patch ];
 
