@@ -318,12 +318,10 @@
 
         src = pkgs.fetchgit {
           url = "https://gitlab.freedesktop.org/mesa/mesa.git";
-          # 07-13-20
-          rev = "be8a8edb1e40d9a716e56961142edd4d29e2a4a3";
-          sha256 = "09443jdm73glsl1bvbfvvndv5lcyqsz0s5zvhnglfj2ynqpy5bsb";
+          # 08-02-20
+          rev = "b54afde3ad631b33b42812c9ebf2225d9c53e38e";
+          sha256 = "1p63wba8vg3dg20nb19dqm9ll2y9pbzqpp8zlxnzvnwdavlkxhbi";
         };
-
-        nativeBuildInputs = [ pkgs.patchelf_0_9 ] ++ oldAttrs.nativeBuildInputs or [];
 
         patches = let
           tail = (builtins.tail oldAttrs.patches);
