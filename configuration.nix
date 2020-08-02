@@ -136,7 +136,7 @@
       # Custom packages
       dxvk
       bcnotif
-      #anup
+      anup
       wpfxm
       nixup
       #nixos-update-status

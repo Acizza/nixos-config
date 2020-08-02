@@ -1,27 +1,22 @@
-{ rustPlatform, fetchFromGitLab, pkgs, stdenv }:
+{ rustPlatform, fetchFromGitHub, stdenv, pkgconfig, sqlite, xdg_utils }:
 
 rustPlatform.buildRustPackage rec {
     name = "anup-${version}";
-    version = "6062dfbef4d5c0f061b9f6e342acab54f34e089a";
+    version = "0a05243097f96cc8fb9246e36ea99439120acd09";
     
-    src = fetchFromGitLab {
+    src = fetchFromGitHub {
       owner = "Acizza";
       repo = "anup";
-      rev = "${version}";
-      sha256 = "03l720ya9bqlww18x0ymswvrcbmpg0m8bx1ky13s3zfzynz0ss9a";
+      rev = version;
+      sha256 = "18sav9nvc446d4w4k2mwi9vn17ai0na9ivxz1ysv01ay7bxv0q36";
     };
     
-    cargoSha256 = "0fsll5ainq5g0f7azlr8idij6q09hmiw25345rv9q105lm9jlh91";
+    cargoSha256 = "1vcx4h2s6gyhyjsm18x8iqdpcimlv25j397z19rya758gc1rnzah";
     
-    nativeBuildInputs = with pkgs; [ buildPackages.stdenv.cc pkgconfig ];
-    buildInputs = with pkgs; [ openssl.dev xdg_utils ];
-
-    postInstall = ''
-      cp anup.sh $out/bin/anup.sh
-    '';
+    buildInputs = [ stdenv.cc pkgconfig sqlite.dev xdg_utils ];
     
     meta = with stdenv.lib; {
-      license = licenses.asl20;
+      license = licenses.agpl3;
       platforms = platforms.linux;
     };
 }
