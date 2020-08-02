@@ -246,53 +246,57 @@
 
     networkmanager.enable = true;
 
-    # Block ads / tracking from desktop applications
-    # This mainly serves as a backup incase I can't use my Pi-hole
-    hosts."0.0.0.0" = [
-      # Firefox
-      "location.services.mozilla.com"
-      "shavar.services.mozilla.com"
-      "incoming.telemetry.mozilla.org"
-      "ocsp.sca1b.amazontrust.com"
+    hosts = {
+      # Block ads / tracking from desktop applications
+      # This mainly serves as a backup incase I can't use my Pi-hole
+      "0.0.0.0" = [
+        # Firefox
+        "location.services.mozilla.com"
+        "shavar.services.mozilla.com"
+        "incoming.telemetry.mozilla.org"
+        "ocsp.sca1b.amazontrust.com"
 
-      # Unity games
-      "config.uca.cloud.unity3d.com"
-      "api.uca.cloud.unity3d.com"
-      "cdp.cloud.unity3d.com"
+        # Unity games
+        "config.uca.cloud.unity3d.com"
+        "api.uca.cloud.unity3d.com"
+        "cdp.cloud.unity3d.com"
 
-      # Unreal Engine 4 (not sure if games actually connect to these)
-      "tracking.epicgames.com"
-      "tracking.unrealengine.com"
+        # Unreal Engine 4 (not sure if games actually connect to these)
+        "tracking.epicgames.com"
+        "tracking.unrealengine.com"
 
-      # Redshell (game analytics)
-      "redshell.io"
-      "www.redshell.io"
-      "api.redshell.io"
-      "treasuredata.com"
-      "www.treasuredata.com"
-      "api.treasuredata.com"
-      "in.treasuredata.com"
+        # Redshell (game analytics)
+        "redshell.io"
+        "www.redshell.io"
+        "api.redshell.io"
+        "treasuredata.com"
+        "www.treasuredata.com"
+        "api.treasuredata.com"
+        "in.treasuredata.com"
 
-      # GameAnalytics
-      "gameanalytics.com"
-      "api.gameanalytics.com"
-      "rubick.gameanalytics.com"
+        # GameAnalytics
+        "gameanalytics.com"
+        "api.gameanalytics.com"
+        "rubick.gameanalytics.com"
 
-      # Spotify
-      "apresolve.spotify.com"
-      "heads4-ak.spotify.com.edgesuite.net"
-      "redirector.gvt1.com"
+        # Spotify
+        "apresolve.spotify.com"
+        "heads4-ak.spotify.com.edgesuite.net"
+        "redirector.gvt1.com"
 
-      # General
-      "www.google-analytics.com"
-      "ssl.google-analytics.com"
-      "www.googletagmanager.com"
-      "www.googletagservices.com"
-      "api.facepunch.com"
-      "files.facepunch.com"
-    ];
+        # General
+        "www.google-analytics.com"
+        "ssl.google-analytics.com"
+        "www.googletagmanager.com"
+        "www.googletagservices.com"
+        "api.facepunch.com"
+        "files.facepunch.com"
+      ];
 
-    hosts."192.168.0.100" = [ "rasp.pi" ];
+      # Aliases
+      "192.168.0.100" = [ "rasp.pi" ];
+      "192.168.0.102" = [ "w.laptop" ];
+    };
   };
 
   sound.enable = true;
