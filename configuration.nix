@@ -156,6 +156,8 @@
     firejail.enable = true;
     gnupg.agent.enable = true;
 
+    fuse.userAllowOther = true;
+
     sway = {
       enable = true;
 
