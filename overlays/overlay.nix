@@ -316,20 +316,21 @@ in {
       #define RPCS3_GIT_VERSION_NO_UPDATE 1
       EOF
     '';
+
+    postInstall = let
+      mlaaPatch = super.fetchurl {
+        name = "patch.yml";
+        url = "https://rpcs3.net/blog/wp-content/uploads/2020/common/mlaa/patch.yml";
+        sha256 = "018mm3zg9zvdwqk61ixjvz6z1ky2qlxlzaqfmdqszgf4rj8yk4mg";
+      };
+    in oldAttrs.postInstall or "" + ''
+      cp ${mlaaPatch} $out/bin/patch.yml
+    '';
   });
 
   the-powder-toy = withLLVMNativeAndFlags super.the-powder-toy [ "-O3" "-flto" ];
 
   arc-theme = super.arc-theme.overrideAttrs (oldAttrs: {
-    version = "20200417";
-
-    src = super.fetchFromGitHub {
-      owner = "jnsh";
-      repo = "arc-theme";
-      rev = "0779e1ca84141d8b443cf3e60b85307a145169b6";
-      sha256 = "1ddyi8g4rkd4mxadjvl66wc0lxpa4qdr98nbbhm5abaqfs2yldd4";
-    };
-
     configureFlags = oldAttrs.configureFlags or [] ++ [
       "--disable-light"
       "--disable-cinnamon"
@@ -340,10 +341,6 @@ in {
       "--disable-plank"
       "--disable-openbox"
     ];
-
-    meta = oldAttrs.meta // {
-      broken = false;
-    };
   });
 
   nativeFfmpeg = withLLVMNative super.ffmpeg_4;
