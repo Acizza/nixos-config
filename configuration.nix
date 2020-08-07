@@ -207,6 +207,7 @@
   };
 
   services = {
+    btrfs.autoScrub.enable = true;
     fstrim.enable = true;
 
     mingetty.autologinUser = "jonathan";
