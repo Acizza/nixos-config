@@ -8,7 +8,7 @@ index 803aaf5..b7dfdce 100644
  [profile.release]
 -debug = 1
 +codegen-units = 1
-+lto = true
++lto = "thin"
  
  [package.metadata.deb]
  features = ["pcre2"]
