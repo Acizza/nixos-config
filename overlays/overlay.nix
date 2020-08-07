@@ -69,8 +69,8 @@ in {
       {
         name = "vetur";
         publisher = "octref";
-        version = "0.25.0";
-        sha256 = "1yxax4jzlk9dvjpffzkjfq0m94pskhl94gxiyfsky6sy49rlwlxr";
+        version = "0.26.0";
+        sha256 = "1bk0r75g677565awakkcvfsqib3pziipf8x7d8g26l44pvndkp1g";
       }
       {
         name = "better-toml";
