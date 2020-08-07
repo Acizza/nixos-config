@@ -169,7 +169,6 @@
     shells = with pkgs; [ nushell ];
 
     variables.TERM = "alacritty";
-    variables.RADV_PERFTEST = "aco";
     variables.PATH = [ "/home/jonathan/.cargo/bin/" ];
   };
   
