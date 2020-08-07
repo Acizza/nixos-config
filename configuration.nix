@@ -341,16 +341,16 @@
 
         src = pkgs.fetchgit {
           url = "https://gitlab.freedesktop.org/mesa/mesa.git";
-          # 08-02-20
-          rev = "b54afde3ad631b33b42812c9ebf2225d9c53e38e";
-          sha256 = "1p63wba8vg3dg20nb19dqm9ll2y9pbzqpp8zlxnzvnwdavlkxhbi";
+          # 08-04-20
+          rev = "b98dd704894713b5f0b8fa2c1b52c0b970e9f89b";
+          sha256 = "0v7av0mxbjcd8d2kl7pfbnrldyv8kyfmz9ixpdyimgq71s0ngw2k";
         };
 
         patches = let
           tail = (builtins.tail oldAttrs.patches);
         in (pkgs.lib.take 1 tail) ++ [
           ./overlays/patches/disk_cache-include-dri-driver-path-in-cache-key.patch
-        ] ++ (pkgs.lib.drop 2 tail);
+        ] ++ (pkgs.lib.drop 3 tail);
       })).drivers;
     in {
       driSupport32Bit = true;
