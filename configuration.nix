@@ -115,6 +115,8 @@
       mullvad-vpn
       nushell
       sshfs
+      duperemove
+      compsize
         
       # Misc Applications
       ripgrep # Improved version of grep
