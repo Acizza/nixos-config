@@ -361,11 +361,9 @@ in {
 
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
-  mpv = let
-    mpvPkg = super.mpv.override {
-      vapoursynthSupport = true;
-    };
-  in withLLVMNativeAndFlags mpvPkg [ "-O3" "-flto" ];
+  mpv = withLLVMNativeAndFlags (super.mpv-unwrapped.override {
+    vapoursynthSupport = true;
+  }) [ "-O3" "-flto" ];
 
   vapoursynth = withLLVMNativeAndFlags super.vapoursynth [ "-O3" "-flto" ];
   vapoursynth-mvtools = withLLVMNativeAndFlags super.vapoursynth-mvtools [ "-O3" "-flto" ];
