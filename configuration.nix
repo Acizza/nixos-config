@@ -3,10 +3,20 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
-  fileSystems = {
-    "/".options = [ "noatime" "nodiratime" ];
-    "/home".options = [ "noatime" "nodiratime" ];
-    "/media".options = [ "noatime" "nodiratime" ];
+  fileSystems = let
+    ext4SSD = [ "noatime" "nodiratime" ];
+
+    btrfsSSD = [
+      "ssd"
+      "compress-force=zstd:6"
+      "autodefrag"
+      "noatime"
+      "nodiratime"
+    ];
+  in {
+    "/".options = ext4SSD;
+    "/home".options = btrfsSSD;
+    "/media".options = btrfsSSD;
   };
 
   boot = {
@@ -16,6 +26,8 @@
       useOSProber = false;
       device = "/dev/sdb";
     };
+
+    supportedFilesystems = [ "btrfs" ];
 
     # Fixes sway randomly not being able to start with amdgpu
     # https://bbs.archlinux.org/viewtopic.php?pid=1873238#p1873238
