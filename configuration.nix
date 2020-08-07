@@ -81,6 +81,15 @@
     noto-fonts-cjk
   ];
 
+  nix = {
+    maxJobs = 16;
+    package = pkgs.nixUnstable;
+
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = import ./overlays/overlay.nix pkgs;
