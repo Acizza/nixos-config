@@ -90,6 +90,12 @@ in {
         version = "0.5.6";
         sha256 = "096dpvi8ja1qandhp53gmcqrkj5k8gjyab3nhjl4lz3jqdav13bs";
       }
+      {
+        name = "svelte-vscode";
+        publisher = "svelte";
+        version = "101.8.0";
+        sha256 = "0sn3hf1fdcn1ixpr4w8szc0p06mwm6d7irrj5z8x35piqjk53h0q";
+      }
     ];
   };
 
