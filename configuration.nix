@@ -168,8 +168,11 @@
 
     shells = with pkgs; [ nushell ];
 
-    variables.TERM = "alacritty";
-    variables.PATH = [ "/home/jonathan/.cargo/bin/" ];
+    variables = {
+      TERM = "alacritty";
+      RADV_PERFTEST = "aco";
+      PATH = [ "/home/jonathan/.cargo/bin/" ];
+    };
   };
   
   programs = {
