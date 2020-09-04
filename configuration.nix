@@ -36,22 +36,21 @@
       "fs.inotify.max_user_watches" = 524288;
       "vm.swappiness" = 10;
     };
-    
-    cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_7;
 
-    # Add fsync patch for Wine
-    kernelPatches =
-      let
-        fsync = rec {
-          name = "v5.7-fsync";
-          patch = pkgs.fetchpatch {
-            name = name + ".patch";
-            url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux57-tkg/linux57-tkg-patches/0007-v5.7-fsync.patch";
-            sha256 = "0lm6zx2r6q24222qacxf536zhk9kgfp9m8091wqyi30vb8621l81";
-          };
+    cleanTmpDir = true;
+    kernelPackages = pkgs.linuxPackages_5_8;
+
+    kernelPatches = let
+      # For Wine
+      fsync = rec {
+        name = "v5.8-fsync";
+        patch = pkgs.fetchpatch {
+          name = name + ".patch";
+          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux58-tkg/linux58-tkg-patches/0007-v5.8-fsync.patch";
+          sha256 = "AdEgDFobjOgxDwmgmq57M034zSiuM4WFEERgk0X/plI=";
         };
-      in [ fsync ];
+      };
+    in [ fsync ];
   };
 
   i18n = {
