@@ -308,6 +308,7 @@
 
         # General
         "www.google-analytics.com"
+        "google-analytics.com"
         "ssl.google-analytics.com"
         "www.googletagmanager.com"
         "www.googletagservices.com"
