@@ -208,6 +208,7 @@
   services = {
     btrfs.autoScrub.enable = true;
     fstrim.enable = true;
+    openssh.passwordAuthentication = false;
 
     mingetty.autologinUser = "jonathan";
 
