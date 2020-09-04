@@ -67,12 +67,6 @@ in {
         sha256 = "1x4vwl4sdgxq8frh8fbyxj5ck14cjwslhb0k2kfp6hdfvbmpw2fh";
       }
       {
-        name = "vetur";
-        publisher = "octref";
-        version = "0.26.0";
-        sha256 = "1bk0r75g677565awakkcvfsqib3pziipf8x7d8g26l44pvndkp1g";
-      }
-      {
         name = "better-toml";
         publisher = "bungcip";
         version = "0.3.2";
