@@ -87,8 +87,8 @@ in {
       {
         name = "svelte-vscode";
         publisher = "svelte";
-        version = "101.8.0";
-        sha256 = "0sn3hf1fdcn1ixpr4w8szc0p06mwm6d7irrj5z8x35piqjk53h0q";
+        version = "101.12.2";
+        sha256 = "LIw92vNS4rh2G2Y69/6P+lf/3pb95p1+v4NSbFzfsaI=";
       }
     ];
   };
