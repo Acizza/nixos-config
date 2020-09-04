@@ -4,27 +4,23 @@
   imports = [ ./hardware-configuration.nix ];
 
   fileSystems = let
-    ext4SSD = [ "noatime" "nodiratime" ];
-
-    btrfsSSD = [
+    btrfsSSD = compressLevel: [
       "ssd"
-      "compress-force=zstd:6"
+      "compress-force=zstd:${compressLevel}"
       "autodefrag"
       "noatime"
       "nodiratime"
     ];
   in {
-    "/".options = ext4SSD;
-    "/home".options = btrfsSSD;
-    "/media".options = btrfsSSD;
+    "/".options = btrfsSSD "3";
+    "/home".options = btrfsSSD "6";
+    "/media".options = btrfsSSD "6";
   };
 
   boot = {
-    loader.grub = {
-      enable = true;
-      version = 2;
-      useOSProber = false;
-      device = "/dev/sdb";
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
     };
 
     supportedFilesystems = [ "btrfs" ];
