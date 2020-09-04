@@ -1,14 +1,14 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index ce22a3d..ee3cee7 100644
+index b904b2f..acd7734 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -87,7 +87,8 @@ zip = "0.5"
+@@ -6,6 +6,7 @@ members = [
+ ]
  
  [profile.release]
- lto = true
+-lto = true
 -debug = 1
-+codegen-units = 1
++lto = "thin"
 +debug = 0
++codegen-units = 1
  incremental = false
- 
- [package.metadata.deb]

@@ -1,0 +1,18 @@
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 41405de27d66..9afc62490715 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -151,6 +151,13 @@ static const struct id_table ic_id_table[] = {
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8822b_config" },
++
++	/* 8821CE b00a */
++	{ IC_INFO(0xa99e, 0x826c),
++	  .config_needed = false,
++	  .has_rom_version = true,
++	  .fw_name  = "rtl_bt/rtl8821c_fw.bin",
++	  .cfg_name = "rtl_bt/rtl8821c_config" },
+ 	};
+ 
+ static const struct id_table *btrtl_match_ic(u16 lmp_subver, u16 hci_rev,

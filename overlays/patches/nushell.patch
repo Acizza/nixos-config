@@ -1,0 +1,15 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 75a4b99d..94a75535 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -12,6 +12,10 @@ homepage = "https://www.nushell.sh"
+ documentation = "https://www.nushell.sh/book/"
+ exclude = ["images"]
+ 
++[profile.release]
++lto = "thin"
++codegen-units = 1
++
+ [workspace]
+ members = ["crates/*/"]
+ 

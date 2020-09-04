@@ -13,36 +13,40 @@
       efi.canTouchEfiVariables = true;
     };
 
-    extraModulePackages = [ pkgs.linuxPackages_5_2.rtl8821ce ];
+    extraModulePackages = [ pkgs.linuxPackages_5_8.rtl8821ce ];
 
-    # This enables the touchpad
-    kernelPatches = lib.singleton {
-      name = "enable-gpio-amd";
-      patch = null;
-      extraConfig = ''
-        X86_AMD_PLATFORM_DEVICE y
-        GPIO_AMDPT y
-        PINCTRL_AMD y
-      '';
+    kernelPatches = let
+      rtl8821ceBT = rec {
+        name = "rtl8821ce-bt";
+        patch = ./overlays/patches/rtl8821ce-b00a.patch;
+      };
+    in [ rtl8821ceBT ];
+
+    extraModprobeConfig = ''
+      options snd_hda_intel power_save=1
+    '';
+
+    # Power saving options
+    kernel.sysctl = {
+      "kernel.nmi_watchdog" = 0;
+      "vm.laptop_mode" = 5;
     };
 
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_2;
+    kernelPackages = pkgs.linuxPackages_5_8;
   };
 
   i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
 
     supportedLocales = [
       "en_US.UTF-8/UTF-8"
       "ja_JP.UTF-8/UTF-8"
     ];
-
-    inputMethod.enabled = "ibus";
-    inputMethod.ibus.engines = [ pkgs.ibus-engines.mozc ];
   };
+
+  console.keyMap = "us";
+  console.font = "Lat2-Terminus16";
 
   time.timeZone = "America/Los_Angeles";
   
@@ -51,6 +55,22 @@
     dejavu_fonts
     noto-fonts-cjk
   ];
+
+  nix = {
+    distributedBuilds = true;
+
+    buildMachines = [
+      {
+        hostName = "192.168.0.103";
+        sshUser = "root";
+        sshKey = "/root/.ssh/id_rsa";
+        system = "x86_64-linux";
+        speedFactor = 2;
+        maxJobs = 4;
+        supportedFeatures = [ "big-parallel" ]; 
+      }
+    ];
+  };
 
   nixpkgs.config = {
     allowUnfree = true;
@@ -61,54 +81,35 @@
   
   environment = {
     systemPackages = with pkgs; [
-      # Core Applications
+      # Core applications
       firefox-bin
       alacritty
       ranger
       mpv
-      vscodium
-      git
-      deluge
-      rustup
       gnome3.eog
-      veracrypt
-      #soulseekqt
-      lollypop
+      qemu
+      git
         
-      # Misc Applications
-      ripgrep # Improved version of grep
+      # Misc applications
       psmisc # killall
-      pywal
       gnome3.networkmanagerapplet
-      feh
       atool
       gnupg1
-      python3
-      numlockx
       binutils
       mediainfo
       libcaca
       highlight
       file
-      notify-osd
-      pavucontrol
+      #notify-osd
       youtube-dl
       ffmpeg
-      the-powder-toy
-      srm
-      kcalc
-      libreoffice
-      kate
-      puddletag
-      cargo-outdated
-      cargo-bloat
-      loc
       spotify
+      mullvad-vpn
+      nushell
+      ripgrep
 
       # Compression
-      unzip
-      unrar
-      p7zip
+      unar
         
       # Themes
       arc-icon-theme
@@ -116,16 +117,14 @@
       gnome3.adwaita-icon-theme
 
       # Custom packages
-      #dxvk
-      #d9vk
-      bcnotif
-      #anup
-      #wpfxm
       nixup
       vapoursynth-plugins
     ];
 
+    shells = with pkgs; [ nushell ];
+
     variables.TERM = "alacritty";
+    variables.PATH = [ "/home/jonathan/.cargo/bin/" ];
   };
   
   programs = {
@@ -133,8 +132,27 @@
     adb.enable = true;
     firejail.enable = true;
 
-    # lollypop needs this in order to save settings
-    dconf.enable = true;
+    sway = {
+      enable = true;
+
+      extraPackages = with pkgs; [
+        xwayland
+        swayidle
+        waybar
+        mako
+        rofi
+      ];
+
+      wrapperFeatures.gtk = true;
+
+      extraSessionCommands = ''
+        export SDL_VIDEODRIVER=wayland
+        export MOZ_ENABLE_WAYLAND=1
+        export QT_QPA_PLATFORM=wayland
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+        export _JAVA_AWT_WM_NONREPARENTING=1
+      '';
+    };
   };
 
   location = {
@@ -146,11 +164,6 @@
     redshift = {
       enable = true;
       temperature.night = 2400;
-    };
-
-    plex = {
-      enable = true;
-      openFirewall = true;
     };
 
     printing = {
@@ -168,10 +181,13 @@
         plasma5.enable = true;
       };
 
-      displayManager.sddm = {
-        enable = true;
-        autoLogin.enable = true;
-        autoLogin.user = "wendy";
+      displayManager = {
+        autoLogin = {
+          enable = true;
+          user = "wendy";
+        };
+
+        sddm.enable = true;
       };
 
       libinput = {
@@ -181,22 +197,28 @@
     };
 
     fstrim.enable = true;
-    ntp.enable = true;
-
-    # This is required for lollypop to scrobble to services like last.fm
-    gnome3.gnome-keyring.enable = true;
-
+    chrony.enable = true;
     sshd.enable = true;
+    mullvad-vpn.enable = true;
+
+    # Allow the screen backlight to be controlled by users
+    udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="amdgpu_bl0", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness"
+      ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="amdgpu_bl0", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
+    '';
+
+    earlyoom = {
+      enable = true;
+      freeMemThreshold = 3;
+      ignoreOOMScoreAdjust = true;
+    };
   };
+
+  powerManagement.powertop.enable = true;
 
   networking = {
     firewall = {
       enable = true;
-
-      # Open these ports when connected to a VPN
-      interfaces.tun0 = {
-        allowedTCPPorts = [ 5504 20546 ];
-      };
 
       # For Spotify
       allowedTCPPorts = [ 57621 ];
@@ -241,12 +263,23 @@
       "heads4-ak.spotify.com.edgesuite.net"
       "redirector.gvt1.com"
 
+      # Windows VM
+      "login.live.com"
+      "settings-win.data.microsoft.com"
+      "fs.microsoft.com"
+      "checkappexec.microsoft.com"
+      "sls.update.microsoft.com"
+
       # General
       "www.google-analytics.com"
+      "google-analytics.com"
       "ssl.google-analytics.com"
       "www.googletagmanager.com"
       "www.googletagservices.com"
     ];
+
+    hosts."192.168.0.100" = [ "rasp.pi" ];
+    hosts."192.168.0.103" = [ "j.desktop" ];
   };
 
   sound.enable = true;
@@ -254,22 +287,61 @@
   hardware = {
     cpu.amd.updateMicrocode = true;
     opengl.driSupport32Bit = true;
-    pulseaudio.enable = true;
+
+    bluetooth = {
+      enable = true;
+
+      config = {
+        Policy = {
+          AutoEnable = true;
+        };
+      };
+    };
+
+    pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+    };
   };
 
   users.extraUsers.jonathan = {
     isNormalUser = true;
     home = "/home/jonathan";
     description = "Jonathan";
-    extraGroups = [ "wheel" "networkmanager" "adbusers" ];
+    extraGroups = [ "wheel" "video" "networkmanager" "adbusers" ];
     shell = "/run/current-system/sw/bin/fish";
+
+    packages = with pkgs; [
+      # Core applications
+      vscodium
+      rustup
+      veracrypt
+
+      # Misc applications
+      python3
+      pavucontrol
+      the-powder-toy
+      srm
+      cargo-outdated
+      cargo-bloat
+      loc
+      brillo
+      gnome3.gnome-system-monitor
+    ];
   };
 
   users.extraUsers.wendy = {
     isNormalUser = true;
     home = "/home/wendy";
     description = "Wendy";
-    extraGroups = [ "wheel" "networkmanager" "adbusers" ];
+    extraGroups = [ "wheel" "video" "networkmanager" "adbusers" ];
     shell = "/run/current-system/sw/bin/fish";
+
+    packages = with pkgs; [
+      numlockx
+      kcalc
+      libreoffice
+      kate
+    ];
   };
 }
