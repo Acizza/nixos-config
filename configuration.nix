@@ -142,6 +142,7 @@
       steam
       rust-analyzer
       anki
+      ntfs3g
 
       # Compression
       unar
