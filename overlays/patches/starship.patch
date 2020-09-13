@@ -1,0 +1,13 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 4f71b46..3eda445 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -82,7 +82,7 @@ tempfile = "3.1.0"
+ 
+ [profile.release]
+ codegen-units = 1
+-lto = true
++lto = "thin"
+ 
+ [[bin]]
+ name = "starship"

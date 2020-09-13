@@ -408,6 +408,8 @@ in {
     doCheck = false;
   })) [ ./patches/nushell.patch ];
 
+  starship = withRustNativeAndPatches super.starship [ ./patches/starship.patch ];
+
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
   mpv = withLLVMNativeAndFlags (super.mpv-unwrapped.override {
