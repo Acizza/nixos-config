@@ -90,6 +90,12 @@ in {
         version = "102.1.1";
         sha256 = "JgijA0+VAy1Lcd1Cbpvx/fpBcrDOc+PZoCt1M9oR60M=";
       }
+      {
+        name = "prettier-vscode";
+        publisher = "esbenp";
+        version = "5.6.0";
+        sha256 = "92Iq0WV/3ZIg07jPPXk3Wl7YO3tUCsxGCOY2gs/v9mI=";
+      }
     ];
   };
 
