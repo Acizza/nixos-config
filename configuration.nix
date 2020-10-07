@@ -74,6 +74,7 @@
     google-fonts
     dejavu_fonts
     noto-fonts-cjk
+    vistafonts
   ];
 
   nix = {
