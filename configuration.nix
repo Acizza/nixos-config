@@ -110,6 +110,7 @@
       veracrypt
       mullvad-vpn
       nushell
+      starship
       sshfs
       duperemove
       compsize
