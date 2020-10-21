@@ -135,7 +135,6 @@
       the-powder-toy
       qemu
       srm
-      puddletag
       cargo-outdated
       cargo-bloat
       tokei
