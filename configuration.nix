@@ -256,11 +256,6 @@
     firewall = {
       enable = true;
 
-      # Open these ports when connected to a VPN
-      interfaces.tun0 = {
-        allowedTCPPorts = [ 5504 20546 ];
-      };
-
       # For Spotify
       allowedTCPPorts = [ 57621 ];
       allowedUDPPorts = [ 57621 ];
