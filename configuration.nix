@@ -38,16 +38,16 @@
     };
 
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_8;
+    kernelPackages = pkgs.linuxPackages_5_9;
 
     kernelPatches = let
       # For Wine
       fsync = rec {
-        name = "v5.8-fsync";
+        name = "v5.9-fsync";
         patch = pkgs.fetchpatch {
           name = name + ".patch";
-          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux58-tkg/linux58-tkg-patches/0007-v5.8-fsync.patch";
-          sha256 = "AdEgDFobjOgxDwmgmq57M034zSiuM4WFEERgk0X/plI=";
+          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/5c57ad3792f6fb08b4a7f7e9b50225fa3ea61f02/linux59-tkg/linux59-tkg-patches/0007-v5.9-fsync.patch";
+          sha256 = "dXwRXndFH+ODpvUxfKdWFmP1yVyLh955HQ4lLwVKEj0=";
         };
       };
     in [ fsync ];
