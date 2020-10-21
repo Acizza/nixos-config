@@ -1,8 +1,8 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index 218581d9d..231673cf2 100644
+index 87d33f06c..2fe6c2c23 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -16,20 +16,30 @@ text-size.opt-level = 3
+@@ -16,7 +16,9 @@ text-size.opt-level = 3
  miniz_oxide.opt-level = 3
  
  [profile.release]
@@ -12,25 +12,4 @@ index 218581d9d..231673cf2 100644
 +lto = "thin"
  debug = 0 # Set this to 1 or 2 to get more useful backtraces in debugger.
  
- # Ideally, we would use `build-override` here, but some crates are also
- # needed at run-time and we end up compiling them twice.
- [profile.release.package]
- chalk-derive.opt-level = 0
-+chalk-derive.codegen-units = 256
- proc-macro2.opt-level = 0
-+proc-macro2.codegen-units = 256
- quote.opt-level = 0
-+quote.codegen-units = 256
- salsa-macros.opt-level = 0
-+salsa-macros.codegen-units = 256
- serde_derive.opt-level = 0
-+serde-derive.codegen-units = 256
- syn.opt-level = 0
-+syn.codegen-units = 256
- tracing-attributes.opt-level = 0
-+tracing-attributes.codegen-units = 256
- xtask.opt-level = 0
-+xtask.codegen-units = 256
- 
  [patch.'crates-io']
- # rowan = { path = "../rowan" }
