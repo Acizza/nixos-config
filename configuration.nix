@@ -335,13 +335,12 @@
           # Using LLVM for 32-bit builds requires us to build GCC and LLVM, which isn't very nice
           pkgs.stdenv;
       }).overrideAttrs (oldAttrs: rec {
-        version = "20.2.0";
+        version = "20.2.1";
 
         src = pkgs.fetchgit {
           url = "https://gitlab.freedesktop.org/mesa/mesa.git";
-          # 08-04-20
-          rev = "b98dd704894713b5f0b8fa2c1b52c0b970e9f89b";
-          sha256 = "0v7av0mxbjcd8d2kl7pfbnrldyv8kyfmz9ixpdyimgq71s0ngw2k";
+          rev = "mesa-${version}";
+          sha256 = "rBHmsVNk7uhii9/NOPWkwGJWuR4DmZc7W4UZ6VbwX7o=";
         };
 
         patches = let
