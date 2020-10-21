@@ -140,6 +140,7 @@
       tokei
       spotify
       nodejs-14_x
+      yarn
       steam
       rust-analyzer
       anki
