@@ -2,16 +2,16 @@
 
 rustPlatform.buildRustPackage rec {
     name = "nixup-${version}";
-    version = "677ab9283175dea1b5084b2c9c34282b1fc394a6";
+    version = "e312d5c88962c4af6b344711ed167174b214d272";
     
     src = fetchFromGitHub {
       owner = "Acizza";
       repo = "nixup";
       rev = "${version}";
-      sha256 = "0qn8wcdifd0zjdm73sndghhjkprh083wvry0w0mmqymykc4j5iqm";
+      sha256 = "J9CayWiRYSCl69u0PUru4gXh5I9gTm+4n958e3XtWOI=";
     };
     
-    cargoSha256 = "0zwj57ai43ivr9wrrkmgr9jrwvs8bpjjb14ip4lwd3mqg73rk3k3";
+    cargoSha256 = "liqO0BZ+NwoHxEAHUtLSQQ8xzf9mN87QNZdoI7s7514=";
     
     buildInputs = let
       sqlite = pkgs.sqlite.overrideAttrs (oldAttrs: rec {
