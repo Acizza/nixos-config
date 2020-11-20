@@ -139,7 +139,7 @@
       cargo-bloat
       tokei
       spotify
-      nodejs-14_x
+      nodejs-15_x
       yarn
       steam
       rust-analyzer
