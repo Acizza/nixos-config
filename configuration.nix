@@ -303,6 +303,10 @@
         "heads4-ak.spotify.com.edgesuite.net"
         "redirector.gvt1.com"
 
+        # Microsoft Flight Simulator
+        "vortex.data.microsoft.com"
+        "web.vortex.data.microsoft.com"
+
         # General
         "www.google-analytics.com"
         "google-analytics.com"
