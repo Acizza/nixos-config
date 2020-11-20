@@ -155,6 +155,7 @@
       gnome3.adwaita-icon-theme
 
       # Custom packages
+      ox
       dxvk
       bcnotif
       anup
