@@ -177,6 +177,7 @@
     adb.enable = true;
     firejail.enable = true;
     gnupg.agent.enable = true;
+    criu.enable = true;
 
     fuse.userAllowOther = true;
 
