@@ -81,8 +81,8 @@ in {
       {
         name = "tokyo-night";
         publisher = "enkia";
-        version = "0.5.6";
-        sha256 = "096dpvi8ja1qandhp53gmcqrkj5k8gjyab3nhjl4lz3jqdav13bs";
+        version = "0.6.7";
+        sha256 = "AD+ygvrs1UYUlSAX3md+aUhAEC5TtF6c7b089Qv51+k=";
       }
       {
         name = "svelte-vscode";
