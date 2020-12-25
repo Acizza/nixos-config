@@ -75,8 +75,8 @@ in {
       {
         name = "errorlens";
         publisher = "usernamehw";
-        version = "3.1.1";
-        sha256 = "1dlkxp54pxc92sm6zs24nwcss9204w1k977k9gh1dqfzsaacg9kj";
+        version = "3.2.4";
+        sha256 = "fZZk85SF+lgH1sTCP8uWV0Oqz5xBjsvMfbNosI2rXTE=";
       }
       {
         name = "tokyo-night";
