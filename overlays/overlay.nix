@@ -57,8 +57,8 @@ in {
       {
         name = "vscode-todo-plus";
         publisher = "fabiospampinato";
-        version = "4.17.1";
-        sha256 = "00gcv66plxalmipmbhv11b1q3dhjs81ry0k4p5313m4kbn9s7dg2";
+        version = "4.18.0";
+        sha256 = "OtrglGQTCxORjKWZvKbj+3SF8MRvjrZwCwZUCgWEZ0g=";
       }
       {
         name = "graphql-for-vscode";
