@@ -117,10 +117,8 @@ in {
     };
   });
 
-  # Latest staging version of Wine
+  # Latest Wine staging with Proton patches from GloriousEggroll.
   wine = ((super.wine.override {
-    # Note: we cannot set wineRelease to staging here, as it will no longer allow us
-    # to use overrideAttrs
     wineRelease = "unstable";
     wineBuild = "wineWow";
 
@@ -129,31 +127,46 @@ in {
     saneSupport = false;
     openclSupport = false;
     gsmSupport = false;
-
     gstreamerSupport = false;
-
+    vkd3dSupport = false;
     mingwSupport = true;
-  }).overrideAttrs (old: rec {
-    version = "5.21";
-    name = "wine-wow-${version}-staging";
+  }).overrideAttrs (oldAttrs: rec {
+    baseVersion = "6.0";
+    version = "${baseVersion}-rc1";
+    geVersion = "${baseVersion}-GE-rc1";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
       rev = "wine-${version}";
-      sha256 = "g4Tf9nv/W7SPnpa3Mks7GiVyhOo+Xgu1kRrbKYtqTmQ=";
+      sha256 = "lgz/xESykMKNLJX05RCWRzgoN6xOfGaduEfT+tFs3p0=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      rev = "v${version}";
-      sha256 = "8IIjdGyRZf2v0dVvinqA2gvjR5eCXxN3+tWj1eCjjWA=";
+      rev = "e015f0590c1cc0136dd3038466c7a7484aeba5bc";
+      sha256 = "X/UgT+Mg79DGkCrU9Ghfia0wO50KKgqDKdQW5eMPjK4=";
     };
 
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
+    # Temp
+    patches = [];
 
-    nativeBuildInputs = old.nativeBuildInputs ++ [
+    NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
+  })).overrideDerivation (drv: let
+    repoPath = path: sha256: super.fetchurl {
+      url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/${drv.geVersion}/${path}";
+      inherit sha256;
+    };
+
+    patchAbsPath = path: repoPath "${path}.patch";
+
+    patch = name: patchAbsPath "patches/${name}";
+    hotfix = name: patch "wine-hotfixes/${name}";
+  in {
+    name = "wine-wow-${drv.version}-staging-ge";
+
+    nativeBuildInputs = drv.nativeBuildInputs ++ [
       super.git
       super.perl
       super.utillinux
@@ -162,16 +175,122 @@ in {
       super.perl
     ];
 
-    postPatch = old.postPatch or "" + ''
-      patchShebangs tools
-      cp -r ${staging}/patches .
-      chmod +w patches
-      cd patches
-      patchShebangs gitapply.sh
-      ./patchinstall.sh DESTDIR="$PWD/.." --all
-      cd ..
-    '';
-  }));
+    protonPatches = let
+      game = name: patch "game-patches/${name}";
+      proton = name: patch "proton/${name}";
+
+      # Need this for VK_VALVE_mutable_descriptor extension
+      vulkanPatch = super.fetchurl {
+        name = "proton-winevulkan-nofshack.patch";
+        url = "https://raw.githubusercontent.com/Frogging-Family/wine-tkg-git/master/wine-tkg-git/wine-tkg-patches/proton/proton-winevulkan-nofshack.patch";
+        sha256 = "tyc4xTfByJCTfTTcpjMOOkkIy36L/kDsRY1WG3A0Fns=";
+      };
+    in [
+      (game "skse64_fix" "5Ee8+iihJbywcbQ/gaIU/Be/HLzagGxLVt27cBGHkpQ=")
+
+      (proton "01-proton-use_clock_monotonic" "GXnngxXWDoh5TZ5A4H7kccML1bqoc6OUfD+s36/S0TY=")
+      (proton "02-proton-FS_bypass_compositor" "oQMpsuw1WYHOezPwD/ru/sBeurISFB2tdTa93LIXHFk=")
+      # Fails to apply
+      #(proton "03-proton-fsync_staging" "dmyL+5b/ha52j8gMBmqfioB2nZY0sv89CdtVIm4ydBM=")
+      (proton "04-proton-LAA_staging" "DxWXCWI4MCSA6rLTn+yEXtcIRP1qOCbGBwCltVP9XC0=")
+      (proton "10-proton-protonify_staging" "AZdzxtokq6PW2VgnhDmYn+OP/Fq/nfdTJ2pBzYbDEhE=")
+      (proton "11-proton-pa-staging" "csc5wD6aSo/JlvxuOYwrJ+RIVeEQi4r0r6fqCyHusBQ=")
+      (proton "13-proton-sdl_joy" "gKERlnU4JdXGI3fV0Yk/Eo9mNQOTupeMfarmok5sMko=")
+      (proton "14-proton-sdl_joy_2" "TjxhbUb4i8yzrnE8OPdpo5n77VG1Sv+5PPn3eEC1gcI=")
+      (proton "15-proton-gamepad-additions" "1wISrj8sE8480ZPVUQhPudSrfBSUoBkglPVyJnyaCkg=")
+      vulkanPatch
+      (proton "18-proton-amd_ags" "JhJc7DygOmzVUUBxt9/PnKGdJ36jCj03YhCR4N1J83E=")
+      (proton "19-proton-msvcrt_nativebuiltin" "9tfc3TM8ZA3tadFv5wmhY+6GvW70fJuJupWfQh76A0Q=")
+      (proton "20-proton-atiadlxx" "TY2ir2b1wyzdBFn1xQUcqbar/Ro/+l4VWxpQUnUHyR4=")
+      (proton "25-proton-rdr2-fixes" "c3qhlZl3erY0yqwvA+8iUXydqYofD6kIgDHKQc+FVI8=")
+
+      (hotfix "winevulkan-childwindow" "5nDvZUILS4yQ4OiXXkemK1kWzMB8YGA9AEbhf2BIjdg=")
+    ];
+
+    reverts = let
+      commit = hash: sha256: super.fetchurl {
+        url = "https://github.com/wine-mirror/wine/commit/${hash}.patch";
+        inherit sha256;
+      };
+    in [
+      (commit "da7d60bf97fb8726828e57f852e8963aacde21e9" "06/uIQCmp9m48G1y1QKBh/8qrbweo1LJT/eK+YENEwI=")
+      (commit "bd27af974a21085cd0dc78b37b715bbcc3cfab69" "fmxVQe7cWN2Ffsu3jKAMmV6r7Cp5sgbsJ3Ca3iN09Ls=")
+    ];
+
+    postPatch =
+      let
+        vulkanVersion = "1.2.164";
+
+        vkXmlFile = super.fetchurl {
+          name = "vk-${vulkanVersion}.xml";
+          url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
+          sha256 = "iFI9R7dGfNeRWs0Z+j7Y0T0g3DXagC8gh11lqQlxqjE=";
+        };
+
+        spatialAudioPatch = super.fetchurl {
+          name = "spatial-audio.patch";
+          url = "https://github.com/ValveSoftware/wine/commit/85d049746cd99a66fd646d5f97ba76b603bed0cd.diff";
+          sha256 = "+EG5yT4eQIVRw6WO8HNrQ47QogUsCbdfl3+ouK9/SjI=";
+        };
+      in ''
+        # staging patches
+        patchShebangs tools
+        cp -r ${drv.staging}/patches .
+        chmod +w -R patches/
+
+        for revert in $reverts; do
+          echo "!! applying revert ''${revert}"
+          patch -NRp1 < "$revert"
+        done
+
+        cd patches
+        patchShebangs gitapply.sh
+        ./patchinstall.sh DESTDIR="$PWD/.." --all \
+          -W dinput-SetActionMap-genre \
+          -W dinput-axis-recalc \
+          -W dinput-joy-mappings \
+          -W dinput-reconnect-joystick \
+          -W dinput-remap-joystick \
+          -W winex11-MWM_Decorations \
+          -W winex11-_NET_ACTIVE_WINDOW \
+          -W winex11-WM_WINDOWPOSCHANGING
+        cd ..
+
+        echo "applying Proton patches.."
+
+        for patch in $protonPatches; do
+          echo "!! applying ''${patch}"
+          patch -Np1 < "$patch" || true
+        done
+
+        patch -Np1 < "${spatialAudioPatch}"
+
+        # confirm that Wine's vulkan version matches our set one
+        localVulkanVersion=$(grep -oP "VK_XML_VERSION = \"\K(.+?)(?=\")" ./dlls/winevulkan/make_vulkan)
+
+        if [ -z "$localVulkanVersion" ]; then
+          echo "error: failed to detect Wine Vulkan version"
+          exit 1
+        fi
+
+        if [[ "$localVulkanVersion" != "${vulkanVersion}" ]]; then
+          echo error: detected Wine vulkan version of $localVulkanVersion
+          echo .. currently set vulkan version is ${vulkanVersion}
+          exit 1
+        fi
+
+        patchShebangs ./dlls/winevulkan/make_vulkan
+        patchShebangs ./tools/make_requests
+
+        substituteInPlace ./dlls/winevulkan/make_vulkan --replace \
+          "vk_xml = \"vk-{0}.xml\".format(VK_XML_VERSION)" \
+          "vk_xml = \"${vkXmlFile}\""
+
+        ./dlls/winevulkan/make_vulkan
+        ./tools/make_requests
+        autoreconf -f
+      '';
+  });
 
   # git version of RPCS3
   rpcs3 = (super.rpcs3.override {
