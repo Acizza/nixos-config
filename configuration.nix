@@ -157,6 +157,7 @@
       # Custom packages
       ox
       dxvk
+      vkd3d
       bcnotif
       anup
       wpfxm

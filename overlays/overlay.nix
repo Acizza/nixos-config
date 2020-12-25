@@ -389,7 +389,6 @@ in {
   mako = withNativeAndFlags super.mako [ "-O3" ];
 
   faudio = withNativeAndFlags super.faudio [ "-O3" ];
-  vkd3d = withNativeAndFlags super.vkd3d [ "-O3" ];
 
   ### Custom packages
 
@@ -402,4 +401,8 @@ in {
   nixos-update-status = withRustNative (super.callPackage ./pkgs/nixos-update-status.nix { });
 
   dxvk = super.callPackage ./pkgs/dxvk.nix { };
+
+  vkd3d = withNativeAndFlags (super.callPackage ./pkgs/vkd3d-proton {
+    wine = self.wine;
+  }) [ "-O3" ];
 }
