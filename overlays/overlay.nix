@@ -87,8 +87,8 @@ in {
       {
         name = "svelte-vscode";
         publisher = "svelte";
-        version = "102.1.1";
-        sha256 = "JgijA0+VAy1Lcd1Cbpvx/fpBcrDOc+PZoCt1M9oR60M=";
+        version = "102.8.0";
+        sha256 = "sopN6tYQiqsJ1Z/aiBOOjGckutkIQCwPGFnmw9BXN3g=";
       }
       {
         name = "prettier-vscode";
