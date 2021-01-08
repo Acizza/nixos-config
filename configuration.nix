@@ -335,19 +335,32 @@
       # latest git version of mesa
       # TODO: enable building with b_lto
       mesaDrivers = pkgs: ((pkgs.mesa.override {
-        stdenv = if !pkgs.stdenv.is32bit then
-          pkgs.impureUseNativeOptimizations pkgs.llvmPackages_latest.stdenv
+        stdenv = pkgs.impureUseNativeOptimizations (if !pkgs.stdenv.is32bit then
+          pkgs.llvmPackages_latest.stdenv
         else
           # Using LLVM for 32-bit builds requires us to build GCC and LLVM, which isn't very nice
-          pkgs.stdenv;
+          pkgs.stdenv);
+
+        galliumDrivers = [ "radeonsi" "virgl" "svga" "swrast" "zink" ];
       }).overrideAttrs (oldAttrs: rec {
-        version = "20.2.2";
+        version = "21.0.0";
 
         src = pkgs.fetchgit {
           url = "https://gitlab.freedesktop.org/mesa/mesa.git";
-          rev = "mesa-${version}";
-          sha256 = "/sFZR/M1YX76zS6pYOAd2Uy2R6qMbB2pJb/gDQZEhDQ=";
+          # 01-08-21
+          rev = "ff67898dafaea82db669aef10ebb05e65eaa0921";
+          sha256 = "ROpKNEs78SrsZPJpY18yXfkEUZ7ZdfeLkBoabpNm17Y=";
         };
+
+        mesonFlags = oldAttrs.mesonFlags ++ [
+          "-Dmicrosoft-clc=disabled"
+          "-Dosmesa=true"
+        ];
+
+        # For zink driver
+        buildInputs = oldAttrs.buildInputs ++ [
+          pkgs.vulkan-loader
+        ];
 
         patches = let
           tail = (builtins.tail oldAttrs.patches);
