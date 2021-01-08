@@ -214,7 +214,7 @@
     fstrim.enable = true;
     openssh.passwordAuthentication = false;
 
-    mingetty.autologinUser = "jonathan";
+    getty.autologinUser = "jonathan";
 
     redshift = {
       enable = true;
