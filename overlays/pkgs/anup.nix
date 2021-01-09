@@ -1,17 +1,17 @@
 { rustPlatform, fetchFromGitHub, stdenv, pkgconfig, sqlite, xdg_utils }:
 
 rustPlatform.buildRustPackage rec {
-    name = "anup-${version}";
-    version = "4fcb35127447021ce3462e76e8b68bcb56ea33b5";
+    pname = "anup";
+    version = "63cbd60c5d764f1183956ce56a4c9919b2d3e77c";
     
     src = fetchFromGitHub {
       owner = "Acizza";
       repo = "anup";
       rev = version;
-      sha256 = "J0hSnG9mQ0m0AUaiErAV6LMezBrDSyQEepeq7T+Pqwg=";
+      sha256 = "/MknZIWLilEoMdXGJMv0h9D+K5ZzPgyxqFQUGxA3bYc=";
     };
     
-    cargoSha256 = "F65RAdPgWLywjw0HQfbCx4esrsDiRvftOOBUaVaeRDw=";
+    cargoSha256 = "FvpJJSRl0ZxYrwF4YFWAKior+j+Vtbg3PxV0ihie1DQ=";
     
     buildInputs = [ stdenv.cc pkgconfig sqlite.dev xdg_utils ];
     
