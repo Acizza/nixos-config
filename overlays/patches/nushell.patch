@@ -1,15 +1,15 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index 75a4b99d..94a75535 100644
+index 115635a8..b5b10367 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -12,6 +12,10 @@ homepage = "https://www.nushell.sh"
- documentation = "https://www.nushell.sh/book/"
- exclude = ["images"]
+@@ -125,8 +125,8 @@ xpath = ["nu_plugin_xpath"]
+ [profile.release]
+ #strip = "symbols" #Couldn't get working +nightly
+ codegen-units = 1 #Reduce parallel codegen units
+-lto = true #Link Time Optimization
+-opt-level = 'z' #Optimize for size
++lto = "thin" #Link Time Optimization
++opt-level = 3 #Optimize for size
  
-+[profile.release]
-+lto = "thin"
-+codegen-units = 1
-+
- [workspace]
- members = ["crates/*/"]
- 
+ # Core plugins that ship with `cargo install nu` by default
+ # Currently, Cargo limits us to installing only one binary
