@@ -119,8 +119,6 @@
       qbittorrent
       rustup
       wine
-      gnome3.gnome-system-monitor
-      gnome3.eog
       veracrypt
       mullvad-vpn
       nushell
@@ -128,6 +126,10 @@
       sshfs
       duperemove
       compsize
+
+      # KDE Packages
+      kwin-tiling
+      gwenview
         
       # Misc Applications
       ripgrep # Improved version of grep
@@ -196,31 +198,6 @@
     criu.enable = true;
 
     fuse.userAllowOther = true;
-
-    sway = {
-      enable = true;
-
-      extraPackages = with pkgs; [
-        xwayland
-        swayidle
-        waybar
-        mako
-        rofi
-      ];
-
-      wrapperFeatures.gtk = true;
-
-      extraSessionCommands = ''
-        export SDL_VIDEODRIVER=wayland
-        export MOZ_ENABLE_WAYLAND=1
-        export QT_QPA_PLATFORM=wayland-egl
-        export QT_WAYLAND_FORCE_DPI=physical
-        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-        export _JAVA_AWT_WM_NONREPARENTING=1
-
-        export GDK_DPI_SCALE=2
-      '';
-    };
   };
 
   services = {
@@ -228,16 +205,26 @@
     fstrim.enable = true;
     openssh.passwordAuthentication = false;
 
-    getty.autologinUser = "jonathan";
-
-    redshift = {
-      enable = true;
-      temperature.night = 2400;
-    };
-
     xserver = {
-      enable = false;
+      enable = true;
       videoDrivers = [ "amdgpu" ];
+      dpi = 200;
+
+      displayManager = {
+        autoLogin = {
+          enable = true;
+          user = "jonathan";
+        };
+
+        sddm = {
+          enable = true;
+          autoNumlock = true;
+        };
+      };
+
+      desktopManager.plasma5.enable = true;
+
+      libinput.enable = true;
     };
 
     mullvad-vpn.enable = true;
