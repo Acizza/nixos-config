@@ -47,7 +47,24 @@
           sha256 = "2hHSMHtr4B0bZ1zehOJL1NMgVFgOT+gS+TDb3IgS3x4=";
         };
       };
-    in [ fsync ];
+
+      futex2 = rec {
+        name = "v5.10-futex2";
+        patch = pkgs.fetchpatch {
+          name = name + ".patch";
+          url = "https://raw.githubusercontent.com/sirlucjan/kernel-patches/master/5.10/futex2-trunk-patches-v2/0001-futex2-resync-from-gitlab.collabora.com.patch";
+          sha256 = "SRlsqqH7wQX/d0R5vOIH/ZTCvzNxbopUrsL2ry8xBC8=";
+        };
+      };
+
+      enableFutex2 = {
+        name = "futex2-config";
+        patch = null;
+        extraConfig = ''
+          FUTEX2 y
+        '';
+      };
+    in [ fsync futex2 enableFutex2 ];
   };
 
   i18n = {
