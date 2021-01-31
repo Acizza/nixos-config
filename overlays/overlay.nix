@@ -49,21 +49,18 @@ in {
     withWayland = true;
   };
 
-  rust-analyzer-unwrapped = withRustNativeAndPatches (super.rust-analyzer-unwrapped.override rec {
-    version = "2020-08-24";
-    rev = version;
-    sha256 = "zrY+YrMoL9bZ4Jxn/0t5RYYRCOLYyXzkfXmWgjPUBYc=";
-    cargoSha256 = "ffiv0etVYFtOTFxy3aGxLZzUDdMC3FP89aqTZAcx+5g=";
-    doCheck = false;
-  }) [ ./patches/rust-analyzer.patch ];
-
   vscode-with-extensions = super.vscode-with-extensions.override {
     vscode = super.vscodium;
 
     vscodeExtensions = with super.vscode-extensions; [
       bbenoist.Nix
-      matklad.rust-analyzer
     ] ++ super.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "rust-analyzer";
+        publisher = "matklad";
+        version = "0.2.465";
+        sha256 = "SFGN2GZcGvuJqntDYOu9orM1MQhSz4Ay0v/JLigrMU8=";
+      }
       {
         name = "vscode-todo-plus";
         publisher = "fabiospampinato";
