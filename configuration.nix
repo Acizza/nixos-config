@@ -317,8 +317,6 @@
         "ssl.google-analytics.com"
         "www.googletagmanager.com"
         "www.googletagservices.com"
-        "api.facepunch.com"
-        "files.facepunch.com"
       ];
 
       # Aliases
