@@ -171,7 +171,6 @@
       gnome3.adwaita-icon-theme
 
       # Custom packages
-      ox
       dxvk
       vkd3d
       bcnotif

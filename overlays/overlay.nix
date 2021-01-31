@@ -402,8 +402,6 @@ in {
 
   ### Custom packages
 
-  ox = withRustNative (super.callPackage ./pkgs/ox.nix { });
-
   anup = withRustNative (super.callPackage ./pkgs/anup.nix { });
   bcnotif = withRustNative (super.callPackage ./pkgs/bcnotif.nix { });
   wpfxm = withRustNative (super.callPackage ./pkgs/wpfxm.nix { });
