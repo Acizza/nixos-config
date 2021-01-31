@@ -131,22 +131,21 @@ in {
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    baseVersion = "6.0";
-    version = "${baseVersion}-rc1";
-    geVersion = "${baseVersion}-GE-rc1";
+    version = "6.0";
+    geVersion = "${version}-GE-1";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
-      rev = "wine-${version}";
-      sha256 = "lgz/xESykMKNLJX05RCWRzgoN6xOfGaduEfT+tFs3p0=";
+      rev = "00401d2278298d151b555fcdffb15bb282c512a7";
+      sha256 = "4/mBRsdiVQpSdJNcc6JnleWGifw1Scb6KxgN9DNRbRw=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      rev = "e015f0590c1cc0136dd3038466c7a7484aeba5bc";
-      sha256 = "X/UgT+Mg79DGkCrU9Ghfia0wO50KKgqDKdQW5eMPjK4=";
+      rev = "v${version}";
+      sha256 = "D1yBBOfOaTPfaWmGYxMzd2qnojPoQfv5gFKmbfJYrG4=";
     };
 
     # Temp
@@ -182,29 +181,37 @@ in {
       # Need this for VK_VALVE_mutable_descriptor extension
       vulkanPatch = super.fetchurl {
         name = "proton-winevulkan-nofshack.patch";
-        url = "https://raw.githubusercontent.com/Frogging-Family/wine-tkg-git/master/wine-tkg-git/wine-tkg-patches/proton/proton-winevulkan-nofshack.patch";
+        url = "https://raw.githubusercontent.com/Frogging-Family/wine-tkg-git/9ba02e2fdf1dbd16f67323eb98cf317142e15c14/wine-tkg-git/wine-tkg-patches/proton/proton-winevulkan-nofshack.patch";
         sha256 = "tyc4xTfByJCTfTTcpjMOOkkIy36L/kDsRY1WG3A0Fns=";
+      };
+
+      fsync2 = super.fetchurl {
+        name = "fsync2.patch";
+        url = "https://raw.githubusercontent.com/Frogging-Family/community-patches/master/wine-tkg-git/fsync_futex2.mypatch";
+        sha256 = "PNnhENrDUVePM4LAPoBYONKPS0eFktvf9UIOLoClONU=";
       };
     in [
       (game "skse64_fix" "5Ee8+iihJbywcbQ/gaIU/Be/HLzagGxLVt27cBGHkpQ=")
 
       (proton "01-proton-use_clock_monotonic" "GXnngxXWDoh5TZ5A4H7kccML1bqoc6OUfD+s36/S0TY=")
       (proton "02-proton-FS_bypass_compositor" "oQMpsuw1WYHOezPwD/ru/sBeurISFB2tdTa93LIXHFk=")
-      # Fails to apply
-      #(proton "03-proton-fsync_staging" "dmyL+5b/ha52j8gMBmqfioB2nZY0sv89CdtVIm4ydBM=")
+      (proton "03-proton-fsync_staging" "LXZckahr+bIk3TnbcQ1VK6d1V5WBKvC+dHepph86YwU=")
+      fsync2
       (proton "04-proton-LAA_staging" "DxWXCWI4MCSA6rLTn+yEXtcIRP1qOCbGBwCltVP9XC0=")
-      (proton "10-proton-protonify_staging" "AZdzxtokq6PW2VgnhDmYn+OP/Fq/nfdTJ2pBzYbDEhE=")
+      (proton "10-proton-protonify_staging" "B7VkOo+tXK4hUJV6YTnK8qqioWsdpYBfaFUfO2OV+3w=")
       (proton "11-proton-pa-staging" "csc5wD6aSo/JlvxuOYwrJ+RIVeEQi4r0r6fqCyHusBQ=")
-      (proton "13-proton-sdl_joy" "gKERlnU4JdXGI3fV0Yk/Eo9mNQOTupeMfarmok5sMko=")
-      (proton "14-proton-sdl_joy_2" "TjxhbUb4i8yzrnE8OPdpo5n77VG1Sv+5PPn3eEC1gcI=")
-      (proton "15-proton-gamepad-additions" "1wISrj8sE8480ZPVUQhPudSrfBSUoBkglPVyJnyaCkg=")
+      #(proton "15-proton-gamepad-additions" "1wISrj8sE8480ZPVUQhPudSrfBSUoBkglPVyJnyaCkg=")
       vulkanPatch
       (proton "18-proton-amd_ags" "JhJc7DygOmzVUUBxt9/PnKGdJ36jCj03YhCR4N1J83E=")
       (proton "19-proton-msvcrt_nativebuiltin" "9tfc3TM8ZA3tadFv5wmhY+6GvW70fJuJupWfQh76A0Q=")
       (proton "20-proton-atiadlxx" "TY2ir2b1wyzdBFn1xQUcqbar/Ro/+l4VWxpQUnUHyR4=")
-      (proton "25-proton-rdr2-fixes" "c3qhlZl3erY0yqwvA+8iUXydqYofD6kIgDHKQc+FVI8=")
+      (proton "25-proton-rdr2-fixes" "dz0kqC5BWEOFZsvpCvLcKLCY+/n51dJ2an1VRCujHe4=")
 
+      (hotfix "zf-gstreamer-pending" "rcuC+aCXLj0hVSmmeTU6GgVtP77irUZUaw2fsxbfmcM=")
       (hotfix "winevulkan-childwindow" "5nDvZUILS4yQ4OiXXkemK1kWzMB8YGA9AEbhf2BIjdg=")
+      (hotfix "0033-HACK-Switch-between-all-selection-streams-on-MF_SOUR" "6eh46fN0eH7wUCHDNGfVHPRnDmRTnUYfA/kOf2+/s6s=")
+      (hotfix "ntdll-NtAlertThreadByThreadId_hotfix" "rjmCz2SNPiG56YtYyEsV8MjBuT4tZUa0evKOMuc3bUA=")
+      (hotfix "dsound-pending" "iWLcNx+454rkIXzj9ifzZj30y8pDbnftJxE+KHwCf9M=")
     ];
 
     reverts = let
@@ -213,24 +220,19 @@ in {
         inherit sha256;
       };
     in [
-      (commit "da7d60bf97fb8726828e57f852e8963aacde21e9" "06/uIQCmp9m48G1y1QKBh/8qrbweo1LJT/eK+YENEwI=")
       (commit "bd27af974a21085cd0dc78b37b715bbcc3cfab69" "fmxVQe7cWN2Ffsu3jKAMmV6r7Cp5sgbsJ3Ca3iN09Ls=")
+      (commit "1fceb1213992b79aa7f1a5dc0a72ab3756ee524d" "DD5mbrunUu++7lN4hPudaWWGE/sGd10TNdtoVW3oeXg=")
+      (commit "e4fbae832c868e9fcf5a91c58255fe3f4ea1cb30" "V47itrSHnA7Jf/F/hYnMiw1fv12TKSXcqJC855z/GAI=")
     ];
 
     postPatch =
       let
-        vulkanVersion = "1.2.164";
+        vulkanVersion = "1.2.166";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "iFI9R7dGfNeRWs0Z+j7Y0T0g3DXagC8gh11lqQlxqjE=";
-        };
-
-        spatialAudioPatch = super.fetchurl {
-          name = "spatial-audio.patch";
-          url = "https://github.com/ValveSoftware/wine/commit/85d049746cd99a66fd646d5f97ba76b603bed0cd.diff";
-          sha256 = "+EG5yT4eQIVRw6WO8HNrQ47QogUsCbdfl3+ouK9/SjI=";
+          sha256 = "ZrP5p+No1SdbO09kXnD5NYoAcxsu4oflzkowCPzsKZk=";
         };
       in ''
         # staging patches
@@ -246,11 +248,6 @@ in {
         cd patches
         patchShebangs gitapply.sh
         ./patchinstall.sh DESTDIR="$PWD/.." --all \
-          -W dinput-SetActionMap-genre \
-          -W dinput-axis-recalc \
-          -W dinput-joy-mappings \
-          -W dinput-reconnect-joystick \
-          -W dinput-remap-joystick \
           -W winex11-MWM_Decorations \
           -W winex11-_NET_ACTIVE_WINDOW \
           -W winex11-WM_WINDOWPOSCHANGING
@@ -262,8 +259,6 @@ in {
           echo "!! applying ''${patch}"
           patch -Np1 < "$patch" || true
         done
-
-        patch -Np1 < "${spatialAudioPatch}"
 
         # confirm that Wine's vulkan version matches our set one
         localVulkanVersion=$(grep -oP "VK_XML_VERSION = \"\K(.+?)(?=\")" ./dlls/winevulkan/make_vulkan)
