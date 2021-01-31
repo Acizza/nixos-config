@@ -10,12 +10,12 @@
 
 stdenv.mkDerivation rec {
   pname = "vkd3d-proton";
-  version = "d003424bc826afd005c68f8a8f0d42e4dae00fd0";
+  version = "2560c76861a111e77961c02f0ea79d1197736ce4";
 
   src = fetchgit {
     url = "https://github.com/HansKristian-Work/vkd3d-proton.git";
     rev = version;
-    sha256 = "+Fbs4p0W3zCtfSRoWOVlpJYC8BMMxFKOscKSNxOJ+2I=";
+    sha256 = "JMXN4yCHwovzJ1aG6YD+YUziUS1ge8YOKqSItScidpI=";
   };
 
   phases = "unpackPhase patchPhase postPatchPhase buildPhase installPhase";
@@ -45,6 +45,8 @@ stdenv.mkDerivation rec {
     ./explicitly_define_hex_base.patch
     # vkd3d will fail to initialize if this isn't present in the Wine prefix
     ./copy_mcfgthreads_dll.patch
+    # Allows the setup_vkd3d script to work in fresh wine prefixes
+    ./create_d3d12_dll.patch
   ];
 
   postPatchPhase = let
