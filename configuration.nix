@@ -346,9 +346,9 @@
 
         src = pkgs.fetchgit {
           url = "https://gitlab.freedesktop.org/mesa/mesa.git";
-          # 01-08-21
-          rev = "ff67898dafaea82db669aef10ebb05e65eaa0921";
-          sha256 = "ROpKNEs78SrsZPJpY18yXfkEUZ7ZdfeLkBoabpNm17Y=";
+          # 01-30-21
+          rev = "205e737f51baf2958c047ae6ce3af66bffb52b37";
+          sha256 = "WkGiW06wEnDHTr2dIVHAcZlWLMvacHh/m4P+eVD4huI=";
         };
 
         mesonFlags = oldAttrs.mesonFlags ++ [
@@ -361,11 +361,9 @@
           pkgs.vulkan-loader
         ];
 
-        patches = let
-          tail = (builtins.tail oldAttrs.patches);
-        in (pkgs.lib.take 1 tail) ++ [
+        patches = [
           ./overlays/patches/disk_cache-include-dri-driver-path-in-cache-key.patch
-        ] ++ (pkgs.lib.drop 3 tail);
+        ];
       })).drivers;
     in {
       driSupport32Bit = true;
