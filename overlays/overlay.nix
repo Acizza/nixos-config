@@ -127,18 +127,6 @@ in {
     nlSupport = false;
   }) [ "-O3" ];
 
-  redshift = super.redshift.overrideAttrs (oldAttrs: rec {
-    pname = "redshift-wlr";
-    version = "2019-04-17";
-
-    src = super.fetchFromGitHub {
-      owner = "minus7";
-      repo = "redshift";
-      rev = "eecbfedac48f827e96ad5e151de8f41f6cd3af66";
-      sha256 = "0rs9bxxrw4wscf4a8yl776a8g880m5gcm75q06yx2cn3lw2b7v22";
-    };
-  });
-
   # Latest Wine staging with Proton patches from GloriousEggroll.
   wine = ((super.wine.override {
     wineRelease = "unstable";
