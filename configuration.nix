@@ -110,7 +110,7 @@
   environment = {
     systemPackages = with pkgs; [
       # Core Applications
-      firefox-bin
+      brave
       alacritty
       ranger
       mpv
