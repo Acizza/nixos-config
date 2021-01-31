@@ -106,6 +106,12 @@ in {
         version = "5.8.0";
         sha256 = "x6/bBeHi/epYpRGy4I8noIsnwFdFEXk3igF75y5h/EA=";
       }
+      {
+        name = "vscode-eslint";
+        publisher = "dbaeumer";
+        version = "2.1.14";
+        sha256 = "bVGmp871yu1Llr3uJ+CCosDsrxJtD4b1+CR+omMUfIQ=";
+      }
     ];
   };
 
