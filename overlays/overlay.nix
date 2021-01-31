@@ -26,6 +26,16 @@ self: super: let
     patches = old.patches or [] ++ patches;
   }));
 in {
+  firejail = super.firejail.overrideAttrs (oldAttrs: rec {
+    patches = oldAttrs.patches or [] ++ [
+      (super.fetchurl {
+        name = "remove-env-vars.patch";
+        url = "https://github.com/netblue30/firejail/commit/21711c8a4fd834b95fbd73767e5453c01cb4228e.patch";
+        sha256 = "Dnwc6VQsm5xOOYQHpDWfeXSihyzRbp35QPtJOT4Lwdg=";
+      })
+    ];
+  });
+
   qemu = withLLVMNative (super.qemu.override {
     hostCpuOnly = true;
     smbdSupport = true;
