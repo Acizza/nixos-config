@@ -112,6 +112,12 @@ in {
         version = "2.1.14";
         sha256 = "bVGmp871yu1Llr3uJ+CCosDsrxJtD4b1+CR+omMUfIQ=";
       }
+      {
+        name = "gitlens";
+        publisher = "eamodio";
+        version = "11.1.3";
+        sha256 = "hqJg3jP4bbXU4qSJOjeKfjkPx61yPDMsQdSUVZObK/U=";
+      }
     ];
   };
 
