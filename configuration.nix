@@ -151,8 +151,6 @@
       the-powder-toy
       qemu
       srm
-      cargo-outdated
-      cargo-bloat
       tokei
       spotify
       nodejs-15_x
@@ -161,6 +159,11 @@
       rust-analyzer
       anki
       ntfs3g
+
+      # Rust packages
+      cargo-outdated
+      cargo-bloat
+      cargo-edit
 
       # Compression
       unar
