@@ -100,11 +100,16 @@
     '';
   };
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    packageOverrides = import ./overlays/overlay.nix pkgs;
+  nixpkgs = {
+    overlays = [
+      (import ./overlays/overlay.nix)
+      (import ./overlays/wine.nix)
+    ];
 
-    android_sdk.accept_license = true;
+    config = {
+      allowUnfree = true;
+      android_sdk.accept_license = true;
+    };
   };
   
   environment = {
