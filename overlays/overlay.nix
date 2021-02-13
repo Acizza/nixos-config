@@ -35,7 +35,17 @@ in {
     };
   });
 
+  # This override can be released on the next release
   firejail = super.firejail.overrideAttrs (oldAttrs: rec {
+    version = "0.9.64";
+
+    src = super.fetchFromGitHub {
+      owner = "netblue30";
+      repo = "firejail";
+      rev = version;
+      sha256 = "sXa33sVdo7Kd4qfT9ViP/s3G91U/Fh6Urt0FHmZZaZQ=";
+    };
+
     patches = oldAttrs.patches or [] ++ [
       (super.fetchurl {
         name = "remove-env-vars.patch";
