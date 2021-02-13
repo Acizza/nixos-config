@@ -26,6 +26,15 @@ self: super: let
     patches = old.patches or [] ++ patches;
   }));
 in {
+  brave = super.brave.overrideAttrs (oldAttrs: rec {
+    version = "1.20.103";
+
+    src = super.fetchurl {
+      url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser_${version}_amd64.deb";
+      sha256 = "4xC1sCfEc6u7wkKTTKeyHMYUmelcH2n70T/9N9MEavY=";
+    };
+  });
+
   firejail = super.firejail.overrideAttrs (oldAttrs: rec {
     patches = oldAttrs.patches or [] ++ [
       (super.fetchurl {
