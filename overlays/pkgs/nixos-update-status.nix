@@ -1,24 +1,23 @@
 { rustPlatform,
-  fetchFromGitLab,
+  fetchFromGitHub,
   stdenv,
   pkgconfig,
-  openssl,
 }:
 
 rustPlatform.buildRustPackage rec {
-    name = "nixos-update-status-${version}";
-    version = "c49c6aa9c427df45c8b93bffe41ce13f4d2f952d";
+    pname = "nixos-update-status";
+    version = "076be7d5890db711bc429ea9d3ce66b8476dad2e";
     
-    src = fetchFromGitLab {
+    src = fetchFromGitHub {
       owner = "Acizza";
       repo = "nixos-update-status";
-      rev = "${version}";
-      sha256 = "0vg4dr3cw7n5j5hpx240mb8v6bgq0di7pyyasrkrqwy25dla31cy";
+      rev = version;
+      sha256 = "oaRKZWETZ7VzLumIO1XwSzq/MW1MSe7r7S/Gp59p3go=";
     };
     
-    cargoSha256 = "0rwxmng86xw82prbkrw30sjmb77w3phgsywldn88vx4czq8i406f";
+    cargoSha256 = "JBC8k4AEdxi1zz93AQa/ffv59HSFlF+KRfaQVmQD0HA=";
     
-    buildInputs = [ stdenv.cc.cc pkgconfig openssl.dev ];
+    buildInputs = [ stdenv.cc.cc pkgconfig ];
     
     meta = with stdenv.lib; {
       license = licenses.asl20;
