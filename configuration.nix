@@ -170,7 +170,7 @@
       nodejs-15_x
       yarn
       steam
-      anki
+      anki-bin
       ntfs3g
 
       # Rust packages
