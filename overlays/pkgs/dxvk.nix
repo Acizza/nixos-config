@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation rec {
   pname = "dxvk";
-  version = "1.8";
+  version = "1.8.1";
 
   src = fetchurl {
     url = "https://github.com/doitsujin/dxvk/releases/download/v${version}/dxvk-${version}.tar.gz";
-    sha256 = "6E96xJSsf1ATl2dERwiZIm0UXilhfEB/9ShwBVvaR24=";
+    sha256 = "dWoJxG+Cea3oRFbjrwOPZGE6UeAKLUz/+kyRwQ7eYOg=";
   };
 
   phases = "unpackPhase installPhase fixupPhase";
