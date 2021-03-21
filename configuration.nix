@@ -326,6 +326,9 @@
         "vortex.data.microsoft.com"
         "web.vortex.data.microsoft.com"
 
+        # Steam
+        "googleads.g.doubleclick.net"
+
         # General
         "www.google-analytics.com"
         "google-analytics.com"
