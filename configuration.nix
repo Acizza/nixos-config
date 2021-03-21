@@ -170,7 +170,6 @@
       nodejs-15_x
       yarn
       steam
-      rust-analyzer
       anki
       ntfs3g
 
