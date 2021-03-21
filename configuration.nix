@@ -101,9 +101,14 @@
   };
 
   nixpkgs = {
-    overlays = [
+    overlays = let
+      rustOverlay = import (builtins.fetchTarball
+        "https://github.com/oxalica/rust-overlay/archive/master.tar.gz"
+      );
+    in [
       (import ./overlays/overlay.nix)
       (import ./overlays/wine.nix)
+      rustOverlay
     ];
 
     config = {
@@ -113,7 +118,11 @@
   };
   
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = let
+      rust = pkgs.rust-bin.stable.latest.rust.override {
+        extensions = [ "rust-src" ];
+      };
+    in with pkgs; [
       # Core Applications
       brave
       alacritty
@@ -122,7 +131,6 @@
       vscode-with-extensions
       git
       qbittorrent
-      rustup
       wine
       veracrypt
       mullvad-vpn
@@ -131,6 +139,7 @@
       sshfs
       duperemove
       compsize
+      rust
 
       # KDE Packages
       kwin-tiling
