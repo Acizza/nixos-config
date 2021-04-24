@@ -247,7 +247,10 @@
         };
       };
 
-      desktopManager.plasma5.enable = true;
+      desktopManager = {
+        plasma5.enable = true;
+        xterm.enable = false;
+      };
 
       libinput.enable = true;
     };
