@@ -11,7 +11,7 @@ rustPlatform.buildRustPackage rec {
       sha256 = "J9CayWiRYSCl69u0PUru4gXh5I9gTm+4n958e3XtWOI=";
     };
     
-    cargoSha256 = "liqO0BZ+NwoHxEAHUtLSQQ8xzf9mN87QNZdoI7s7514=";
+    cargoSha256 = "DJDNE7NFOBiq4JD2l4SZlKSlXW+vOTz8pTBH0tZdht0=";
     
     buildInputs = let
       sqlite = pkgs.sqlite.overrideAttrs (oldAttrs: rec {
