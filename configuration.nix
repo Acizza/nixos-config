@@ -141,6 +141,10 @@
       compsize
       rust
 
+      # Work related
+      dbeaver
+      postman
+
       # KDE Packages
       kwin-tiling
       gwenview
