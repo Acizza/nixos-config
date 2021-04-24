@@ -11,7 +11,7 @@ rustPlatform.buildRustPackage rec {
         sha256 = "DPYi1zbqcS2/gD2wuhF673m6sRDWhtp4IDQ5dvJFZwE=";
     };
     
-    cargoSha256 = "TjBBLaEdj5D5JtX6+qrgN5TAe7Q/7Ejmm333Xzqdd7s=";
+    cargoSha256 = "ya+1fZTVdDSTWw67DZoZpPm+D/cPUi1F+rdby/J15NY=";
     
     nativeBuildInputs = with pkgs; [ pkgconfig ];
     buildInputs = with pkgs; [ dbus.dev sqlite.dev ];
