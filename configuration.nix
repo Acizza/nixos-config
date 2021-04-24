@@ -220,6 +220,7 @@
     firejail.enable = true;
     gnupg.agent.enable = true;
     criu.enable = true;
+    ssh.startAgent = true;
 
     fuse.userAllowOther = true;
   };
