@@ -420,7 +420,7 @@
     isNormalUser = true;
     home = "/home/jonathan";
     description = "Jonathan";
-    extraGroups = [ "wheel" "networkmanager" "adbusers" ];
+    extraGroups = [ "wheel" "networkmanager" "adbusers" "docker" ];
     shell = "/run/current-system/sw/bin/fish";
   };
 }
