@@ -335,6 +335,13 @@
         "heads4-ak.spotify.com.edgesuite.net"
         "redirector.gvt1.com"
 
+        # Windows VM
+        "login.live.com"
+        "settings-win.data.microsoft.com"
+        "fs.microsoft.com"
+        "checkappexec.microsoft.com"
+        "sls.update.microsoft.com"
+
         # Microsoft Flight Simulator
         "vortex.data.microsoft.com"
         "web.vortex.data.microsoft.com"
