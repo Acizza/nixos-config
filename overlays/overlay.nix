@@ -77,8 +77,8 @@ in {
       {
         name = "rust-analyzer";
         publisher = "matklad";
-        version = "0.2.521";
-        sha256 = "ltqohpRVcZI2JKlYvsYIO/eXOmVyXemklNPq19EzW0A=";
+        version = "0.2.565";
+        sha256 = "v0lQwFvo1JduOpv2kMz7JMq+JS+T6MNtnqYhP3dSQQc=";
       }
       {
         name = "vscode-todo-plus";
