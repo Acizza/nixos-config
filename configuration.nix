@@ -208,6 +208,11 @@
       PATH = [ "/home/jonathan/.cargo/bin/" ];
     };
   };
+
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = false;
+  };
   
   programs = {
     fish.enable = true;
