@@ -15,23 +15,23 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "6.7";
+    version = "6.8";
 
     # From https://github.com/Frogging-Family/wine-tkg-git
-    protonPatchRev = "b9666840fa8e872c660d964238ee732fbacbf5a8";
+    protonPatchRev = "40f18c0bac68ed6ccdd8564d7ea42a1d936f469e";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
       rev = "wine-${version}";
-      sha256 = "76r7xCvLVihbULlbyXX/qeNXjP+Yb+Brzuilo366tZM=";
+      sha256 = "4bXEoWRX66Q2xH8H21qAFpDERhWqPGeFJCrdrppArac=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "fWriizSk2+U7Mpn6w/Dlrevd4vc5MnlSWSGxQDf2p+M=";
+      sha256 = "cuJaODJ1jDxlUG9QTIQjg4IQqK5rOZGjgdpzjd4XAHc=";
     };
 
     # Temp
@@ -59,7 +59,7 @@ self: super:
       proton = name: patch "proton/${name}";
     in [
       #(proton "proton-winevulkan-nofshack" "h44pBXCZ5pxepHpgNubnNwJy2JHzDlgbruqPlJ0OnVw=")
-      (proton "fsync-unix-staging" "sk/M5UEIODu26dx6Wuczz2YnAPQruS5G/zWK0FWQu3A=")
+      (proton "fsync-unix-staging" "UIZNHmR41s7UamsDFJZy9s0gYrRpSRnAkriL2O2vODo=")
       (proton "fsync_futex2" "G+j2oKTWzjGjQqjtKYzRGHOFx12RXUx9WXjabVbt9os=")
     ];
 
