@@ -134,6 +134,12 @@ in {
         version = "11.1.3";
         sha256 = "hqJg3jP4bbXU4qSJOjeKfjkPx61yPDMsQdSUVZObK/U=";
       }
+      {
+        name = "vscode-proto3";
+        publisher = "zxh404";
+        version = "0.5.4";
+        sha256 = "S89qRRlfiTsJ+fJuwdNkZywe6mei48KxIEWbGWChriE=";
+      }
     ];
   };
 
