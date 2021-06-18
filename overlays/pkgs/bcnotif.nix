@@ -1,4 +1,4 @@
-{ rustPlatform, fetchFromGitHub, pkgs, stdenv }:
+{ rustPlatform, lib, fetchFromGitHub, pkgs, stdenv }:
 
 rustPlatform.buildRustPackage rec {
     name = "bcnotif-${version}";
@@ -16,7 +16,7 @@ rustPlatform.buildRustPackage rec {
     nativeBuildInputs = with pkgs; [ pkgconfig ];
     buildInputs = with pkgs; [ dbus.dev sqlite.dev ];
     
-    meta = with stdenv.lib; {
+    meta = with lib; {
         license = licenses.agpl3;
         platforms = platforms.linux;
     };
