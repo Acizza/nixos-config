@@ -1,4 +1,4 @@
-{ rustPlatform, fetchFromGitHub, stdenv }:
+{ rustPlatform, lib, fetchFromGitHub, stdenv }:
 
 rustPlatform.buildRustPackage rec {
     name = "wpfxm-${version}";
@@ -15,7 +15,7 @@ rustPlatform.buildRustPackage rec {
     
     buildInputs = [ stdenv.cc.cc ];
     
-    meta = with stdenv.lib; {
+    meta = with lib; {
       license = licenses.asl20;
       platforms = platforms.linux;
     };
