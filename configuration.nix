@@ -118,7 +118,7 @@
   
   environment = {
     systemPackages = let
-      rust = pkgs.rust-bin.stable.latest.rust.override {
+      rust = pkgs.rust-bin.stable.latest.default.override {
         extensions = [ "rust-src" ];
       };
     in with pkgs; [
