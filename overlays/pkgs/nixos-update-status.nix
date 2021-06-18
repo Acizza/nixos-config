@@ -1,4 +1,5 @@
 { rustPlatform,
+  lib,
   fetchFromGitHub,
   stdenv,
   pkgconfig,
@@ -19,7 +20,7 @@ rustPlatform.buildRustPackage rec {
     
     buildInputs = [ stdenv.cc.cc pkgconfig ];
     
-    meta = with stdenv.lib; {
+    meta = with lib; {
       license = licenses.asl20;
       platforms = platforms.linux;
     };
