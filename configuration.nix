@@ -216,12 +216,25 @@
   programs = {
     fish.enable = true;
     adb.enable = true;
-    firejail.enable = true;
     gnupg.agent.enable = true;
     criu.enable = true;
     ssh.startAgent = true;
 
     fuse.userAllowOther = true;
+
+    firejail = {
+      enable = true;
+
+      wrappedBinaries = let
+        wrap = name: pkg: {
+          executable = "${pkgs.lib.getBin pkg}/bin/${name}";
+          profile = "${pkgs.firejail}/etc/firejail/${name}.profile";
+        };
+      in {
+        brave = wrap "brave" pkgs.brave;
+        steam = wrap "steam" pkgs.steam;
+      };
+    };
   };
 
   services = {
