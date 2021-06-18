@@ -1,4 +1,4 @@
-{ rustPlatform, fetchFromGitHub, stdenv, pkgs }:
+{ rustPlatform, lib, fetchFromGitHub, stdenv, pkgs }:
 
 rustPlatform.buildRustPackage rec {
     name = "nixup-${version}";
@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
       });
     in [ stdenv.cc.cc sqlite.dev ];
 
-    meta = with stdenv.lib; {
+    meta = with lib; {
       license = licenses.agpl3;
       platforms = platforms.linux;
     };
