@@ -1,12 +1,12 @@
-{ stdenv, fetchurl }:
+{ stdenv, lib, fetchurl }:
 
 stdenv.mkDerivation rec {
   pname = "dxvk";
-  version = "1.8.1";
+  version = "1.9";
 
   src = fetchurl {
     url = "https://github.com/doitsujin/dxvk/releases/download/v${version}/dxvk-${version}.tar.gz";
-    sha256 = "dWoJxG+Cea3oRFbjrwOPZGE6UeAKLUz/+kyRwQ7eYOg=";
+    sha256 = "Qzho+Hg4hxkqBLeIID1rTv/jFovnYt1g3xwbVkQhpu0=";
   };
 
   phases = "unpackPhase installPhase fixupPhase";
@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
     patchShebangs $out/share/dxvk/setup_dxvk
   '';
   
-  meta = with stdenv.lib; {
+  meta = with lib; {
     platforms = platforms.linux;
     licenses = [ licenses.zlib licenses.png ];
   };
