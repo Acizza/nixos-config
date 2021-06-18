@@ -170,7 +170,7 @@
       srm
       tokei
       spotify
-      nodejs-15_x
+      nodejs-16_x
       yarn
       steam
       anki-bin
