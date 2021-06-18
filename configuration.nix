@@ -35,25 +35,24 @@
     };
 
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_11;
+    kernelPackages = pkgs.linuxPackages_5_12;
 
     kernelPatches = let
-      # For Wine
       fsync = rec {
-        name = "v5.11-fsync";
+        name = "v5.12-fsync";
         patch = pkgs.fetchpatch {
           name = name + ".patch";
-          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/5.11/0007-v5.11-fsync.patch";
+          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/5.12/0007-v5.12-fsync.patch";
           sha256 = "2hHSMHtr4B0bZ1zehOJL1NMgVFgOT+gS+TDb3IgS3x4=";
         };
       };
 
       futex2 = rec {
-        name = "v5.11-futex2";
+        name = "v5.12-futex2";
         patch = pkgs.fetchpatch {
           name = name + ".patch";
-          url = "https://raw.githubusercontent.com/sirlucjan/kernel-patches/master/5.11/futex2-dev-trunk-patches-v4/0001-futex2-resync-from-gitlab.collabora.com.patch";
-          sha256 = "a/5TL1OLTC7WILIKA1Vprwdgp2mo7tf3VCukyACdvcI=";
+          url = "https://raw.githubusercontent.com/sirlucjan/kernel-patches/master/5.12/futex2-stable-patches/0001-futex2-resync-from-gitlab.collabora.com.patch";
+          sha256 = "lcNTIQ9Xr2xKTePrdo8JVivOMgTIMUBJa/LUUiEjGd8=";
         };
       };
 
