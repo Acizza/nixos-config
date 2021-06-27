@@ -15,23 +15,23 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "6.10";
+    version = "6.11";
 
     # From https://github.com/Frogging-Family/wine-tkg-git
-    protonPatchRev = "5bd3ee5f5c81aa6dffc3d71f7508463a8380747d";
+    protonPatchRev = "6ca41962a07c8e74eff2183a2a956622b8b6142d";
 
     src = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
       rev = "wine-${version}";
-      sha256 = "Oph5jOtHbkkXAQjnArUJsJWhrRW2nSisC8H26dtabPY=";
+      sha256 = "QUVdF0lh7EiDHBKgn6Xtpn+VPPIYgrGe5CA+/vXwftU=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       rev = "v${version}";
-      sha256 = "nqXgJe2i1xDW1aCAmwFPshiUI2PtZ/S7p8Cq2ODMTQk=";
+      sha256 = "dWV2eoI2SZj2ZELZggmIIb6MaxFwEenObyvQLR2KbD0=";
     };
 
     # Temp
