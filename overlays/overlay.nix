@@ -27,11 +27,11 @@ self: super: let
   }));
 in {
   brave = super.brave.overrideAttrs (oldAttrs: rec {
-    version = "1.23.73";
+    version = "1.26.77";
 
     src = super.fetchurl {
       url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser_${version}_amd64.deb";
-      sha256 = "aNDgq9X+ySiNfKUS8ahSFsj+14Bwp4kKq4EQBDbWyRI=";
+      sha256 = "tV/VseU+IncvM3gdrmqkYLPClbsf2kSvIAZj0Ylz2Rw=";
     };
   });
 
