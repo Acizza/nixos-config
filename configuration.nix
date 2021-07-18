@@ -382,7 +382,7 @@
     cpu.amd.updateMicrocode = true;
 
     opengl = let
-      # latest git version of mesa
+      # mesa with zink driver
       # TODO: enable building with b_lto
       mesaDrivers = pkgs: ((pkgs.mesa.override {
         stdenv = pkgs.impureUseNativeOptimizations (if !pkgs.stdenv.is32bit then
@@ -393,28 +393,11 @@
 
         galliumDrivers = [ "radeonsi" "virgl" "svga" "swrast" "zink" ];
       }).overrideAttrs (oldAttrs: rec {
-        version = "21.0.0";
-
-        src = pkgs.fetchgit {
-          url = "https://gitlab.freedesktop.org/mesa/mesa.git";
-          # 01-30-21
-          rev = "205e737f51baf2958c047ae6ce3af66bffb52b37";
-          sha256 = "WkGiW06wEnDHTr2dIVHAcZlWLMvacHh/m4P+eVD4huI=";
-        };
-
-        mesonFlags = oldAttrs.mesonFlags ++ [
-          "-Dmicrosoft-clc=disabled"
-          "-Dosmesa=true"
-        ];
-
         # For zink driver
         buildInputs = oldAttrs.buildInputs ++ [
           pkgs.vulkan-loader
         ];
 
-        patches = [
-          ./overlays/patches/disk_cache-include-dri-driver-path-in-cache-key.patch
-        ];
       })).drivers;
     in {
       driSupport32Bit = true;
