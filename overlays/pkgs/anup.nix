@@ -9,16 +9,16 @@
 
 rustPlatform.buildRustPackage rec {
     pname = "anup";
-    version = "8dc8213fee8ddec1b719b43069e24deeb9f655e1";
+    version = "b5ed36b5ea82e99096fe9596c7eefcfe96bc8dcc";
     
     src = fetchFromGitHub {
       owner = "Acizza";
       repo = "anup";
       rev = version;
-      sha256 = "vpqTILH6TurlXIXnG6L07XqXf2NAExVkq8XT4JBsrp4=";
+      sha256 = "OnwDtiIBwwotgFecXpbM0onKhUemiRKklFtgRSQriQk=";
     };
     
-    cargoSha256 = "NSaRFVQDzWLYYdoo52H4prOD/prWBFZMgNhp7XM1r54=";
+    cargoSha256 = "E0VmFoqnrt1dDm220+BoiDoTVGRrcwFijIwo8t+bc5E=";
     
     buildInputs = [ stdenv.cc pkgconfig sqlite.dev xdg_utils ];
     
