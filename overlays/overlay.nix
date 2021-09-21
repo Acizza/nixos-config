@@ -70,8 +70,8 @@ in {
       {
         name = "vscode-todo-plus";
         publisher = "fabiospampinato";
-        version = "4.18.0";
-        sha256 = "OtrglGQTCxORjKWZvKbj+3SF8MRvjrZwCwZUCgWEZ0g=";
+        version = "4.18.4";
+        sha256 = "daKMeFUPZSanrFu9J6mk3ZVmlz8ZZquZa3qaWSTbSjs=";
       }
       {
         name = "graphql-for-vscode";
@@ -88,14 +88,14 @@ in {
       {
         name = "errorlens";
         publisher = "usernamehw";
-        version = "3.2.4";
-        sha256 = "fZZk85SF+lgH1sTCP8uWV0Oqz5xBjsvMfbNosI2rXTE=";
+        version = "3.4.0";
+        sha256 = "qBqQGv0BmTFK/y8hprplCVr5aZr3z9jM5a2Eu6CfOfU=";
       }
       {
         name = "tokyo-night";
         publisher = "enkia";
-        version = "0.6.7";
-        sha256 = "AD+ygvrs1UYUlSAX3md+aUhAEC5TtF6c7b089Qv51+k=";
+        version = "0.7.9";
+        sha256 = "2+md3lkBew1u+XkAM4e7i4OMNvyyJlZA4OT3WvMUkfk=";
       }
       {
         name = "svelte-vscode";
@@ -118,8 +118,8 @@ in {
       {
         name = "gitlens";
         publisher = "eamodio";
-        version = "11.1.3";
-        sha256 = "hqJg3jP4bbXU4qSJOjeKfjkPx61yPDMsQdSUVZObK/U=";
+        version = "11.6.0";
+        sha256 = "JxCNE/IL/v94xWmhebsRZo1Gw+nSSpDgZ41ZGongGVI=";
       }
       {
         name = "vscode-proto3";
