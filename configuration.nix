@@ -326,6 +326,11 @@
         "incoming.telemetry.mozilla.org"
         "ocsp.sca1b.amazontrust.com"
 
+        # Brave
+        "analytics.brave.com"
+        "variations.brave.com"
+        "laptop-updates.brave.com"
+
         # Unity games
         "config.uca.cloud.unity3d.com"
         "api.uca.cloud.unity3d.com"
