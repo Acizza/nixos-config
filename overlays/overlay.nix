@@ -59,13 +59,13 @@ in {
     vscode = super.vscodium;
 
     vscodeExtensions = with super.vscode-extensions; [
-      bbenoist.Nix
+      bbenoist.nix
     ] ++ super.vscode-utils.extensionsFromVscodeMarketplace [
       {
         name = "rust-analyzer";
         publisher = "matklad";
-        version = "0.2.670";
-        sha256 = "FJdiO1jtLR0ANeC22klDMEQU+n7kTpGE7hH3mA+y6CI=";
+        version = "0.2.751";
+        sha256 = "SqwYFvGLgtSN8BIdZ5o15poGO1Y5yqwvYCqDhub0LCY=";
       }
       {
         name = "vscode-todo-plus";
