@@ -27,32 +27,19 @@ self: super: let
   }));
 in {
   brave = super.brave.overrideAttrs (oldAttrs: rec {
-    version = "1.26.77";
+    #version = "1.28.106";
+
+    #src = super.fetchurl {
+    #  url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser_${version}_amd64.deb";
+    #  sha256 = "gr8d5Dh6ZHb2kThVOA61BoGo64MB77qF7ualUY2RRq0=";
+    #};
+
+    version = "1.29.81";
 
     src = super.fetchurl {
       url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser_${version}_amd64.deb";
-      sha256 = "tV/VseU+IncvM3gdrmqkYLPClbsf2kSvIAZj0Ylz2Rw=";
+      sha256 = "8csSpAIOH3Q0HvaAtgwF0teexyqHu0I+NM9Yfa/vDXg=";
     };
-  });
-
-  # This override can be released on the next release
-  firejail = super.firejail.overrideAttrs (oldAttrs: rec {
-    version = "0.9.64";
-
-    src = super.fetchFromGitHub {
-      owner = "netblue30";
-      repo = "firejail";
-      rev = version;
-      sha256 = "sXa33sVdo7Kd4qfT9ViP/s3G91U/Fh6Urt0FHmZZaZQ=";
-    };
-
-    patches = oldAttrs.patches or [] ++ [
-      (super.fetchurl {
-        name = "remove-env-vars.patch";
-        url = "https://github.com/netblue30/firejail/commit/21711c8a4fd834b95fbd73767e5453c01cb4228e.patch";
-        sha256 = "Dnwc6VQsm5xOOYQHpDWfeXSihyzRbp35QPtJOT4Lwdg=";
-      })
-    ];
   });
 
   qemu = withLLVMNative (super.qemu.override {
