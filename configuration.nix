@@ -144,6 +144,9 @@
       # Work related
       dbeaver
       postman
+      postgresql_13
+      kubectl
+      google-cloud-sdk
 
       # KDE Packages
       kwin-tiling
