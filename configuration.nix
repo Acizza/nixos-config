@@ -166,7 +166,7 @@
       file
       pavucontrol
       winetricks
-      youtube-dl
+      yt-dlp # youtube-dl fork
       nativeFfmpeg
       rpcs3
       the-powder-toy
