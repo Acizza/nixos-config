@@ -306,6 +306,9 @@
       # For Spotify
       allowedTCPPorts = [ 57621 ];
       allowedUDPPorts = [ 57621 ];
+
+      # For Mullvad
+      checkReversePath = "loose";
     };
 
     enableIPv6 = false;
