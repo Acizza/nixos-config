@@ -35,7 +35,7 @@
     };
 
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_13;
+    kernelPackages = pkgs.linuxPackages_5_14;
 
     kernelPatches = let
       futex2 = rec {
@@ -64,7 +64,7 @@
         '';
       };
     in #[ futex2 winesync enableFutex2 ]; # TODO: fix futex2 patch
-    [ winesync ];
+     [];
   };
 
   i18n = {
