@@ -120,6 +120,12 @@ in {
         version = "0.5.4";
         sha256 = "S89qRRlfiTsJ+fJuwdNkZywe6mei48KxIEWbGWChriE=";
       }
+      {
+        name = "dotenv";
+        publisher = "mikestead";
+        version = "1.0.1";
+        sha256 = "dieCzNOIcZiTGu4Mv5zYlG7jLhaEsJR05qbzzzQ7RWc=";
+      }
     ];
   };
 
