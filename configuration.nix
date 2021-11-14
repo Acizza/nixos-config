@@ -115,6 +115,7 @@
       # Work related
       dbeaver
       postman
+      insomnia
       postgresql_13
       kubectl
       google-cloud-sdk
