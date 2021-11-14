@@ -35,36 +35,7 @@
     };
 
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_5_14;
-
-    kernelPatches = let
-      futex2 = rec {
-        name = "v5.13-futex2";
-        patch = pkgs.fetchpatch {
-          name = name + ".patch";
-          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/5.13/0007-v5.13-futex2_interface.patch";
-          sha256 = "EUS6XJwcGqcQLLxhPgdYdG3oB3qxsJueGXn7tLaEorc=";
-        };
-      };
-
-      winesync = rec {
-        name = "v5.13-winesync";
-        patch = pkgs.fetchpatch {
-          name = name + ".patch";
-          url = "https://raw.githubusercontent.com/Frogging-Family/linux-tkg/master/linux-tkg-patches/5.13/0007-v5.13-winesync.patch";
-          sha256 = "MHNc4K3wmBP4EHcx48pcu7fI7WXjfcqIhW1+Zt8zpng=";
-        };
-      };
-
-      enableFutex2 = {
-        name = "futex2-config";
-        patch = null;
-        extraConfig = ''
-          FUTEX2 y
-        '';
-      };
-    in #[ futex2 winesync enableFutex2 ]; # TODO: fix futex2 patch
-     [];
+    kernelPackages = pkgs.linuxPackages_zen;
   };
 
   i18n = {
