@@ -78,7 +78,7 @@
       );
     in [
       (import ./overlays/overlay.nix)
-      (import ./overlays/wine.nix)
+      (import ./overlays/wine)
       rustOverlay
     ];
 
