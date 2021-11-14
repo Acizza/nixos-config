@@ -1,15 +1,15 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index 115635a8..b5b10367 100644
+index 31e50c35..d35b9454 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -125,8 +125,8 @@ xpath = ["nu_plugin_xpath"]
- [profile.release]
- #strip = "symbols" #Couldn't get working +nightly
- codegen-units = 1 #Reduce parallel codegen units
--lto = true #Link Time Optimization
--opt-level = 'z' #Optimize for size
-+lto = "thin" #Link Time Optimization
-+opt-level = 3 #Optimize for size
+@@ -15,6 +15,10 @@ version = "0.33.1"
+ [workspace]
+ members = ["crates/*/"]
  
- # Core plugins that ship with `cargo install nu` by default
- # Currently, Cargo limits us to installing only one binary
++[profile.release]
++lto = "thin"
++codegen-units = 1
++
+ # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+ 
+ [dependencies]
