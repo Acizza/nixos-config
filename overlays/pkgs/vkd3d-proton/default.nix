@@ -1,4 +1,5 @@
 { stdenv,
+  lib,
   pkgsCross,
   fetchgit,
   meson,
@@ -10,12 +11,12 @@
 
 stdenv.mkDerivation rec {
   pname = "vkd3d-proton";
-  version = "2560c76861a111e77961c02f0ea79d1197736ce4";
+  version = "3fefc540c81a2fc3d1b1f7652d8ee98d29e45805";
 
   src = fetchgit {
     url = "https://github.com/HansKristian-Work/vkd3d-proton.git";
     rev = version;
-    sha256 = "JMXN4yCHwovzJ1aG6YD+YUziUS1ge8YOKqSItScidpI=";
+    sha256 = "6JX23AlcFpTyudwl7rg2qB/Cc/2mQg2xhrLvEhjJnoU=";
   };
 
   phases = "unpackPhase patchPhase postPatchPhase buildPhase installPhase";
@@ -81,7 +82,7 @@ stdenv.mkDerivation rec {
     chmod +x $out/bin/setup_vkd3d
   '';
   
-  meta = with stdenv.lib; {
+  meta = with lib; {
     platforms = platforms.linux;
     license = licenses.lgpl21;
   };
