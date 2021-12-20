@@ -11,6 +11,7 @@ self: super:
   # How to update the Proton GE patchset:
   # 1. copy contents of https://github.com/GloriousEggroll/proton-ge-custom/blob/master/patches/protonprep.sh
   #    to the `protonprep` variable
+  # 2. remove everything in the prep section of the `protonprep` variable before the wine staging part
   # 2. move all (or groups of) `git revert` calls in the protonprep script to a new `revert-hashes` file
   # 3. run gen-reverts.sh script
   # 4. copy contents of `generated-reverts` file to the places where the `git reverts` were originally
@@ -27,7 +28,7 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "6.21";
+    version = "7.0rc2";
 
     protonGeVersion = "GE-1";
 
@@ -38,23 +39,23 @@ self: super:
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = "${version}-${protonGeVersion}";
-      sha256 = "BTw8hAqyfb3pcbv6+9C8ELxR37wZ4QSJo7hgSdsLAKQ=";
+      sha256 = "QXSsMS4rmU3NViIfKBwyepwzSa33HyGlcbteIgsfWx0=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
       #rev = "wine-${version}";
-      rev = "be0684dad50ffbc93b3ded4fbfebf1d1e4690589";
-      sha256 = "i2JD/aHYfF0Gt3LmSdfGTHNRuqAxqFOoZ9S2XvltC+s=";
+      rev = "2f5f8b4bd4cb5771223d1ee96a55002d18ad01eb";
+      sha256 = "0VF0+wZElbj+x/ToCDQPIeFIfZckPK4Cexcew8E9fc4=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       #rev = "v${version}";
-      rev = "a9aa06c58eea77c66417b48669a00d7b32b70c99";
-      sha256 = "SsIpSltmcfdaGl0rVV4zykWsJPMZSgTrw5KVlEpJ88s=";
+      rev = "8f579c4eed5fa8114f277f93b915cf455d7837c9";
+      sha256 = "UkwvKKRXyFjLfYbL8Ienpp5pxUzMQY1bEyAkoP7Xdz4=";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -84,12 +85,12 @@ self: super:
 
     prePatch =
       let
-        vulkanVersion = "1.2.197";
+        vulkanVersion = "1.2.201";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "YCm1r71NWAjLG2wnq+4x1vOcHozJmnrf9uOB7375KRQ=";
+          sha256 = "ctG+020Te6FXIRli1tWXlcbjK5UHN1RK1AEXlL0VTQU=";
         };
       in ''
         mkdir ge
@@ -104,6 +105,11 @@ self: super:
 
         patchShebangs ./wine/tools
         patchShebangs ./wine-staging/patches/gitapply.sh
+
+        # fix compilation error with bcrypt tests
+        cd wine
+        patch -RNp1 < ${rev "e6da4eed7e14cc6f8ade7f179b32d9d668827385" "06wix5p9311h3c8g7diax542hjf1bav5c7gi2hg2a0ayrplkj2zm"}
+        cd ..
 
         ${protonprep}
 
@@ -145,17 +151,16 @@ self: super:
 
           #WINE STAGING
           cd wine-staging
+          git reset --hard HEAD
+          git clean -xdf
 
           # revert pending pulseaudio changes
-          patch -RNp1 < ${(revStaging "183fd3e089b170d5b7405a80a23e81dc7c4dd682" "KSt+CmEK3ghyOVyIeRFbCFoXLyYEJH4AL0y78lfcnJk=")}
+          patch -RNp1 < ${revStaging "183fd3e089b170d5b7405a80a23e81dc7c4dd682" "16cwvibz5fsc5w07w9044qpifnh8bc8pk22w75r0iphac457war9"}
 
           # reenable pulseaudio patches
           patch -Np1 < ../patches/wine-hotfixes/staging/x3daudio_staging_revert.patch
           patch -Np1 < ../patches/wine-hotfixes/staging/staging-reenable-pulse.patch
           patch -RNp1 < ../patches/wine-hotfixes/staging/staging-pulseaudio-reverts.patch
-
-          # add proton-specific syscall emulation patches
-          patch -Np1 < ../patches/wine-hotfixes/staging/proton-staging-syscall-emu.patch
 
           # allow esync patches to apply without depending on ntdll-Junction_Points
           patch -Np1 < ../patches/wine-hotfixes/staging/staging-esync_remove_ntdll_Junction_Points_dependency.patch
@@ -167,44 +172,56 @@ self: super:
       ### (2) WINE PATCHING ###
 
           cd wine
+          git reset --hard HEAD
+          git clean -xdf
 
       ### (2-1) PROBLEMATIC COMMIT REVERT SECTION ###
 
           # https://github.com/ValveSoftware/Proton/issues/1295#issuecomment-859185208
           echo "these break Tokyo Xanadu Xe+"
-          patch -RNp1 < ${rev "2ad44002da683634de768dbe49a0ba09c5f26f08" "0pd5n660jfkad453w8aqcffpz2k7575z20g948846bkjff7mq7xv"} || true
-          patch -RNp1 < ${rev "dfa4c07941322dbcad54507cd0acf271a6c719ab" "0k2hgffzhjavrpxhiddirs2yghy769k61s6qmz1a6g3kamg92a0s"} || true
+          patch -RNp1 < ${rev "2ad44002da683634de768dbe49a0ba09c5f26f08" "0pd5n660jfkad453w8aqcffpz2k7575z20g948846bkjff7mq7xv"}
 
           # https://bugs.winehq.org/show_bug.cgi?id=49990
-          echo "revert bd27af974a21085cd0dc78b37b715bbcc3cfab69 which breaks some game launchers and 3D Mark"
-          patch -RNp1 < ${(rev "b54199101fd307199c481709d4b1358ba4bcce58" "5YCcgc/YslwbO4x+nRTn/sJFQMWk9U/KdmZ/laz+OHY=")}
-          patch -RNp1 < ${(rev "dedda40e5d7b5a3bcf67eea95145810da283d7d9" "/Aub+Bt3QTgC2lJlSTFCZRdXeEQatX8tsfX8Omyj3BQ=")}
-          patch -RNp1 < ${(rev "bd27af974a21085cd0dc78b37b715bbcc3cfab69" "FU7Zh9LKZFfrxhlaq3NssGDpXUizKW7VoyRwF6y5Eag=")}
+      #    echo "revert bd27af974a21085cd0dc78b37b715bbcc3cfab69 which breaks some game launchers and 3D Mark"
+      #    git revert --no-commit 548bc54bf396d74b5b928bf9be835272ddda1886
+      #    git revert --no-commit b502a3e3c6b43ac3947d85ccc263e729ace917fa
+      #    git revert --no-commit b54199101fd307199c481709d4b1358ba4bcce58
+      #    git revert --no-commit dedda40e5d7b5a3bcf67eea95145810da283d7d9
+      #    git revert --no-commit bd27af974a21085cd0dc78b37b715bbcc3cfab69
+
+          echo "temporary fshack reverts"
+          patch -RNp1 < ${rev "c2384cf23378953b6960e7044a0e467944e8814a" "0w9220vnkfv36smkh68jjhhcj327dhzr6drpihxzi6995hy4np4b"}
+          patch -RNp1 < ${rev "c3862f2a6121796814ae31913bfb0efeba565087" "0g2i760zssrvql7w3p1gc8q0l4yllxyr7kcypr1r68hhkl1zgplr"}
+          patch -RNp1 < ${rev "37be0989540cf84dd9336576577ae535f2b6bbb8" "14615drp34qa7214y8sp04q88ja6090k35la9sm2h0l50zxr0zdl"}
+          patch -RNp1 < ${rev "3661194f8e8146a594673ad3682290f10fa2c096" "0h7gy6nc014bkj5h1iyrz0zg5h6sffpngdqggmw5b9ndzxp011ya"}
+
 
           echo "revert faudio updates -- we can't use PE version yet because the staging patches need a rebase in order to fix audio crackling in some games -- notably cyberpunk"
-          patch -RNp1 < ${(rev "22c26a2dde318b5b370fc269cab871e5a8bc4231" "tCMBv9dcqo0zr8MWgb6ebISBCyDvV3VVkUYquOG6ius=")}
+          patch -RNp1 < ${rev "22c26a2dde318b5b370fc269cab871e5a8bc4231" "1swapbhvhaj6j5apamzg405q313cksz825n3mwrqvajwsyzh28xl"}
 
           echo "mfplat early reverts to re-enable staging mfplat patches"
-          patch -RNp1 < ${rev "747905c674d521b61923a6cff1d630c85a74d065" "09l1dy0phvcgi1dci4lxnai5gcr09wr91mzw85afhd7zhnyy2y79"}
-          patch -RNp1 < ${rev "f3624e2d642c4f5c1042d24a70273db4437fcef9" "0lxy46hfnimdsracgy4sjm6a4zp6hmvbnccgyvavf2fliknj93gh"}
-          patch -RNp1 < ${rev "769057b9b281eaaba7ee438dedb7f922b0903472" "1i3mfj38k1bairafqnw44j285vqkkbf8fa204rn50w2y2caylvvw"}
+          patch -RNp1 < ${rev "78f916f598b4e0acadbda2c095058bf8a268eb72" "1jd2fs45m8bay0v3zhi4yvaykdp4qqm4s6zyk36kx4r8bx6403sk"}
+          patch -RNp1 < ${rev "4f58d8144c5c1d3b86e988f925de7eb02c848e6f" "0daxppkni5fqmnp9pwbc2iry2aq994ixs8la87vq87lhzzmw9x1v"}
+          patch -RNp1 < ${rev "747905c674d521b61923a6cff1d630c85a74d065" "1wxdi7wlww60q9i8z6z2bqibfcmmfazmf65ybqdbxb4gc1f3181c"}
+          patch -RNp1 < ${rev "f3624e2d642c4f5c1042d24a70273db4437fcef9" "1k1daxg1jdhhrm5jj4wi740sljx96yz8siaq7sqcpp1vrax5v1rl"}
+          patch -RNp1 < ${rev "769057b9b281eaaba7ee438dedb7f922b0903472" "0x69i5nbs81wg18rl0lihzjld9vnh38655fpg8sflshw5aw242fg"}
           patch -RNp1 < ${rev "639c04a5b4e1ffd1d8328f60af998185a04d0c50" "1fc52k5fpmm2d3agzzfvybyvy7z76gsjckdvcigmm659pwd94gs2"}
-          patch -RNp1 < ${rev "54f825d237c1dcb0774fd3e3f4cfafb7c243aab5" "051x6igwwjic20c1p04526yrb23h2ab40mh1s8m7661jqala8734"}
-          patch -RNp1 < ${rev "cad38401bf091917396b24ad9c92091760cc696f" "1lp2kxc3ca4qs2snslayw2x57q4gdkbs10ybb3919vbzwmhjhhbx"}
-          patch -RNp1 < ${rev "894e0712459ec2d48b1298724776134d2a966f66" "0g4y5b927ijsl912yqjzzdv3qigz6j4lc3mbjcdcffkmpwd1f6kj"}
-          patch -RNp1 < ${rev "42da77bbcfeae16b5f138ad3f2a3e3030ae0844b" "0j7fbaxassxk3503q69i03xi2y7sd6syqjznnjbys7c7m8gphc9a"}
-          patch -RNp1 < ${rev "2f7e7d284bddd27d98a17beca4da0b6525d72913" "1n3qmq7ichwjpjsq8yicir7a8qxd3f37jp4hb2ciy07i0piva84c"}
-          patch -RNp1 < ${rev "f4b3eb7efbe1d433d7dcf850430f99f0f0066347" "1dpyrmdrq39nn6n0n63g5ws2028rc3fc48ka9rdgji0405d1qp6k"}
-          patch -RNp1 < ${rev "72b3cb68a702284122a16cbcdd87a621c29bb7a8" "1hh69rkd6i5gycf9g5dy2lvnzz3my7zl2xcid56hnpn4iyz0bja9"}
-          patch -RNp1 < ${rev "a1a51f54dcb3863f9accfbf8c261407794d2bd13" "1ln9nhzs0r03alvbz15ym0vi17009ivw2hlxmprgyqpsjwvs0zq6"}
-          patch -RNp1 < ${rev "3e0a9877eafef1f484987126cd453cc36cfdeb42" "16i56a8k5aym09vapbjf2safyf9dk68cwxjhbamhkm45rlv8db24"}
+          patch -RNp1 < ${rev "54f825d237c1dcb0774fd3e3f4cfafb7c243aab5" "0zjjfhv7i6h4asif7378ddhikxap0kkm38yzlns88wiilbdy32aq"}
+          patch -RNp1 < ${rev "cad38401bf091917396b24ad9c92091760cc696f" "1z7kc88p1q3m136r33xd70aap1a8di4p79wj1kznbyh1wh02pzlk"}
+          patch -RNp1 < ${rev "894e0712459ec2d48b1298724776134d2a966f66" "1g9bnpwjwdv4icgvan9f1slc1gzc4dxz8qbv5wjdqsyqw6grrw7c"}
+          patch -RNp1 < ${rev "42da77bbcfeae16b5f138ad3f2a3e3030ae0844b" "16ssg4q47f0wvbv8vr0sixlh5d60rgz46x7bp53h0zlzvxmm8byp"}
+          patch -RNp1 < ${rev "2f7e7d284bddd27d98a17beca4da0b6525d72913" "0zxpvx48bkk1l1snd5dk5vhskgy0s04mfzphh7d58kvzz43wkjbw"}
+          patch -RNp1 < ${rev "f4b3eb7efbe1d433d7dcf850430f99f0f0066347" "0vclax6zfk9jyp8a4p0n0m3lvai4nlm9asvs6a4llb7ifcqbjfax"}
+          patch -RNp1 < ${rev "72b3cb68a702284122a16cbcdd87a621c29bb7a8" "1mhfm6z8zxqwzy5m5dc9hxvciw8syf6skj83dfq8kib3dikf25qg"}
+          patch -RNp1 < ${rev "a1a51f54dcb3863f9accfbf8c261407794d2bd13" "1vjhygcb9fll4357j9qy1g8779244gf1cxka6panlv5p66jn74sg"}
+          patch -RNp1 < ${rev "3e0a9877eafef1f484987126cd453cc36cfdeb42" "0y2ld5wx9pf2rpgkrdqwigi9gyjx403j6h0ml37sw922i3whkm0y"}
           patch -RNp1 < ${rev "5d0858ee9887ef5b99e09912d4379880979ab974" "077x9q97sw0sswzb51rzibhxxi3lljbpxp0p8j0cqnpmy44py3rm"}
-          patch -RNp1 < ${rev "d1662e4beb4c1b757423c71107f7ec115ade19f5" "0jkd9ks69mry11fs338y1djx8mjz808634vydlcy7jwajyykk3qg"}
+          patch -RNp1 < ${rev "d1662e4beb4c1b757423c71107f7ec115ade19f5" "146vp8625wgs667fzgkqmx1galvkg5yq5inrkxjixqzv58jhp1sr"}
           patch -RNp1 < ${rev "dab54bd849cd9f109d1a9d16cb171eddec39f2a1" "1pi0srrzisgvhfm9qc7nqpk5pn89bcj223vvds697jz2j96d3zfr"}
-          patch -RNp1 < ${rev "3864d2355493cbadedf59f0c2ee7ad7a306fad5a" "0y9yk8iiqspvraj0n46ygvx9mpbdf3gvn05cpf80gn4g6gpmcgra"}
+          patch -RNp1 < ${rev "3864d2355493cbadedf59f0c2ee7ad7a306fad5a" "1g7wsjz1arxpzz8dh6had6pzf0p2m7wmh674f68pw44w4075ip3d"}
           patch -RNp1 < ${rev "fca2f6c12b187763eaae23ed4932d6d049a469c3" "1xrs8dsw22xq4f5yp7vwddxvqb7afhic1llq3ibsxbpw4ln17jzb"}
-          patch -RNp1 < ${rev "63fb4d8270d1db7a0034100db550f54e8d9859f1" "0xqp8nv8xwixnh9w47kvfky5ic9cpm2cfssq1ww5a4d8k4pdfbjp"}
-          patch -RNp1 < ${rev "25adac6ede88d835110be20de0164d28c2187977" "1bgln83di6d0fyx6q7qar7r3m66lnjpi6if2866c2r70c4s6hi3l"}
+          patch -RNp1 < ${rev "63fb4d8270d1db7a0034100db550f54e8d9859f1" "1k4lgkvwljqh8ahpqsswy3ls49li0hiwnwbldl7g43gcqdj751rg"}
+          patch -RNp1 < ${rev "25adac6ede88d835110be20de0164d28c2187977" "1rssx9ppfyhp8zabncrkgqw1jfq0vm8m6jcs5jsl6scxdzjk2j7a"}
           patch -RNp1 < ${rev "dc1a1ae450f1119b1f5714ed99b6049343676293" "17dazybjc808dy21ri7qsvwr2cx9k48k8wwji8msjmgcf2s6lmpk"}
           patch -RNp1 < ${rev "aafbbdb8bcc9b668008038dc6fcfba028c4cc6f6" "1g99z7z18kkg0aiikdz12q7mfyjvz6srf2pwr58y9ybh735mjbf8"}
           patch -RNp1 < ${rev "682093d0bdc24a55fcde37ca4f9cc9ed46c3c7df" "15krg20lf9m7dp8h4rzbld02yc8jr083g5viq3v6pv0jhw8lyimz"}
@@ -282,14 +299,21 @@ self: super:
           # -W server-Stored_ACLs \
           # -W eventfd_synchronization \
 
+          # Sancreed — 11/21/2021
+          # Heads up, it appears that a bunch of Ubisoft Connect games (3/3 I had installed and could test) will crash
+          # almost immediately on newer Wine Staging/TKG inside pe_load_debug_info function unless the dbghelp-Debug_Symbols staging # patchset is disabled.
+          # -W dbghelp-Debug_Symbols
+
           echo "applying staging patches"
           ../wine-staging/patches/patchinstall.sh DESTDIR="." --all \
           -W winex11-_NET_ACTIVE_WINDOW \
           -W winex11-WM_WINDOWPOSCHANGING \
-          -W ntdll-NtAlertThreadByThreadId \
           -W ntdll-Junction_Points \
+          -W ntdll-Syscall_Emulation \
+          -W ntdll-Serial_Port_Detection \
           -W server-File_Permissions \
           -W server-Stored_ACLs \
+          -W dbghelp-Debug_Symbols \
           -W dwrite-FontFallback
 
           echo "Revert d4259ac on proton builds as it breaks steam helper compilation"
@@ -299,6 +323,11 @@ self: super:
           # revert this, it breaks lsteamclient compilation
           patch -RNp1 < ../wine-staging/patches/Compiler_Warnings/0031-include-Check-element-type-in-CONTAINING_RECORD-and-.patch
 
+          echo "Manually apply modified ntdll-Syscall_Emulation patch for proton, rebasing keeps complaining"
+          patch -Np1 < ../patches/proton/63-ntdll-Support-x86_64-syscall-emulation.patch
+
+          echo "Manually apply modified ntdll-Serial_Port_Detection patch for proton, rebasing keeps complaining"
+          patch -Np1 < ../patches/proton/64-ntdll-Do-a-device-check-before-returning-a-default-s.patch
 
       ### END WINE STAGING APPLY SECTION ###
 
@@ -314,14 +343,11 @@ self: super:
           patch -Np1 < ../patches/game-patches/assettocorsa-hud.patch
 
           echo "mk11 patch"
+          # this is needed so that online multi-player does not crash
           patch -Np1 < ../patches/game-patches/mk11.patch
 
           echo "killer instinct vulkan fix"
           patch -Np1 < ../patches/game-patches/killer-instinct-winevulkan_fix.patch
-
-          # https://bugs.winehq.org/show_bug.cgi?id=51821
-          echo "EVE Online - Fixe launcher 19.09"
-          patch -Np1 < ../patches/game-patches/eve-online-launcher.patch
 
           echo "Castlevania Advance fix"
           patch -Np1 < ../patches/game-patches/castlevania-advance-collection.patch
@@ -507,6 +533,7 @@ self: super:
           # Needed specifically for proton, not needed for normal wine
           echo "proton mfplat dll register patch"
           patch -Np1 < ../patches/proton/30-proton-mediafoundation_dllreg.patch
+          patch -Np1 < ../patches/proton/31-proton-mfplat-hacks.patch
 
           # Needed for Nier Replicant
           echo "proton mfplat nier replicant patch"
@@ -524,6 +551,8 @@ self: super:
           echo "The Good Life (1452500) workaround"
           patch -Np1 < ../patches/game-patches/thegoodlife-mfplat-http-scheme-workaround.patch
 
+          echo "FFXIV Video playback mfplat includes"
+          patch -Np1 < ../patches/game-patches/ffxiv-mfplat-additions.patch
 
       ### END MFPLAT PATCH SECTION ###
 
@@ -539,23 +568,25 @@ self: super:
           echo "hotfix to update mono version"
           patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-update_mono_version.patch
 
-          echo "add missing stub for fh5"
-          patch -Np1 < ../patches/wine-hotfixes/testing/fh5-uiauto.patch
+          echo "add halo infinite patches"
+          patch -Np1 < ../patches/wine-hotfixes/pending/halo-infinite-twinapi.appcore.dll.patch
 
           # https://github.com/Frogging-Family/wine-tkg-git/commit/ca0daac62037be72ae5dd7bf87c705c989eba2cb
           echo "unity crash hotfix"
           patch -Np1 < ../patches/wine-hotfixes/pending/unity_crash_hotfix.patch
 
-          # https://bugs.winehq.org/show_bug.cgi?id=52017
-          echo "fix for broken file browser"
-          patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-file_browser_fix.patch
-
-          echo "fix for prefix creation breakage caused by e5d3783"
-          patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-e5d3783-refression-fix.patch
 
       #    disabled, not compatible with fshack, not compatible with fsr, missing dependencies inside proton.
       #    patch -Np1 < ../patches/wine-hotfixes/testing/wine_wayland_driver.patch
 
+          # https://bugs.winehq.org/show_bug.cgi?id=51687
+          patch -Np1 < ../patches/wine-hotfixes/pending/Return_nt_filename_and_resolve_DOS_drive_path.patch
+
+          patch -Np1 < ../patches/wine-hotfixes/pending/222237
+          patch -Np1 < ../patches/wine-hotfixes/pending/222273
+
+          #https://bugs.winehq.org/show_bug.cgi?id=52222
+          patch -Np1 < ../patches/wine-hotfixes/pending/bug_52222_fix.patch
 
       ### END WINE HOTFIX SECTION ###
     '';
