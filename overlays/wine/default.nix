@@ -28,7 +28,7 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "7.0rc2";
+    version = "7.0rc6";
 
     protonGeVersion = "GE-1";
 
@@ -39,23 +39,23 @@ self: super:
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = "${version}-${protonGeVersion}";
-      sha256 = "QXSsMS4rmU3NViIfKBwyepwzSa33HyGlcbteIgsfWx0=";
+      sha256 = "sha256-/q6GILS5Mn3n3DNoJ2LT4SwlRbUrVXv2b6Ao3bdCF80=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
       #rev = "wine-${version}";
-      rev = "2f5f8b4bd4cb5771223d1ee96a55002d18ad01eb";
-      sha256 = "0VF0+wZElbj+x/ToCDQPIeFIfZckPK4Cexcew8E9fc4=";
+      rev = "b2f75a026f14805888a4b91d8a2e2c60a35fc1b7";
+      sha256 = "sha256-j89tQY9ijvaC13gAH4hQjk8CEk4hyqKFcwbx6F03KQw=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
       #rev = "v${version}";
-      rev = "8f579c4eed5fa8114f277f93b915cf455d7837c9";
-      sha256 = "UkwvKKRXyFjLfYbL8Ienpp5pxUzMQY1bEyAkoP7Xdz4=";
+      rev = "0111d074e60d98cea562fed60b81e25aa276dd98";
+      sha256 = "sha256-MNhEaDRu6+eyVDbnHsiBImuUT/TaL2lkegfT3cpodXo=";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -154,14 +154,6 @@ self: super:
           git reset --hard HEAD
           git clean -xdf
 
-          # revert pending pulseaudio changes
-          patch -RNp1 < ${revStaging "183fd3e089b170d5b7405a80a23e81dc7c4dd682" "16cwvibz5fsc5w07w9044qpifnh8bc8pk22w75r0iphac457war9"}
-
-          # reenable pulseaudio patches
-          patch -Np1 < ../patches/wine-hotfixes/staging/x3daudio_staging_revert.patch
-          patch -Np1 < ../patches/wine-hotfixes/staging/staging-reenable-pulse.patch
-          patch -RNp1 < ../patches/wine-hotfixes/staging/staging-pulseaudio-reverts.patch
-
           # allow esync patches to apply without depending on ntdll-Junction_Points
           patch -Np1 < ../patches/wine-hotfixes/staging/staging-esync_remove_ntdll_Junction_Points_dependency.patch
 
@@ -180,6 +172,7 @@ self: super:
           # https://github.com/ValveSoftware/Proton/issues/1295#issuecomment-859185208
           echo "these break Tokyo Xanadu Xe+"
           patch -RNp1 < ${rev "2ad44002da683634de768dbe49a0ba09c5f26f08" "0pd5n660jfkad453w8aqcffpz2k7575z20g948846bkjff7mq7xv"}
+          patch -RNp1 < ${rev "dfa4c07941322dbcad54507cd0acf271a6c719ab" "0k2hgffzhjavrpxhiddirs2yghy769k61s6qmz1a6g3kamg92a0s"}
 
           # https://bugs.winehq.org/show_bug.cgi?id=49990
       #    echo "revert bd27af974a21085cd0dc78b37b715bbcc3cfab69 which breaks some game launchers and 3D Mark"
@@ -194,12 +187,12 @@ self: super:
           patch -RNp1 < ${rev "c3862f2a6121796814ae31913bfb0efeba565087" "0g2i760zssrvql7w3p1gc8q0l4yllxyr7kcypr1r68hhkl1zgplr"}
           patch -RNp1 < ${rev "37be0989540cf84dd9336576577ae535f2b6bbb8" "14615drp34qa7214y8sp04q88ja6090k35la9sm2h0l50zxr0zdl"}
           patch -RNp1 < ${rev "3661194f8e8146a594673ad3682290f10fa2c096" "0h7gy6nc014bkj5h1iyrz0zg5h6sffpngdqggmw5b9ndzxp011ya"}
-
-
-          echo "revert faudio updates -- we can't use PE version yet because the staging patches need a rebase in order to fix audio crackling in some games -- notably cyberpunk"
-          patch -RNp1 < ${rev "22c26a2dde318b5b370fc269cab871e5a8bc4231" "1swapbhvhaj6j5apamzg405q313cksz825n3mwrqvajwsyzh28xl"}
+          patch -RNp1 < ${rev "9aef654392756aacdce6109ccbe21ba446ee4387" "0nskswhf7ghp1g7h1yv9k0srmmnfps8mdnry03rfbj27zh7apwkn"}
 
           echo "mfplat early reverts to re-enable staging mfplat patches"
+          patch -RNp1 < ${rev "cb41e4b1753891f5aa22cb617e8dd124c3dd8983" "07jrkg3lanmqm565f6rwj836zwpybc60lr6nzz6c89ap7ys0z9n6"}
+          patch -RNp1 < ${rev "03d92af78a5000097b26560bba97320eb013441a" "063bkq6p57giyk3s43jr66cv94cyryif82aqgf7ckmkn810swsnz"}
+          patch -RNp1 < ${rev "4d2a628dfe9e4aad9ba772854717253d0c6a7bb7" "1hd3ak43djfq84clhrq2rwm1ng96banmw5hrgbhxphgfw11wxij7"}
           patch -RNp1 < ${rev "78f916f598b4e0acadbda2c095058bf8a268eb72" "1jd2fs45m8bay0v3zhi4yvaykdp4qqm4s6zyk36kx4r8bx6403sk"}
           patch -RNp1 < ${rev "4f58d8144c5c1d3b86e988f925de7eb02c848e6f" "0daxppkni5fqmnp9pwbc2iry2aq994ixs8la87vq87lhzzmw9x1v"}
           patch -RNp1 < ${rev "747905c674d521b61923a6cff1d630c85a74d065" "1wxdi7wlww60q9i8z6z2bqibfcmmfazmf65ybqdbxb4gc1f3181c"}
@@ -271,11 +264,8 @@ self: super:
           patch -RNp1 < ${rev "831c6a88aab78db054beb42ca9562146b53963e7" "02h5fr6rr3iy2bfmskapm5xill1xvqc9rnkzzwcv7db61z0fs12z"}
           patch -RNp1 < ${rev "2d0dc2d47ca6b2d4090dfe32efdba4f695b197ce" "0b4m6hi2mcixgq42mz9afyzq70c5g8n5bpnxy7vmx3cz7c6sqjxz"}
 
-          echo "pulseaudio fixup to re-enable staging patches"
-          patch -Np1 < ../patches/wine-hotfixes/staging/wine-pulseaudio-fixup.patch
-
-          echo "manual revert of d8be85863fedf6982944d06ebd1ce5904cb3d4e1 for more audio fixing"
-          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-d8be858-faudio.patch
+          echo "1/2 revert faudio updates -- we still need to use our proton version to fix WMA playback"
+          patch -RNp1 < ${rev "22c26a2dde318b5b370fc269cab871e5a8bc4231" "1swapbhvhaj6j5apamzg405q313cksz825n3mwrqvajwsyzh28xl"}
 
       ### END PROBLEMATIC COMMIT REVERT SECTION ###
 
@@ -308,8 +298,8 @@ self: super:
           ../wine-staging/patches/patchinstall.sh DESTDIR="." --all \
           -W winex11-_NET_ACTIVE_WINDOW \
           -W winex11-WM_WINDOWPOSCHANGING \
-          -W ntdll-Junction_Points \
           -W ntdll-Syscall_Emulation \
+          -W ntdll-Junction_Points \
           -W ntdll-Serial_Port_Detection \
           -W server-File_Permissions \
           -W server-Stored_ACLs \
@@ -328,6 +318,10 @@ self: super:
 
           echo "Manually apply modified ntdll-Serial_Port_Detection patch for proton, rebasing keeps complaining"
           patch -Np1 < ../patches/proton/64-ntdll-Do-a-device-check-before-returning-a-default-s.patch
+
+          echo "2/2 revert faudio updates -- we still need to use our proton version to fix WMA playback"
+          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-d8be858-faudio.patch
+
 
       ### END WINE STAGING APPLY SECTION ###
 
@@ -374,9 +368,6 @@ self: super:
 
           echo "protonify"
           patch -Np1 < ../patches/proton/10-proton-protonify_staging.patch
-
-          echo "protonify-audio"
-          patch -Np1 < ../patches/proton/11-proton-pa-staging.patch
 
           echo "steam bits"
           patch -Np1 < ../patches/proton/12-proton-steam-bits.patch
@@ -529,6 +520,7 @@ self: super:
           patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0036-winegstreamer-Implement-MFT_MESSAGE_COMMAND_FLUSH-fo.patch
           patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0037-winegstreamer-Default-Frame-size-if-one-isn-t-availa.patch
           patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0038-mfplat-Stub-out-MFCreateDXGIDeviceManager-to-avoid-t.patch
+          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0039-aperture-hotfix.patch
 
           # Needed specifically for proton, not needed for normal wine
           echo "proton mfplat dll register patch"
@@ -579,14 +571,8 @@ self: super:
       #    disabled, not compatible with fshack, not compatible with fsr, missing dependencies inside proton.
       #    patch -Np1 < ../patches/wine-hotfixes/testing/wine_wayland_driver.patch
 
-          # https://bugs.winehq.org/show_bug.cgi?id=51687
-          patch -Np1 < ../patches/wine-hotfixes/pending/Return_nt_filename_and_resolve_DOS_drive_path.patch
-
-          patch -Np1 < ../patches/wine-hotfixes/pending/222237
-          patch -Np1 < ../patches/wine-hotfixes/pending/222273
-
-          #https://bugs.winehq.org/show_bug.cgi?id=52222
-          patch -Np1 < ../patches/wine-hotfixes/pending/bug_52222_fix.patch
+      #    # https://bugs.winehq.org/show_bug.cgi?id=51687
+      #    patch -Np1 < ../patches/wine-hotfixes/pending/Return_nt_filename_and_resolve_DOS_drive_path.patch
 
       ### END WINE HOTFIX SECTION ###
     '';
