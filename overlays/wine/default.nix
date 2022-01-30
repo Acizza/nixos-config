@@ -28,9 +28,9 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "7.0rc6";
+    version = "7.1";
 
-    protonGeVersion = "GE-1";
+    protonGeVersion = "GE-2";
 
     fullVersion = "${version}-${protonGeVersion}";
 
@@ -39,23 +39,21 @@ self: super:
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = "${version}-${protonGeVersion}";
-      sha256 = "sha256-/q6GILS5Mn3n3DNoJ2LT4SwlRbUrVXv2b6Ao3bdCF80=";
+      sha256 = "sha256-X7v1rs6WZDNVu53oRfiHKccVcoSRdZdr3l9VX1FqEdc=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
-      #rev = "wine-${version}";
-      rev = "b2f75a026f14805888a4b91d8a2e2c60a35fc1b7";
-      sha256 = "sha256-j89tQY9ijvaC13gAH4hQjk8CEk4hyqKFcwbx6F03KQw=";
+      rev = "wine-${version}";
+      sha256 = "sha256-WcosZ1PKqCA9aMeGIubs0TVkFZlSwYkRcthUZHPe/CY=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      #rev = "v${version}";
-      rev = "0111d074e60d98cea562fed60b81e25aa276dd98";
-      sha256 = "sha256-MNhEaDRu6+eyVDbnHsiBImuUT/TaL2lkegfT3cpodXo=";
+      rev = "v${version}";
+      sha256 = "sha256-exMQG/T6ZJggd6S1yN4wyWuNqr6GjjdG4VutGUcqZhE=";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -72,6 +70,10 @@ self: super:
   in rec {
     name = "wine-wow-${drv.version}-staging";
 
+    configureFlags = drv.configureFlags or [] ++ [
+      "--disable-tests"
+    ];
+
     nativeBuildInputs = drv.nativeBuildInputs ++ [
       super.git
       super.perl
@@ -85,12 +87,12 @@ self: super:
 
     prePatch =
       let
-        vulkanVersion = "1.2.201";
+        vulkanVersion = "1.2.203";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "ctG+020Te6FXIRli1tWXlcbjK5UHN1RK1AEXlL0VTQU=";
+          sha256 = "sha256-gKisO6UhTHdg2pCsic1TX9m6xGEbwPnG0p7mZgQWOus=";
         };
       in ''
         mkdir ge
@@ -105,11 +107,6 @@ self: super:
 
         patchShebangs ./wine/tools
         patchShebangs ./wine-staging/patches/gitapply.sh
-
-        # fix compilation error with bcrypt tests
-        cd wine
-        patch -RNp1 < ${rev "e6da4eed7e14cc6f8ade7f179b32d9d668827385" "06wix5p9311h3c8g7diax542hjf1bav5c7gi2hg2a0ayrplkj2zm"}
-        cd ..
 
         ${protonprep}
 
@@ -154,6 +151,9 @@ self: super:
           git reset --hard HEAD
           git clean -xdf
 
+          # faudio revert fix in staging:
+          patch -Np1 < ../patches/wine-hotfixes/staging/x3daudio_staging_revert.patch
+
           # allow esync patches to apply without depending on ntdll-Junction_Points
           patch -Np1 < ../patches/wine-hotfixes/staging/staging-esync_remove_ntdll_Junction_Points_dependency.patch
 
@@ -174,15 +174,13 @@ self: super:
           patch -RNp1 < ${rev "2ad44002da683634de768dbe49a0ba09c5f26f08" "0pd5n660jfkad453w8aqcffpz2k7575z20g948846bkjff7mq7xv"}
           patch -RNp1 < ${rev "dfa4c07941322dbcad54507cd0acf271a6c719ab" "0k2hgffzhjavrpxhiddirs2yghy769k61s6qmz1a6g3kamg92a0s"}
 
-          # https://bugs.winehq.org/show_bug.cgi?id=49990
-      #    echo "revert bd27af974a21085cd0dc78b37b715bbcc3cfab69 which breaks some game launchers and 3D Mark"
-      #    git revert --no-commit 548bc54bf396d74b5b928bf9be835272ddda1886
-      #    git revert --no-commit b502a3e3c6b43ac3947d85ccc263e729ace917fa
-      #    git revert --no-commit b54199101fd307199c481709d4b1358ba4bcce58
-      #    git revert --no-commit dedda40e5d7b5a3bcf67eea95145810da283d7d9
-      #    git revert --no-commit bd27af974a21085cd0dc78b37b715bbcc3cfab69
+          echp "revert in favor of proton stub to allow ffxiv intro videos to work"
+          patch -RNp1 < ${rev "85747f0abe0b013d9f287a33e10738e28d7418e9" "16jls1cmncf80nabw06mgcfg1rs3cj2x5hjf9aljbvfi4xs2p1z1"}
 
           echo "temporary fshack reverts"
+          patch -RNp1 < ${rev "ef9c0b3f691f6897f0acfd72af0a9ea020f0a0bf" "05q2ml3xp1zzh60lr3ba7pj8p60ik5icpaq2p9s208mm0r65apsb"}
+          patch -RNp1 < ${rev "3b8d7f7f036f3f4771284df97cce99d114fe42cb" "1xrn17i6cf7acjar6wkm7f09hyg14dbsvfj09wpai16dldzbpr5f"}
+          patch -RNp1 < ${rev "fe5e06185dfc828b5d3873fd1b28f29f15d7c627" "0xx0g6rxhgfyaammv6wk6dvrsc9aqf9wb9p00m0sjdxmxzx75n24"}
           patch -RNp1 < ${rev "c2384cf23378953b6960e7044a0e467944e8814a" "0w9220vnkfv36smkh68jjhhcj327dhzr6drpihxzi6995hy4np4b"}
           patch -RNp1 < ${rev "c3862f2a6121796814ae31913bfb0efeba565087" "0g2i760zssrvql7w3p1gc8q0l4yllxyr7kcypr1r68hhkl1zgplr"}
           patch -RNp1 < ${rev "37be0989540cf84dd9336576577ae535f2b6bbb8" "14615drp34qa7214y8sp04q88ja6090k35la9sm2h0l50zxr0zdl"}
@@ -190,6 +188,7 @@ self: super:
           patch -RNp1 < ${rev "9aef654392756aacdce6109ccbe21ba446ee4387" "0nskswhf7ghp1g7h1yv9k0srmmnfps8mdnry03rfbj27zh7apwkn"}
 
           echo "mfplat early reverts to re-enable staging mfplat patches"
+          patch -RNp1 < ${rev "11d1e967b6be4e948ad49cc893e27150c220b02d" "1bxj0am02rnsiyl7zxhl3p87v1ny4dv050ssxrsq6d8zlzdzzn7j"}
           patch -RNp1 < ${rev "cb41e4b1753891f5aa22cb617e8dd124c3dd8983" "07jrkg3lanmqm565f6rwj836zwpybc60lr6nzz6c89ap7ys0z9n6"}
           patch -RNp1 < ${rev "03d92af78a5000097b26560bba97320eb013441a" "063bkq6p57giyk3s43jr66cv94cyryif82aqgf7ckmkn810swsnz"}
           patch -RNp1 < ${rev "4d2a628dfe9e4aad9ba772854717253d0c6a7bb7" "1hd3ak43djfq84clhrq2rwm1ng96banmw5hrgbhxphgfw11wxij7"}
@@ -264,8 +263,20 @@ self: super:
           patch -RNp1 < ${rev "831c6a88aab78db054beb42ca9562146b53963e7" "02h5fr6rr3iy2bfmskapm5xill1xvqc9rnkzzwcv7db61z0fs12z"}
           patch -RNp1 < ${rev "2d0dc2d47ca6b2d4090dfe32efdba4f695b197ce" "0b4m6hi2mcixgq42mz9afyzq70c5g8n5bpnxy7vmx3cz7c6sqjxz"}
 
-          echo "1/2 revert faudio updates -- we still need to use our proton version to fix WMA playback"
+          echo "revert faudio updates -- WINE faudio does not have WMA decoding (notably needed for Skyrim voices) so we still need to provide our own with gstreamer support"
           patch -RNp1 < ${rev "22c26a2dde318b5b370fc269cab871e5a8bc4231" "1swapbhvhaj6j5apamzg405q313cksz825n3mwrqvajwsyzh28xl"}
+          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-d8be858-faudio.patch
+
+          echo "manual revert of 70f59eb179d6a1c1b4dbc9e0a45b5731cd260793"
+          # the msvcrt build of winepulse causes Forza Horizon 5 to crash at the splash screen
+          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-70f59eb-msvcrt.patch
+
+          # due to this commit 'makefiles: Make -mno-cygwin the default.' 088a787a2cd45ea70e4439251a279260401e9287
+          # we need to revert the change for pulseaudio by intentionally setting empty EXTRADLLFLAGS
+          patch -Np1 < ../patches/wine-hotfixes/pending/msvcrt-default-global-revert-for-winepulse.patch
+
+      #    echo "pulseaudio fixup to re-enable staging patches"
+      #    patch -Np1 < ../patches/wine-hotfixes/staging/wine-pulseaudio-fixup.patch
 
       ### END PROBLEMATIC COMMIT REVERT SECTION ###
 
@@ -294,6 +305,9 @@ self: super:
           # almost immediately on newer Wine Staging/TKG inside pe_load_debug_info function unless the dbghelp-Debug_Symbols staging # patchset is disabled.
           # -W dbghelp-Debug_Symbols
 
+          # Disable when using external FAudio
+          # -W xactengine3_7-callbacks \
+
           echo "applying staging patches"
           ../wine-staging/patches/patchinstall.sh DESTDIR="." --all \
           -W winex11-_NET_ACTIVE_WINDOW \
@@ -304,6 +318,7 @@ self: super:
           -W server-File_Permissions \
           -W server-Stored_ACLs \
           -W dbghelp-Debug_Symbols \
+          -W xactengine3_7-callbacks \
           -W dwrite-FontFallback
 
           echo "Revert d4259ac on proton builds as it breaks steam helper compilation"
@@ -319,9 +334,6 @@ self: super:
           echo "Manually apply modified ntdll-Serial_Port_Detection patch for proton, rebasing keeps complaining"
           patch -Np1 < ../patches/proton/64-ntdll-Do-a-device-check-before-returning-a-default-s.patch
 
-          echo "2/2 revert faudio updates -- we still need to use our proton version to fix WMA playback"
-          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-d8be858-faudio.patch
-
 
       ### END WINE STAGING APPLY SECTION ###
 
@@ -330,8 +342,9 @@ self: super:
           echo "mech warrior online"
           patch -Np1 < ../patches/game-patches/mwo.patch
 
-          echo "ffxiv launcher"
-          patch -Np1 < ../patches/game-patches/ffxiv-launcher-workaround.patch
+          echo "ffxiv"
+          patch -Np1 < ../patches/game-patches/ffxiv-launcher-fix.patch
+          patch -Np1 < ../patches/game-patches/ffxiv-opening-video-fix.patch
 
           echo "assetto corsa"
           patch -Np1 < ../patches/game-patches/assettocorsa-hud.patch
@@ -368,6 +381,9 @@ self: super:
 
           echo "protonify"
           patch -Np1 < ../patches/proton/10-proton-protonify_staging.patch
+
+          echo "protonify-audio"
+          patch -Np1 < ../patches/proton/11-proton-pa-staging.patch
 
           echo "steam bits"
           patch -Np1 < ../patches/proton/12-proton-steam-bits.patch
