@@ -23,14 +23,13 @@ self: super:
     gphoto2Support = false;
     saneSupport = false;
     openclSupport = false;
-    gsmSupport = false;
     gstreamerSupport = false;
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "7.1";
+    version = "7.2";
 
-    protonGeVersion = "GE-2";
+    protonGeVersion = "GE-2-test-2";
 
     fullVersion = "${version}-${protonGeVersion}";
 
@@ -39,21 +38,23 @@ self: super:
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = "${version}-${protonGeVersion}";
-      sha256 = "sha256-X7v1rs6WZDNVu53oRfiHKccVcoSRdZdr3l9VX1FqEdc=";
+      sha256 = "sha256-q7EdE2hC9sEfTyBGCf4RHvykDq9dIBQYrAsCgOL3OK8=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "wine-mirror";
       repo = "wine";
-      rev = "wine-${version}";
-      sha256 = "sha256-WcosZ1PKqCA9aMeGIubs0TVkFZlSwYkRcthUZHPe/CY=";
+      #rev = "wine-${version}";
+      rev = "bf42dca35f05bce9996e91f59cc47b5a9e6996b2";
+      sha256 = "sha256-fPRA5h+XPBvwwCIzDTnhQ79vOEJ3c4tH8UlAOj/btdU=";
     };
 
     staging = super.fetchFromGitHub {
       owner = "wine-staging";
       repo = "wine-staging";
-      rev = "v${version}";
-      sha256 = "sha256-exMQG/T6ZJggd6S1yN4wyWuNqr6GjjdG4VutGUcqZhE=";
+      #rev = "v${version}";
+      rev = "99c88fee27290ffe723cb47ade32a44807ad9430";
+      sha256 = "sha256-5VO/1Da2FBi16bTdetcKtm69BWBxXX21hVK8jyTeSd8=";
     };
 
     NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
@@ -87,12 +88,12 @@ self: super:
 
     prePatch =
       let
-        vulkanVersion = "1.2.203";
+        vulkanVersion = "1.3.204";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "sha256-gKisO6UhTHdg2pCsic1TX9m6xGEbwPnG0p7mZgQWOus=";
+          sha256 = "sha256-2xmp+Ihg1QIC1ZMmGAXlkmSJUVKwR11JpDYws+mWlXg=";
         };
       in ''
         mkdir ge
@@ -151,10 +152,8 @@ self: super:
           git reset --hard HEAD
           git clean -xdf
 
-          # faudio revert fix in staging:
-          patch -Np1 < ../patches/wine-hotfixes/staging/x3daudio_staging_revert.patch
-
           # allow esync patches to apply without depending on ntdll-Junction_Points
+          echo "WINE-STAGING: allow esync patches to apply without depending on ntdll-Junction_Points"
           patch -Np1 < ../patches/wine-hotfixes/staging/staging-esync_remove_ntdll_Junction_Points_dependency.patch
 
           cd ..
@@ -169,127 +168,42 @@ self: super:
 
       ### (2-1) PROBLEMATIC COMMIT REVERT SECTION ###
 
-          # https://github.com/ValveSoftware/Proton/issues/1295#issuecomment-859185208
-          echo "these break Tokyo Xanadu Xe+"
-          patch -RNp1 < ${rev "2ad44002da683634de768dbe49a0ba09c5f26f08" "0pd5n660jfkad453w8aqcffpz2k7575z20g948846bkjff7mq7xv"}
-          patch -RNp1 < ${rev "dfa4c07941322dbcad54507cd0acf271a6c719ab" "0k2hgffzhjavrpxhiddirs2yghy769k61s6qmz1a6g3kamg92a0s"}
-
-          echp "revert in favor of proton stub to allow ffxiv intro videos to work"
-          patch -RNp1 < ${rev "85747f0abe0b013d9f287a33e10738e28d7418e9" "16jls1cmncf80nabw06mgcfg1rs3cj2x5hjf9aljbvfi4xs2p1z1"}
-
-          echo "temporary fshack reverts"
-          patch -RNp1 < ${rev "ef9c0b3f691f6897f0acfd72af0a9ea020f0a0bf" "05q2ml3xp1zzh60lr3ba7pj8p60ik5icpaq2p9s208mm0r65apsb"}
-          patch -RNp1 < ${rev "3b8d7f7f036f3f4771284df97cce99d114fe42cb" "1xrn17i6cf7acjar6wkm7f09hyg14dbsvfj09wpai16dldzbpr5f"}
-          patch -RNp1 < ${rev "fe5e06185dfc828b5d3873fd1b28f29f15d7c627" "0xx0g6rxhgfyaammv6wk6dvrsc9aqf9wb9p00m0sjdxmxzx75n24"}
-          patch -RNp1 < ${rev "c2384cf23378953b6960e7044a0e467944e8814a" "0w9220vnkfv36smkh68jjhhcj327dhzr6drpihxzi6995hy4np4b"}
-          patch -RNp1 < ${rev "c3862f2a6121796814ae31913bfb0efeba565087" "0g2i760zssrvql7w3p1gc8q0l4yllxyr7kcypr1r68hhkl1zgplr"}
-          patch -RNp1 < ${rev "37be0989540cf84dd9336576577ae535f2b6bbb8" "14615drp34qa7214y8sp04q88ja6090k35la9sm2h0l50zxr0zdl"}
-          patch -RNp1 < ${rev "3661194f8e8146a594673ad3682290f10fa2c096" "0h7gy6nc014bkj5h1iyrz0zg5h6sffpngdqggmw5b9ndzxp011ya"}
-          patch -RNp1 < ${rev "9aef654392756aacdce6109ccbe21ba446ee4387" "0nskswhf7ghp1g7h1yv9k0srmmnfps8mdnry03rfbj27zh7apwkn"}
-
-          echo "mfplat early reverts to re-enable staging mfplat patches"
-          patch -RNp1 < ${rev "11d1e967b6be4e948ad49cc893e27150c220b02d" "1bxj0am02rnsiyl7zxhl3p87v1ny4dv050ssxrsq6d8zlzdzzn7j"}
-          patch -RNp1 < ${rev "cb41e4b1753891f5aa22cb617e8dd124c3dd8983" "07jrkg3lanmqm565f6rwj836zwpybc60lr6nzz6c89ap7ys0z9n6"}
-          patch -RNp1 < ${rev "03d92af78a5000097b26560bba97320eb013441a" "063bkq6p57giyk3s43jr66cv94cyryif82aqgf7ckmkn810swsnz"}
-          patch -RNp1 < ${rev "4d2a628dfe9e4aad9ba772854717253d0c6a7bb7" "1hd3ak43djfq84clhrq2rwm1ng96banmw5hrgbhxphgfw11wxij7"}
-          patch -RNp1 < ${rev "78f916f598b4e0acadbda2c095058bf8a268eb72" "1jd2fs45m8bay0v3zhi4yvaykdp4qqm4s6zyk36kx4r8bx6403sk"}
-          patch -RNp1 < ${rev "4f58d8144c5c1d3b86e988f925de7eb02c848e6f" "0daxppkni5fqmnp9pwbc2iry2aq994ixs8la87vq87lhzzmw9x1v"}
-          patch -RNp1 < ${rev "747905c674d521b61923a6cff1d630c85a74d065" "1wxdi7wlww60q9i8z6z2bqibfcmmfazmf65ybqdbxb4gc1f3181c"}
-          patch -RNp1 < ${rev "f3624e2d642c4f5c1042d24a70273db4437fcef9" "1k1daxg1jdhhrm5jj4wi740sljx96yz8siaq7sqcpp1vrax5v1rl"}
-          patch -RNp1 < ${rev "769057b9b281eaaba7ee438dedb7f922b0903472" "0x69i5nbs81wg18rl0lihzjld9vnh38655fpg8sflshw5aw242fg"}
-          patch -RNp1 < ${rev "639c04a5b4e1ffd1d8328f60af998185a04d0c50" "1fc52k5fpmm2d3agzzfvybyvy7z76gsjckdvcigmm659pwd94gs2"}
-          patch -RNp1 < ${rev "54f825d237c1dcb0774fd3e3f4cfafb7c243aab5" "0zjjfhv7i6h4asif7378ddhikxap0kkm38yzlns88wiilbdy32aq"}
-          patch -RNp1 < ${rev "cad38401bf091917396b24ad9c92091760cc696f" "1z7kc88p1q3m136r33xd70aap1a8di4p79wj1kznbyh1wh02pzlk"}
-          patch -RNp1 < ${rev "894e0712459ec2d48b1298724776134d2a966f66" "1g9bnpwjwdv4icgvan9f1slc1gzc4dxz8qbv5wjdqsyqw6grrw7c"}
-          patch -RNp1 < ${rev "42da77bbcfeae16b5f138ad3f2a3e3030ae0844b" "16ssg4q47f0wvbv8vr0sixlh5d60rgz46x7bp53h0zlzvxmm8byp"}
-          patch -RNp1 < ${rev "2f7e7d284bddd27d98a17beca4da0b6525d72913" "0zxpvx48bkk1l1snd5dk5vhskgy0s04mfzphh7d58kvzz43wkjbw"}
-          patch -RNp1 < ${rev "f4b3eb7efbe1d433d7dcf850430f99f0f0066347" "0vclax6zfk9jyp8a4p0n0m3lvai4nlm9asvs6a4llb7ifcqbjfax"}
-          patch -RNp1 < ${rev "72b3cb68a702284122a16cbcdd87a621c29bb7a8" "1mhfm6z8zxqwzy5m5dc9hxvciw8syf6skj83dfq8kib3dikf25qg"}
-          patch -RNp1 < ${rev "a1a51f54dcb3863f9accfbf8c261407794d2bd13" "1vjhygcb9fll4357j9qy1g8779244gf1cxka6panlv5p66jn74sg"}
-          patch -RNp1 < ${rev "3e0a9877eafef1f484987126cd453cc36cfdeb42" "0y2ld5wx9pf2rpgkrdqwigi9gyjx403j6h0ml37sw922i3whkm0y"}
-          patch -RNp1 < ${rev "5d0858ee9887ef5b99e09912d4379880979ab974" "077x9q97sw0sswzb51rzibhxxi3lljbpxp0p8j0cqnpmy44py3rm"}
-          patch -RNp1 < ${rev "d1662e4beb4c1b757423c71107f7ec115ade19f5" "146vp8625wgs667fzgkqmx1galvkg5yq5inrkxjixqzv58jhp1sr"}
-          patch -RNp1 < ${rev "dab54bd849cd9f109d1a9d16cb171eddec39f2a1" "1pi0srrzisgvhfm9qc7nqpk5pn89bcj223vvds697jz2j96d3zfr"}
-          patch -RNp1 < ${rev "3864d2355493cbadedf59f0c2ee7ad7a306fad5a" "1g7wsjz1arxpzz8dh6had6pzf0p2m7wmh674f68pw44w4075ip3d"}
-          patch -RNp1 < ${rev "fca2f6c12b187763eaae23ed4932d6d049a469c3" "1xrs8dsw22xq4f5yp7vwddxvqb7afhic1llq3ibsxbpw4ln17jzb"}
-          patch -RNp1 < ${rev "63fb4d8270d1db7a0034100db550f54e8d9859f1" "1k4lgkvwljqh8ahpqsswy3ls49li0hiwnwbldl7g43gcqdj751rg"}
-          patch -RNp1 < ${rev "25adac6ede88d835110be20de0164d28c2187977" "1rssx9ppfyhp8zabncrkgqw1jfq0vm8m6jcs5jsl6scxdzjk2j7a"}
-          patch -RNp1 < ${rev "dc1a1ae450f1119b1f5714ed99b6049343676293" "17dazybjc808dy21ri7qsvwr2cx9k48k8wwji8msjmgcf2s6lmpk"}
-          patch -RNp1 < ${rev "aafbbdb8bcc9b668008038dc6fcfba028c4cc6f6" "1g99z7z18kkg0aiikdz12q7mfyjvz6srf2pwr58y9ybh735mjbf8"}
-          patch -RNp1 < ${rev "682093d0bdc24a55fcde37ca4f9cc9ed46c3c7df" "15krg20lf9m7dp8h4rzbld02yc8jr083g5viq3v6pv0jhw8lyimz"}
-          patch -RNp1 < ${rev "21dc092b910f80616242761a00d8cdab2f8aa7bd" "0bhgss063243c4m3fah4zfk6fa7s3bxdxz8n38w072kx9nfkaaxg"}
-          patch -RNp1 < ${rev "d7175e265537ffd24dbf8fd3bcaaa1764db03e13" "0xjc9h8r94j7qxy1811s86y06q9f0q1njh38rn30l7c4hj8xh5s9"}
-          patch -RNp1 < ${rev "5306d0ff3c95e7b9b1c77fa2bb30b420d07879f7" "0rqlky9c51rimwj78q7djhnk5kkqlwbi8vnhsp91qph5w2blbb94"}
-          patch -RNp1 < ${rev "00bc5eb73b95cbfe404fe18e1d0aadacc8ab4662" "0l705h04j3mgc34jk3bgb75s14lx6p6lxk7cxqfqal0b0pmb7zks"}
-          patch -RNp1 < ${rev "a855591fd29f1f47947459f8710b580a4f90ce3a" "0risgiq5glc59829ng2g666522b4cbclmkhdr59fidsii41zca91"}
-          patch -RNp1 < ${rev "34d85311f33335d2babff3983bb96fb0ce9bae5b" "08nsrfsgq4q55kd2l0205251010xg0kf8cpl4dlbj41jvw11xk04"}
-          patch -RNp1 < ${rev "42c82012c7ac992a98930011647482fc94c63a87" "0c0bh3pi385p3kvy4i4iycf49qf5r9wzs9mdp1x6k8a3lcla3ndv"}
-          patch -RNp1 < ${rev "4398e8aba2d2c96ee209f59658c2aa6caf26687a" "14v5qdlz9db0605ds99wbsxl1sk95450asj5cz1bj34cl70whfc5"}
-          patch -RNp1 < ${rev "c9f5903e5a315989d03d48e4a53291be48fd8d89" "086rzi2v7wm7z7gnpaz041npa1wkvar4m4m2ak5h6vz1pq0gkyqy"}
-          patch -RNp1 < ${rev "56dde41b6d91c589d861dca5d50ffa9f607da1db" "1bccgnvidaf291qww7m93j2n54g0kbllkqicnjavf373m942mn6x"}
-          patch -RNp1 < ${rev "c3811e84617e409875957b3d0b43fc5be91f01f6" "08xa9g0p1phqmvlwbls3g64lrqmmwsscszqlc1x7ki1zhdb85la7"}
-          patch -RNp1 < ${rev "799c7704e8877fe2ee73391f9f2b8d39e222b8d5" "0czs2kzxibzf0bdzsny2sr50rj55grmnlavcdgm4jnb9bykxxfyz"}
-          patch -RNp1 < ${rev "399ccc032750e2658526fc70fa0bfee7995597df" "0gfrs3yrj92cj05fwchx9g3xizzv9w8m4s7hkn9fr9c3333j88va"}
-          patch -RNp1 < ${rev "f7b45d419f94a6168e3d9a97fb2df21f448446f1" "0r1bm1krhz23h3vkzpn1nyqlj4ccrzmdi8zvisvjblvbf2przb6v"}
-          patch -RNp1 < ${rev "6cb1d1ec4ffa77bbc2223703b93033bd86730a60" "0097q1xz03giv3d3m4cl4sr90q22yv0n30maxm5ccc1r41p2l2wx"}
-          patch -RNp1 < ${rev "7c02cd8cf8e1b97df8f8bfddfeba68d7c7b4f820" "1wqmnkp4f1yq79ylpzrmnax5lm8xsjkwy80yb2vs6iii407jjh2y"}
-          patch -RNp1 < ${rev "6f8d366b57e662981c68ba0bd29465f391167de9" "0rsrad789w9v1yaa82gphk8mhiiaq975gg54jr975kif79dbm86z"}
-          patch -RNp1 < ${rev "74c2e9020f04b26e7ccf217d956ead740566e991" "0i65ibk5wknzcl3yzd79l5rsbcq5a4qi77iri2lwp048awma3q3q"}
-          patch -RNp1 < ${rev "04d94e3c092bbbaee5ec1331930b11af58ced629" "0rbzwr82lv4v2lmj83fsmwrsbi2cb9dn7dwq6fgk3s6b3pmkydsv"}
-          patch -RNp1 < ${rev "538b86bfc640ddcfd4d28b1e2660acdef0ce9b08" "0r53szzv5ii3hbg3gwmx172wdpk932hryy5irzcx029iahys38np"}
-          patch -RNp1 < ${rev "3b8579d8a570eeeaf0d4e0667e748d484df138aa" "0sppvjjh387smf8gmm8f3pgal5r3imyvj9p3ailrjyw4wp4nkpax"}
-          patch -RNp1 < ${rev "970c1bc49b804d0b7fa515292f27ac2fb4ef29e8" "12fr2b7ghkl8z8y3yqk9isx0maw0cjj3g0v26zglrx7jxqrglh2k"}
-          patch -RNp1 < ${rev "f26e0ba212e6164eb7535f472415334d1a9c9044" "1179a4q6n3lqbxvksp788y97xg4zgcksgqz4q3y3vr60wmvk02vg"}
-          patch -RNp1 < ${rev "bc52edc19d8a45b9062d9568652403251872026e" "0n1m6qnvbfcxg2ipq2jckj9szivrrmaavnmwbgy2lkbp6h4jg8rx"}
-          patch -RNp1 < ${rev "b3655b5be5f137281e8757db4e6985018b21c296" "0dyf7yph91rw8aj05lgbv20dyx8c28d6xdxls4mkvmsw93pb2w5p"}
-          patch -RNp1 < ${rev "95ffc879882fdedaf9fdf40eb1c556a025ae5bfd" "0q3l22i8539yxwhhny8lrpcwisglmgfrqi6bf0dn2pnwbds2f97m"}
-          patch -RNp1 < ${rev "0dc309ef6ac54484d92f6558d6ca2f8e50eb28e2" "0dvyq5j3p60hpxbn7f8fa4nxnhb5lz6nj9dcsggkw9vlzcxy4spy"}
-          patch -RNp1 < ${rev "25948222129fe48ac4c65a4cf093477d19d25f18" "15dkc8cmy4k4yck0425bd7yc3iw9nj9g02yisaqsr4m4x5dnc0ns"}
-          patch -RNp1 < ${rev "7f481ea05faf02914ecbc1932703e528511cce1a" "1g021f699h86rjc63ak7pirzmqnyccgj4xyhczmcjj4032f8z269"}
-          patch -RNp1 < ${rev "c45be242e5b6bc0a80796d65716ced8e0bc5fd41" "1g52g1r7m2zc1f3s407s5cc724vvr7gqhvzni4b84vzjpx9g0qf0"}
-          patch -RNp1 < ${rev "d5154e7eea70a19fe528f0de6ebac0186651e0f3" "0xrwcbfm7jj9q1mls1hfnz5c9yaw3fcyw4jrdgvp4wwdp3d0plrp"}
-          patch -RNp1 < ${rev "d39747f450ad4356868f46cfda9a870347cce9dd" "1nlvwffblamigjshr2jxxrcpb26rwmvgqb58jjfi1s6ysm1lpd86"}
-          patch -RNp1 < ${rev "250f86b02389b2148471ad67bcc0775ff3b2c6ba" "1x0191ciqh8bspm6lzl6jqr5107r7g0gjn4ikl6gbca9ngm9byvn"}
-          patch -RNp1 < ${rev "40ced5e054d1f16ce47161079c960ac839910cb7" "1zkhkv0wn3q3wjnnciz2lg9gf6sv1bbb3zvrc9v8w281hhy95q6z"}
-          patch -RNp1 < ${rev "8bd3c8bf5a9ea4765f791f1f78f60bcf7060eba6" "1hz75l0ks8r2a1pax8z7b9xqfgvzz2d7s675ki7gxk7k9f0jk300"}
-          patch -RNp1 < ${rev "87e4c289e46701c6f582e95c330eefb6fc5ec68a" "0sr86r6616zrabmarqzwk48saqk4dwx4fc7v12igrc7lm7hm7gy7"}
-          patch -RNp1 < ${rev "51b6d45503e5849f28cce1a9aa9b7d3dba9de0fe" "1k9lamfnzr257zilv06s1gpis5ln95smspdv7ch2s73r3i6a6z1c"}
-          patch -RNp1 < ${rev "c76418fbfd72e496c800aec28c5a1d713389287f" "0y7p5dwz96wi5xjhrfdg8ydg7lrzb7nx01sp524k7d3aj03w36a1"}
-          patch -RNp1 < ${rev "37e9f0eadae9f62ccae8919a92686695927e9274" "0i9n16nn2hablagp39zxci6ki1ffqmmhjkmqxlr20zsmlhdf07z0"}
-          patch -RNp1 < ${rev "dd182a924f89b948010ecc0d79f43aec83adfe65" "0vdkc2b357scixx2lg3qwm33xb2fycy5j5w8i9j9yinfackkzdrx"}
-          patch -RNp1 < ${rev "4f10b95c8355c94e4c6f506322b80be7ae7aa174" "0l1zd4n28rgjwq9y2721cbba7sjdkx1ygrxj4yj8nlqyk9pw7gvw"}
-          patch -RNp1 < ${rev "4239f2acf77d9eaa8166628d25c1336c1599df33" "1rdh8aa1b95bkqbg2ymx2qy7zkhjja6gdjng5f31zy7wwp31smkl"}
-          patch -RNp1 < ${rev "3dd8eeeebdeec619570c764285bdcae82dee5868" "1rw8rb3i1sg3lyv6xa7pimrk08ldf65sydwi5qzlydpssxzgbsyy"}
-          patch -RNp1 < ${rev "831c6a88aab78db054beb42ca9562146b53963e7" "02h5fr6rr3iy2bfmskapm5xill1xvqc9rnkzzwcv7db61z0fs12z"}
-          patch -RNp1 < ${rev "2d0dc2d47ca6b2d4090dfe32efdba4f695b197ce" "0b4m6hi2mcixgq42mz9afyzq70c5g8n5bpnxy7vmx3cz7c6sqjxz"}
-
-          echo "revert faudio updates -- WINE faudio does not have WMA decoding (notably needed for Skyrim voices) so we still need to provide our own with gstreamer support"
-          patch -RNp1 < ${rev "22c26a2dde318b5b370fc269cab871e5a8bc4231" "1swapbhvhaj6j5apamzg405q313cksz825n3mwrqvajwsyzh28xl"}
-          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-d8be858-faudio.patch
-
-          echo "manual revert of 70f59eb179d6a1c1b4dbc9e0a45b5731cd260793"
-          # the msvcrt build of winepulse causes Forza Horizon 5 to crash at the splash screen
-          patch -RNp1 < ../patches/wine-hotfixes/pending/revert-70f59eb-msvcrt.patch
-
-          # due to this commit 'makefiles: Make -mno-cygwin the default.' 088a787a2cd45ea70e4439251a279260401e9287
-          # we need to revert the change for pulseaudio by intentionally setting empty EXTRADLLFLAGS
-          patch -Np1 < ../patches/wine-hotfixes/pending/msvcrt-default-global-revert-for-winepulse.patch
-
-      #    echo "pulseaudio fixup to re-enable staging patches"
-      #    patch -Np1 < ../patches/wine-hotfixes/staging/wine-pulseaudio-fixup.patch
+          echo "WINE: -REVERTS- revert --data-only commits"
+          # these were changed to build in data-only mode, however this causes these dlls not to load in proton
+          # revert the data-only mode changes for now.
+          patch -RNp1 < ${rev "141be028802f1675366802d49af01982525c2e6d" "061xgdy82j0a41jkr4pks84ixbqd43c4p0cbqm9n1df1fkxn8wr7"}
+          patch -RNp1 < ${rev "d5fc074b9f2cf2e52711d832ca76eaaa5277bb8c" "1wyyn9a6sfrf1m98pz2f4jv589di764skvrqm0wmnisl5x7d6dvr"}
+          patch -RNp1 < ${rev "457c5df7d33144e45e0b275cf3cd060ec8403f32" "1y5sqls88w4fzw8nhcf1di7ipxl8kwizym45434k38vsv8356g7q"}
+          patch -RNp1 < ${rev "5b7534e55adb59cddb7f0c8a337cc3c3954c8d8b" "1057qk11ss760iqaw44l466ny3swzjgw9v079wl2h3bbd9ri1id4"}
+          patch -RNp1 < ${rev "aa957a2db15942260864c50865f828adeccc12e8" "10vr4h8r5ywilrihx7cwzz70kx88ki8gf9y5jqc9bj2rzw2xcfyb"}
+          patch -RNp1 < ${rev "2abcdf08033334075a22e65b97a7f8874361e72a" "1v1f15jf4gcfhhxcg7scm82rw8yfr2vg6ckpvlihj9y5f9xmirqs"}
+          patch -RNp1 < ${rev "40611a65e73eee2ff8ff8ff647572f93a7ffd4ba" "0hgzrq481k03x1irfaf1r5mhjc5hqx12898mvix3l4bqpr9jyx25"}
+          patch -RNp1 < ${rev "9b6253199ffb361557c53b1315263518cebc9871" "1i4qkmcmlbqnknfczgj9ffkqhmnp6ld4y15ipfmihpwc46zqh5mf"}
+          patch -RNp1 < ${rev "d3e2fa064f2efe0a9375df23ec141171b74efe40" "0j3s3nc2qya0nxj7ip7pfd8w2v5niwcrikhm847ypvk0a07zz8x9"}
+          patch -RNp1 < ${rev "1bb2d490f79743e9dac87d279e15f29bd359e715" "067ddx86da4cz6vz0952732w7qns6k2pfxa0vmipyh59ppnvkb38"}
+          patch -RNp1 < ${rev "3584dd2900fbd3a11175d1b3f77a55315442c284" "1z8lgdikwpzc8pwvgjgbv63741ss4fyawcspcx8b05nk79ccda25"}
+          patch -RNp1 < ${rev "2da8b64cfd5ed46f98d1fbfa5d56b680358a7a6b" "1ri65186zhbjvfzx8p063vz05qqiyny15ykkqns5wybrmxs5agfi"}
+          patch -RNp1 < ${rev "91db4290caa0bc4f0173e72296852de2d7ad699d" "07lbmd0pr799knxczzgh7a79iw2k6hwd8md7y4byw2alr99chnr0"}
+          patch -RNp1 < ${rev "ace84eb6bccc490a563af19118da9e19ede970bb" "1l54ys488znyr85d4jvmwmg5na4by96vn0341vj2cns0akwh1lgh"}
+          patch -RNp1 < ${rev "91544ee3bb6c7cd2c056ae0d0eb626ade701d09f" "0y4vc55gh95yb277qxzc9dsyhlpv3x4w8mzs5a1ysf9jcahyx4mv"}
 
       ### END PROBLEMATIC COMMIT REVERT SECTION ###
 
 
       ### (2-2) WINE STAGING APPLY SECTION ###
 
+          # We manually apply this because reverting it in staging is being a pain in the ass despite it being just 4 lines.
+          # -W stdole32.tlb-SLTG_Typelib \
+
           # these cause window freezes/hangs with origin
           # -W winex11-_NET_ACTIVE_WINDOW \
           # -W winex11-WM_WINDOWPOSCHANGING \
 
-          # This was found to cause hangs in various games
-          # Notably DOOM Eternal and Resident Evil Village
-          # -W ntdll-NtAlertThreadByThreadId
+          # this interferes with fshack
+          #-W winex11-MWM_Decorations \
+
+          # this interferes with protons keyboard translation patches
+          #-W winex11-key_translation \
 
           # ntdll-Junction_Points breaks Valve's CEG drm
           # the other two rely on it.
@@ -303,108 +217,117 @@ self: super:
           # Sancreed — 11/21/2021
           # Heads up, it appears that a bunch of Ubisoft Connect games (3/3 I had installed and could test) will crash
           # almost immediately on newer Wine Staging/TKG inside pe_load_debug_info function unless the dbghelp-Debug_Symbols staging # patchset is disabled.
-          # -W dbghelp-Debug_Symbols
+          # -W dbghelp-Debug_Symbols \
 
-          # Disable when using external FAudio
-          # -W xactengine3_7-callbacks \
-
-          echo "applying staging patches"
+          echo "WINE: -STAGING- applying staging patches"
           ../wine-staging/patches/patchinstall.sh DESTDIR="." --all \
           -W winex11-_NET_ACTIVE_WINDOW \
           -W winex11-WM_WINDOWPOSCHANGING \
+          -W winex11-MWM_Decorations \
+          -W winex11-key_translation \
           -W ntdll-Syscall_Emulation \
           -W ntdll-Junction_Points \
           -W ntdll-Serial_Port_Detection \
           -W server-File_Permissions \
           -W server-Stored_ACLs \
           -W dbghelp-Debug_Symbols \
-          -W xactengine3_7-callbacks \
+          -W stdole32.tlb-SLTG_Typelib \
           -W dwrite-FontFallback
 
-          echo "Revert d4259ac on proton builds as it breaks steam helper compilation"
-          patch -RNp1 < ../patches/wine-hotfixes/steamclient/d4259ac8e93_revert.patch
-
-          echo "applying staging Compiler_Warnings revert for steamclient compatibility"
+          echo "WINE: -STAGING- applying staging Compiler_Warnings revert for steamclient compatibility"
           # revert this, it breaks lsteamclient compilation
           patch -RNp1 < ../wine-staging/patches/Compiler_Warnings/0031-include-Check-element-type-in-CONTAINING_RECORD-and-.patch
 
-          echo "Manually apply modified ntdll-Syscall_Emulation patch for proton, rebasing keeps complaining"
+          echo "WINE: -STAGING- Manually apply modified ntdll-Syscall_Emulation patch for proton, rebasing keeps complaining"
           patch -Np1 < ../patches/proton/63-ntdll-Support-x86_64-syscall-emulation.patch
 
-          echo "Manually apply modified ntdll-Serial_Port_Detection patch for proton, rebasing keeps complaining"
+          echo "WINE: -STAGING- Manually apply modified ntdll-Serial_Port_Detection patch for proton, rebasing keeps complaining"
           patch -Np1 < ../patches/proton/64-ntdll-Do-a-device-check-before-returning-a-default-s.patch
+
+          echo "WINE: -STAGING- Manually apply reverted --data-only stdole32.tlb patch"
+          patch -Np1 < ../patches/wine-hotfixes/staging/0020-stdole32.tlb-Compile-typelib-with-oldtlb.patch
 
 
       ### END WINE STAGING APPLY SECTION ###
 
       ### (2-3) GAME PATCH SECTION ###
 
-          echo "mech warrior online"
+          echo "WINE: -GAME FIXES- mech warrior online fix"
           patch -Np1 < ../patches/game-patches/mwo.patch
 
-          echo "ffxiv"
+          echo "WINE: -GAME FIXES- ffxiv launcher play login button fix"
           patch -Np1 < ../patches/game-patches/ffxiv-launcher-fix.patch
-          patch -Np1 < ../patches/game-patches/ffxiv-opening-video-fix.patch
 
-          echo "assetto corsa"
+          echo "WINE: -GAME FIXES- assetto corsa hud fix"
           patch -Np1 < ../patches/game-patches/assettocorsa-hud.patch
 
-          echo "mk11 patch"
+          echo "WINE: -GAME FIXES- mk11 crash fix"
           # this is needed so that online multi-player does not crash
           patch -Np1 < ../patches/game-patches/mk11.patch
 
-          echo "killer instinct vulkan fix"
+          echo "WINE: -GAME FIXES- killer instinct vulkan fix"
           patch -Np1 < ../patches/game-patches/killer-instinct-winevulkan_fix.patch
 
-          echo "Castlevania Advance fix"
+          echo "WINE: -GAME FIXES- Castlevania Advance fix"
           patch -Np1 < ../patches/game-patches/castlevania-advance-collection.patch
+
+          echo "WINE: -GAME FIXES- add halo infinite patches"
+          patch -Np1 < ../patches/game-patches/halo-infinite-twinapi.appcore.dll.patch
 
       ### END GAME PATCH SECTION ###
 
       ### (2-4) PROTON PATCH SECTION ###
 
-          echo "clock monotonic"
+          echo "WINE: -PROTON- clock monotonic"
           patch -Np1 < ../patches/proton/01-proton-use_clock_monotonic.patch
 
           #WINE FSYNC
-          echo "applying fsync patches"
+          echo "WINE: -PROTON- applying fsync"
           patch -Np1 < ../patches/proton/03-proton-fsync_staging.patch
 
-          echo "proton futex waitv patches"
+          echo "WINE: -PROTON- futex waitv"
           patch -Np1 < ../patches/proton/57-fsync_futex_waitv.patch
 
-          echo "LAA"
+          echo "WINE: -PROTON- Large Address Aware"
           patch -Np1 < ../patches/proton/04-proton-LAA_staging.patch
 
-          echo "steamclient swap"
+          echo "WINE: -PROTON- steamclient swap"
           patch -Np1 < ../patches/proton/08-proton-steamclient_swap.patch
 
-          echo "protonify"
+          echo "WINE: -PROTON- protonify part 1"
           patch -Np1 < ../patches/proton/10-proton-protonify_staging.patch
 
-          echo "protonify-audio"
+          echo "WINE: -PROTON- protonify part 2"
+          patch -Np1 < ../patches/proton/67-protonify-2.patch
+
+          echo "WINE: -PROTON- tabtip + uiautomationcore patches"
+          patch -Np1 < ../patches/proton/68-proton-tabtip-uiautomationcore.patch
+
+          echo "WINE: -PROTON- protonify-audio"
           patch -Np1 < ../patches/proton/11-proton-pa-staging.patch
 
-          echo "steam bits"
+          echo "WINE: -PROTON- steam bits"
           patch -Np1 < ../patches/proton/12-proton-steam-bits.patch
 
-          # disabled for now, there was a massive controller HID update in WINE, so we're using that instead.
-      #    echo "proton SDL patches"
-      #    patch -Np1 < ../patches/proton/14-proton-sdl-joy.patch
+          echo "WINE: -PROTON- SDL additions"
+          patch -Np1 < ../patches/proton/14-proton-sdl-joy.patch
 
-          echo "Valve VR patches"
+          echo "WINE: -PROTON- gamepad additions"
+          patch -Np1 < ../patches/proton/15-proton-gamepad-additions.patch
+
+          echo "WINE: -PROTON- VR patches"
           patch -Np1 < ../patches/proton/16-proton-vrclient-wined3d.patch
 
-          echo "amd ags"
+          echo "WINE: -PROTON- amd ags"
           patch -Np1 < ../patches/proton/18-proton-amd_ags.patch
 
-          echo "msvcrt overrides"
+          echo "WINE: -PROTON- msvcrt overrides"
           patch -Np1 < ../patches/proton/19-proton-msvcrt_nativebuiltin.patch
 
-          echo "atiadlxx needed for cod games"
+          echo "WINE: -PROTON- atiadlxx"
           patch -Np1 < ../patches/proton/20-proton-atiadlxx.patch
 
-          echo "valve registry entries"
+          echo "WINE: -PROTON- registry entries"
           patch -Np1 < ../patches/proton/21-proton-01_wolfenstein2_registry.patch
           patch -Np1 < ../patches/proton/22-proton-02_rdr2_registry.patch
           patch -Np1 < ../patches/proton/23-proton-03_nier_sekiro_ds3_registry.patch
@@ -423,166 +346,107 @@ self: super:
           patch -Np1 < ../patches/proton/62-proton-16-Age-of-Empires-IV-registry.patch
 
 
-          echo "valve rdr2 fixes"
+          echo "WINE: -PROTON- rdr2 fixes"
           patch -Np1 < ../patches/proton/25-proton-rdr2-fixes.patch
 
-          echo "valve rdr2 bcrypt fixes"
+          echo "WINE: -PROTON- rdr2 bcrypt fixes"
           patch -Np1 < ../patches/proton/55-proton-bcrypt_rdr2_fixes.patch
 
-          echo "apply staging bcrypt patches on top of rdr2 fixes"
+          echo "WINE: -PROTON- apply staging bcrypt patches on top of rdr2 fixes"
           patch -Np1 < ../patches/wine-hotfixes/staging/0002-bcrypt-Add-support-for-calculating-secret-ecc-keys.patch
           patch -Np1 < ../patches/wine-hotfixes/staging/0003-bcrypt-Add-support-for-OAEP-padded-asymmetric-key-de.patch
 
-          echo "set prefix win10"
+          echo "WINE: -PROTON- set prefix win10"
           patch -Np1 < ../patches/proton/28-proton-win10_default.patch
 
-          echo "dxvk_config"
+          echo "WINE: -PROTON- dxvk_config"
           patch -Np1 < ../patches/proton/29-proton-dxvk_config.patch
 
-          echo "mouse focus fixes"
-          patch -Np1 < ../patches/proton/38-proton-mouse-focus-fixes.patch
+          echo "WINE: -PROTON- key input + mouse focus fixes"
+          patch -Np1 < ../patches/proton/38-proton-keyboard-input-and-mouse-focus-fixes.patch
 
-          echo "CPU topology overrides"
+          echo "WINE: -PROTON- CPU topology overrides"
           patch -Np1 < ../patches/proton/39-proton-cpu-topology-overrides.patch
 
-          echo "fullscreen hack"
-          patch -Np1 < ../patches/proton/41-valve_proton_fullscreen_hack-staging-tkg.patch
+          echo "WINE: -PROTON- fullscreen hack"
+          echo "1"
+          patch -Np1 < ../patches/proton/fshack/01-vulkan-1-prefer-builtin.patch
+          echo "2"
+          patch -Np1 < ../patches/proton/fshack/02-vulkan-childwindow.patch
+          echo "3"
+          patch -Np1 < ../patches/proton/fshack/03-window-manager-fixes.patch
+          echo "4"
+          patch -Np1 < ../patches/proton/fshack/04-fullscreen-hack.patch
+          echo "5"
+          patch -Np1 < ../patches/proton/fshack/05-steam-overlay-fixes.patch
+          echo "6"
+          patch -Np1 < ../patches/proton/fshack/06-post-fshack-tweaks.patch
 
-          echo "fullscreen hack fsr patch"
+          echo "WINE: -PROTON- openxr patches"
+          patch -Np1 < ../patches/proton/37-proton-OpenXR-patches.patch
+
+          echo "WINE: -PROTON- fullscreen hack fsr patch"
           patch -Np1 < ../patches/proton/48-proton-fshack_amd_fsr.patch
 
-          echo "proton QPC performance patch"
+      #    echo "proton QPC performance patch"
       #    patch -Np1 < ../patches/proton/49-proton_QPC.patch
-          patch -Np1 < ../patches/proton/49-proton_QPC-update-replace.patch
+      #    patch -Np1 < ../patches/proton/49-proton_QPC-update-replace.patch
 
-          echo "proton LFH performance patch"
+          echo "WINE: -PROTON- LFH performance patch"
           patch -Np1 < ../patches/proton/50-proton_LFH.patch
 
-          echo "proton font patches"
+          echo "WINE: -PROTON- font patches"
           patch -Np1 < ../patches/proton/51-proton_fonts.patch
 
-          echo "proton quake champions patches"
+          echo "WINE: -PROTON- quake champions patches"
           patch -Np1 < ../patches/proton/52-proton_quake_champions_syscall.patch
 
-          echo "proton battleye patches"
+          echo "WINE: -PROTON- battleye patches"
           patch -Np1 < ../patches/proton/59-proton-battleye_patches.patch
 
-      #    disabled for now, needs rebase. only used for vr anyway
-      #    echo "proton openxr patches"
-      #    patch -Np1 < ../patches/proton/37-proton-OpenXR-patches.patch
+          echo "WINE: -PROTON- fake current res patches"
+          patch -Np1 < ../patches/proton/65-proton-fake_current_res_patches.patch
+
+          echo "WINE: -PROTON- EasyAntiCheat patch"
+        patch -Np1 < ../patches/proton/66-proton-EAC-bridge.patch
 
       ### END PROTON PATCH SECTION ###
 
       ### START MFPLAT PATCH SECTION ###
 
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0001-Revert-winegstreamer-Get-rid-of-the-WMReader-typedef.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0002-Revert-wmvcore-Move-the-async-reader-implementation-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0003-Revert-winegstreamer-Get-rid-of-the-WMSyncReader-typ.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0004-Revert-wmvcore-Move-the-sync-reader-implementation-t.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0005-Revert-winegstreamer-Translate-GST_AUDIO_CHANNEL_POS.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0006-Revert-winegstreamer-Trace-the-unfiltered-caps-in-si.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0007-Revert-winegstreamer-Avoid-seeking-past-the-end-of-a.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0008-Revert-winegstreamer-Avoid-passing-a-NULL-buffer-to-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0009-Revert-winegstreamer-Use-array_reserve-to-reallocate.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0010-Revert-winegstreamer-Handle-zero-length-reads-in-src.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0011-Revert-winegstreamer-Convert-the-Unix-library-to-the.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0012-Revert-winegstreamer-Return-void-from-wg_parser_stre.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0013-Revert-winegstreamer-Move-Unix-library-definitions-i.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0014-Revert-winegstreamer-Remove-the-no-longer-used-start.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0015-Revert-winegstreamer-Set-unlimited-buffering-using-a.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0016-Revert-winegstreamer-Initialize-GStreamer-in-wg_pars.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0017-Revert-winegstreamer-Use-a-single-wg_parser_create-e.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0018-Revert-winegstreamer-Fix-return-code-in-init_gst-fai.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0019-Revert-winegstreamer-Allocate-source-media-buffers-i.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0020-Revert-winegstreamer-Duplicate-source-shutdown-path-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0021-Revert-winegstreamer-Properly-clean-up-from-failure-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-reverts/0022-Revert-winegstreamer-Factor-out-more-of-the-init_gst.patch
-
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0001-winegstreamer-Activate-source-pad-in-push-mode-if-it.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0002-winegstreamer-Push-stream-start-and-segment-events-i.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0003-winegstreamer-Introduce-H.264-decoder-transform.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0004-winegstreamer-Implement-GetInputAvailableType-for-de.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0005-winegstreamer-Implement-GetOutputAvailableType-for-d.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0006-winegstreamer-Implement-SetInputType-for-decode-tran.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0007-winegstreamer-Implement-SetOutputType-for-decode-tra.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0008-winegstreamer-Implement-Get-Input-Output-StreamInfo-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0009-winegstreamer-Add-push-mode-path-for-wg_parser.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0010-winegstreamer-Implement-Process-Input-Output-for-dec.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0011-winestreamer-Implement-ProcessMessage-for-decoder-tr.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0012-winegstreamer-Semi-stub-GetAttributes-for-decoder-tr.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0013-winegstreamer-Register-the-H.264-decoder-transform.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0014-winegstreamer-Introduce-AAC-decoder-transform.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0015-winegstreamer-Register-the-AAC-decoder-transform.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0016-winegstreamer-Rename-GStreamer-objects-to-be-more-ge.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0017-winegstreamer-Report-streams-backwards-in-media-sour.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0018-winegstreamer-Implement-Process-Input-Output-for-aud.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0019-winegstreamer-Implement-Get-Input-Output-StreamInfo-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0020-winegstreamer-Semi-stub-Get-Attributes-functions-for.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0021-winegstreamer-Introduce-color-conversion-transform.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0022-winegstreamer-Register-the-color-conversion-transfor.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0023-winegstreamer-Implement-GetInputAvailableType-for-co.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0024-winegstreamer-Implement-SetInputType-for-color-conve.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0025-winegstreamer-Implement-GetOutputAvailableType-for-c.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0026-winegstreamer-Implement-SetOutputType-for-color-conv.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0027-winegstreamer-Implement-Process-Input-Output-for-col.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0028-winegstreamer-Implement-ProcessMessage-for-color-con.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0029-winegstreamer-Implement-Get-Input-Output-StreamInfo-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0030-mf-topology-Forward-failure-from-SetOutputType-when-.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0031-winegstreamer-Handle-flush-command-in-audio-converst.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0032-winegstreamer-In-the-default-configuration-select-on.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0033-winegstreamer-Implement-MF_SD_LANGUAGE.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0034-winegstreamer-Only-require-videobox-element-for-pars.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0035-winegstreamer-Don-t-rely-on-max_size-in-unseekable-p.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0036-winegstreamer-Implement-MFT_MESSAGE_COMMAND_FLUSH-fo.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0037-winegstreamer-Default-Frame-size-if-one-isn-t-availa.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0038-mfplat-Stub-out-MFCreateDXGIDeviceManager-to-avoid-t.patch
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-streaming-support/0039-aperture-hotfix.patch
-
           # Needed specifically for proton, not needed for normal wine
-          echo "proton mfplat dll register patch"
+          echo "WINE: -MFPLAT- mfplat dll register patch"
           patch -Np1 < ../patches/proton/30-proton-mediafoundation_dllreg.patch
-          patch -Np1 < ../patches/proton/31-proton-mfplat-hacks.patch
 
-          # Needed for Nier Replicant
-          echo "proton mfplat nier replicant patch"
-          patch -Np1 < ../patches/wine-hotfixes/staging/mfplat_dxgi_stub.patch
-
-          # Needed for mfplat video format conversion, notably resident evil 8
-          echo "proton mfplat video conversion patches"
-          patch -Np1 < ../patches/proton/34-proton-winegstreamer_updates.patch
-
-          # Needed for godfall intro
-          echo "mfplat godfall fix"
-          patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-godfall-hotfix.patch
+          echo "WINE: -MFPLAT- mfplat patches"
+          patch -Np1 < ../patches/proton/31-proton-mfplat-patches.patch
 
           # missing http: scheme workaround see: https://github.com/ValveSoftware/Proton/issues/5195
-          echo "The Good Life (1452500) workaround"
-          patch -Np1 < ../patches/game-patches/thegoodlife-mfplat-http-scheme-workaround.patch
+          # patch currently broken as of wine commits on Feb 10th. Needs rebase
+      #    echo "WINE: -MFPLAT- The Good Life (1452500) workaround"
+      #    patch -Np1 < ../patches/wine-hotfixes/mfplat/thegoodlife-mfplat-http-scheme-workaround.patch
 
-          echo "FFXIV Video playback mfplat includes"
-          patch -Np1 < ../patches/game-patches/ffxiv-mfplat-additions.patch
+          # Needed for godfall intro
+      #    echo "mfplat godfall fix"
+      #    patch -Np1 < ../patches/wine-hotfixes/mfplat/mfplat-godfall-hotfix.patch
+
 
       ### END MFPLAT PATCH SECTION ###
 
 
 
-      ### (2-5) WINE HOTFIX SECTION ###
 
-          echo "hotfix for beam ng right click camera being broken with fshack"
-          patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-beam_ng_fshack_fix.patch
+
+      ### (2-5) WINE HOTFIX SECTION ###
 
           # keep this in place, proton and wine tend to bounce back and forth and proton uses a different URL.
           # We can always update the patch to match the version and sha256sum even if they are the same version
-          echo "hotfix to update mono version"
+          echo "WINE: -HOTFIX- update mono version"
           patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-update_mono_version.patch
 
-          echo "add halo infinite patches"
-          patch -Np1 < ../patches/wine-hotfixes/pending/halo-infinite-twinapi.appcore.dll.patch
-
           # https://github.com/Frogging-Family/wine-tkg-git/commit/ca0daac62037be72ae5dd7bf87c705c989eba2cb
-          echo "unity crash hotfix"
+          echo "WINE: -HOTFIX- unity crash hotfix"
           patch -Np1 < ../patches/wine-hotfixes/pending/unity_crash_hotfix.patch
-
 
       #    disabled, not compatible with fshack, not compatible with fsr, missing dependencies inside proton.
       #    patch -Np1 < ../patches/wine-hotfixes/testing/wine_wayland_driver.patch
