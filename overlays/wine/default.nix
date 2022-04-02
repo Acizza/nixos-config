@@ -27,21 +27,21 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "GE-Proton7-6";
+    version = "GE-Proton7-10";
 
     src = super.fetchFromGitHub {
       name = "source";
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = version;
-      sha256 = "sha256-pVqPh1suuDe+b3zkyzFEZO12GpvdJtYVN5Th5bw/vo0=";
+      sha256 = "sha256-5A1leG0DK7QgsOVW48eS1Rsm4ty2bswaLZQrOO5pT5w=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "ValveSoftware";
       repo = "wine";
-      rev = "10da6d78c52fb0d7a90fe39be0c79c244232a11d";
-      sha256 = "sha256-U9YkQWRsd6uM8NY6H3ILF+re0iaAZBj80uyDBRpFOVc=";
+      rev = "cfab5e57749b94a23577f2550c0dbe28bbb074d4";
+      sha256 = "sha256-lkmfFfAsHmO45L7NaaaRmN6pxUgwdNPjY2pme+Bjxss=";
     };
 
     staging = super.fetchFromGitHub {
@@ -167,6 +167,7 @@ self: super:
           -W dwrite-FontFallback \
           -W ntdll-DOS_Attributes \
           -W Pipelight \
+          -W dinput-joy-mappings \
           -W server-Key_State \
           -W server-PeekMessage \
           -W server-Realtime_Priority \
@@ -227,14 +228,15 @@ self: super:
           # server-Key_State - replaced by proton shared memory patches
           # ** server-PeekMessage - applied manually
           # server-Realtime_Priority - replaced by proton's patches
-          # ** server-Signal_Thread - applied manually
+          # server-Signal_Thread - breaks steamclient for some games -- notably DBFZ
           # Pipelight - for MS Silverlight, not needed
-          # loader-KeyboardLayouts - replaced by proton's keyboard patches
+          # dinput-joy-mappings - disabled in favor of proton's gamepad patches
+          # ** loader-KeyboardLayouts - applied manually -- needed to prevent Overwatch huge FPS drop
           # msxml3-FreeThreadedXMLHTTP60 - already applied
           # ntdll-ForceBottomUpAlloc - already applied
           # ntdll-WRITECOPY - already applied
           # ntdll-Builtin_Prot - already applied
-          # ** ntdll-CriticalSection - applied manually
+          # ntdll-CriticalSection - breaks ffxiv and deep rock galactic
           # ** ntdll-Exception - applied manually
           # ** ntdll-Hide_Wine_Exports - applied manually
           # ** ntdll-Serial_Port_Detection - applied manually
@@ -282,14 +284,9 @@ self: super:
           # server-PeekMessage
           patch -Np1 < ../patches/wine-hotfixes/staging/server-PeekMessage/0001-server-Fix-handling-of-GetMessage-after-previous-Pee.patch
 
-          # server-Signal_Thread
-          patch -Np1 < ../patches/wine-hotfixes/staging/server-Signal_Thread/0001-server-Do-not-signal-thread-until-it-is-really-gone.patch
-
-          # ntdll-CriticalSection
-          # needs rebase
-          patch -Np1 < ../patches/wine-hotfixes/staging/ntdll-CriticalSection/0002-ntdll-Add-inline-versions-of-RtlEnterCriticalSection.patch
-          patch -Np1 < ../patches/wine-hotfixes/staging/ntdll-CriticalSection/0003-ntdll-Use-fast-CS-functions-for-heap-locking.patch
-          patch -Np1 < ../patches/wine-hotfixes/staging/ntdll-CriticalSection/0004-ntdll-Use-fast-CS-functions-for-threadpool-locking.patch
+          # loader-KeyboardLayouts
+          patch -Np1 < ../wine-staging/patches/loader-KeyboardLayouts/0001-loader-Add-Keyboard-Layouts-registry-enteries.patch
+          patch -Np1 < ../wine-staging/patches/loader-KeyboardLayouts/0002-user32-Improve-GetKeyboardLayoutList.patch
 
           # ntdll-Exception
           patch -Np1 < ../wine-staging/patches/ntdll-Exception/0002-ntdll-OutputDebugString-should-throw-the-exception-a.patch
@@ -433,6 +430,9 @@ self: super:
 
           echo "WINE: -HOTFIX- 32 bit compilation crashes with newer libldap, upstream patch fixes it"
           patch -Np1 < ../patches/wine-hotfixes/upstream/32-bit-ldap-upstream-fix.patch
+
+          echo "WINE: -HOTFIX- fix audio regression caused by 0e7fd41"
+          patch -Np1 < ../patches/wine-hotfixes/upstream/Fix-regression-introduced-by-0e7fd41.patch
 
       #    disabled, not compatible with fshack, not compatible with fsr, missing dependencies inside proton.
       #    patch -Np1 < ../patches/wine-hotfixes/testing/wine_wayland_driver.patch
