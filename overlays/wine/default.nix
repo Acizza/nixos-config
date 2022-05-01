@@ -27,21 +27,21 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "GE-Proton7-10";
+    version = "GE-Proton7-16";
 
     src = super.fetchFromGitHub {
       name = "source";
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = version;
-      sha256 = "sha256-5A1leG0DK7QgsOVW48eS1Rsm4ty2bswaLZQrOO5pT5w=";
+      sha256 = "sha256-4y1gUlrTFAUDyhsHlO34keQZumchI6t2uV8bRJUlsGA=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "ValveSoftware";
       repo = "wine";
-      rev = "cfab5e57749b94a23577f2550c0dbe28bbb074d4";
-      sha256 = "sha256-lkmfFfAsHmO45L7NaaaRmN6pxUgwdNPjY2pme+Bjxss=";
+      rev = "3fea50886dd32cb09c11e3b53c47638f6a5764cd";
+      sha256 = "sha256-aeMyS6V3/caAUEJzDPFcqHdM/ftR+eTzD15Sz5kOVqE=";
     };
 
     staging = super.fetchFromGitHub {
@@ -405,6 +405,9 @@ self: super:
 
           echo "WINE: -PROTON- fake current res patches"
           patch -Np1 < ../patches/proton/65-proton-fake_current_res_patches.patch
+
+          echo "WINE: -PROTON- add fsync patch to fix Elden Ring crashes"
+          patch -Np1 < ../patches/proton/0001-fsync-Reuse-shared-mem-indices.patch
 
       ### END PROTON PATCH SECTION ###
 
