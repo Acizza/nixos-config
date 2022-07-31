@@ -60,10 +60,11 @@
     dejavu_fonts
     noto-fonts-cjk
     vistafonts
+    iosevka
   ];
 
   nix = {
-    maxJobs = 16;
+    settings.max-jobs = 16;
     package = pkgs.nixUnstable;
 
     extraOptions = ''
