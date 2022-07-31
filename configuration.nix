@@ -260,14 +260,19 @@
     earlyoom = {
       enable = true;
       freeMemThreshold = 3;
-      ignoreOOMScoreAdjust = true;
     };
 
     chrony.enable = true;
     sshd.enable = true;
   };
 
-  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd = {
+    extraConfig = ''
+      DefaultTimeoutStopSec=5s
+    '';
+
+    services.NetworkManager-wait-online.enable = false;
+  };
 
   location = {
     latitude = 38.58;
