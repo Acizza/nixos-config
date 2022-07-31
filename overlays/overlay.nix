@@ -56,9 +56,9 @@ in {
     ] ++ super.vscode-utils.extensionsFromVscodeMarketplace [
       {
         name = "rust-analyzer";
-        publisher = "matklad";
-        version = "0.2.792";
-        sha256 = "OPSZ1sKVxgh8SN9UR8vtlICdznUXdaCkzNJBX5w1j9Q=";
+        publisher = "rust-lang";
+        version = "0.4.1139";
+        sha256 = "sha256-A4+BAYXrYOoQkNdIx2lkQ+KMJ8r1zSpxeF38/RCCqhM=";
       }
       {
         name = "vscode-todo-plus";
@@ -81,44 +81,26 @@ in {
       {
         name = "errorlens";
         publisher = "usernamehw";
-        version = "3.4.0";
-        sha256 = "qBqQGv0BmTFK/y8hprplCVr5aZr3z9jM5a2Eu6CfOfU=";
+        version = "3.4.1";
+        sha256 = "cJ1/jfCU+Agiyi1Qdd0AfyOTzwxOEfox4vLSJ0/UKNc=";
       }
       {
         name = "tokyo-night";
         publisher = "enkia";
-        version = "0.7.9";
-        sha256 = "2+md3lkBew1u+XkAM4e7i4OMNvyyJlZA4OT3WvMUkfk=";
-      }
-      {
-        name = "svelte-vscode";
-        publisher = "svelte";
-        version = "102.8.0";
-        sha256 = "sopN6tYQiqsJ1Z/aiBOOjGckutkIQCwPGFnmw9BXN3g=";
-      }
-      {
-        name = "prettier-vscode";
-        publisher = "esbenp";
-        version = "5.8.0";
-        sha256 = "x6/bBeHi/epYpRGy4I8noIsnwFdFEXk3igF75y5h/EA=";
-      }
-      {
-        name = "vscode-eslint";
-        publisher = "dbaeumer";
-        version = "2.1.14";
-        sha256 = "bVGmp871yu1Llr3uJ+CCosDsrxJtD4b1+CR+omMUfIQ=";
+        version = "0.8.4";
+        sha256 = "h4mE+Vv/o2MxkNb3kT9gLeDNCGQ5AvyR5nsi3cEUS5U=";
       }
       {
         name = "gitlens";
         publisher = "eamodio";
-        version = "11.6.0";
-        sha256 = "JxCNE/IL/v94xWmhebsRZo1Gw+nSSpDgZ41ZGongGVI=";
+        version = "12.0.6";
+        sha256 = "sha256-Q8l/GryB9iMhFnu5npUcDjWuImfrmVZF3xvm7nX/77Q=";
       }
       {
         name = "vscode-proto3";
         publisher = "zxh404";
-        version = "0.5.4";
-        sha256 = "S89qRRlfiTsJ+fJuwdNkZywe6mei48KxIEWbGWChriE=";
+        version = "0.5.5";
+        sha256 = "Em+w3FyJLXrpVAe9N7zsHRoMcpvl+psmG1new7nA8iE=";
       }
       {
         name = "dotenv";
