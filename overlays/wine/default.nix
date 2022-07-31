@@ -23,25 +23,25 @@ self: super:
     gphoto2Support = false;
     saneSupport = false;
     openclSupport = false;
-    gstreamerSupport = false;
+    gstreamerSupport = true;
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "GE-Proton7-21";
+    version = "GE-Proton7-27";
 
     src = super.fetchFromGitHub {
       name = "source";
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = version;
-      sha256 = "sha256-xRzIH1T7c68igdBoxvq1XQ+H4UaHjWY+ONpc/h37mys=";
+      sha256 = "sha256-pUggwB9CXfdUDzj2jZvLdNmf/c5L6BkgDIEHWHs6Wek=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "ValveSoftware";
       repo = "wine";
-      rev = "9e9d6abfbb60ebf4d2d8d3825e6ca28861548a2c";
-      sha256 = "sha256-OQnZSMi9vDOyyol2iHW4rBeDSWTIy4n2taqg2hTma7c=";
+      rev = "766947d1d4f62e079309a7bc8688c5d8b52df18a";
+      sha256 = "sha256-JYfX59ztk3eByS75CiPQVEayH7gj9z49sRyY+TkPn9k=";
     };
 
     staging = super.fetchFromGitHub {
@@ -77,12 +77,12 @@ self: super:
 
     prePatch =
       let
-        vulkanVersion = "1.3.217";
+        vulkanVersion = "1.3.219";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "sha256-y+WzzuFZG2CtuK/H1S4Dh/2I251YLR/hMNgr5gu/pLs=";
+          sha256 = "sha256-0+/mGoV+JPsRSluy6Yz+uVUTlh34DBY42A/1JGdzJts=";
         };
       in ''
         mkdir ge
@@ -425,6 +425,13 @@ self: super:
           echo "WINE: -PROTON- fake current res patches"
           patch -Np1 < ../patches/proton/65-proton-fake_current_res_patches.patch
 
+          echo "WINE: -PROTON- add 32:9 FSR resolutions"
+          patch -Np1 < ../patches/proton/69-proton-fsr-add-329-res.patch
+
+          echo "WINE: -PROTON- add FSR resolutions by aspect ratio instead of current screen width"
+          patch -Np1 < ../patches/proton/70-proton-add_fsr_res_by_aspect_ratio.patch
+          
+
       ### END PROTON PATCH SECTION ###
 
 
@@ -447,13 +454,11 @@ self: super:
           patch -Np1 < ../patches/wine-hotfixes/pending/0002-include-Add-THREAD_POWER_THROTTLING_STATE-type.patch
           patch -Np1 < ../patches/wine-hotfixes/pending/0003-ntdll-Fake-success-for-ThreadPowerThrottlingState.patch
           
-          # fixes blops II zombies and multiplayer freeze in proton-only due to DRM check
-          echo "WINE: -HOTFIX- fix blops II zombies and multiplayer crash"
-          patch -Np1 < ../patches/wine-hotfixes/pending/blopsII_proton_hang_fix.patch
-          
-          # currently broken
-          #echo "WINE: -HOTFIX- fix the good life videos"
-          #patch -Np1 < ../patches/wine-hotfixes/pending/mfplat_http_schemas.patch
+          echo "WINE: -PROTON- apply revert to allow gallium nine functionality"
+          patch -Np1 < ../patches/wine-hotfixes/pending/0001-revert-96b82203f192eade6910f4ac2ecb188e27d22feb-to-k.patch
+
+          echo "WINE: -PROTON- pending Halo Infinite patches"
+          patch -Np1 < ../patches/wine-hotfixes/pending/halo-infinite-fixes-1.patch
 
       ### END WINE HOTFIX SECTION ###
     '';
