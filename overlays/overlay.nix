@@ -1,3 +1,9 @@
+with import <nixpkgs> {
+  overlays = [
+    (import (fetchTarball "https://github.com/oxalica/rust-overlay/archive/master.tar.gz"))
+  ];
+};
+
 self: super: let
   nativeStdenv = super.impureUseNativeOptimizations super.stdenv;
   llvmNativeStdenv = super.impureUseNativeOptimizations super.llvmPackages_latest.stdenv;
@@ -161,25 +167,24 @@ in {
   ### Modifications to make some packages run as fast as possible
 
   alacritty = withRustNativeAndPatches super.alacritty [ ./patches/alacritty.patch ];
+  helix = withRustNative super.helix;
+  just = withRustNative super.just;
 
-  nushell = withRustNativeAndPatches (super.nushell.overrideAttrs (oldAttrs: rec {
-    doCheck = false;
-  })) [ ./patches/nushell.patch ];
+  #nushell = withRustNative (super.nushell.overrideAttrs (oldAttrs: rec {
+  #  doCheck = false;
+  #}));
 
   starship = withRustNativeAndPatches super.starship [ ./patches/starship.patch ];
 
   ripgrep = withRustNativeAndPatches super.ripgrep [ ./patches/ripgrep.patch ];
 
-  mpv = withLLVMNativeAndFlags (super.mpv-unwrapped.override {
+  mpv = withNativeAndFlags (super.mpv-unwrapped.override {
     vapoursynthSupport = true;
   }) [ "-O3" "-flto" ];
 
-  vapoursynth = withLLVMNativeAndFlags super.vapoursynth [ "-O3" "-flto" ];
-  vapoursynth-mvtools = withLLVMNativeAndFlags super.vapoursynth-mvtools [ "-O3" "-flto" ];
-
   vapoursynth-plugins = super.buildEnv {
     name = "vapoursynth-plugins";
-    paths = [ self.vapoursynth-mvtools ];
+    paths = [ super.vapoursynth-mvtools ];
     pathsToLink = [ "/lib" ];
   };
 
