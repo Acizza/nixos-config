@@ -198,6 +198,8 @@
     criu.enable = true;
     ssh.startAgent = true;
 
+    kdeconnect.enable = true;
+
     fuse.userAllowOther = true;
 
     firejail = {
