@@ -241,7 +241,29 @@ in {
   nixup = withRustNative (super.callPackage ./pkgs/nixup.nix { });
   nixos-update-status = withRustNative (super.callPackage ./pkgs/nixos-update-status.nix { });
 
-  dxvk = super.callPackage ./pkgs/dxvk.nix { };
+  dxvk = super.dxvk.overrideAttrs (drv: let
+    protonPatch = patch: sha256: super.fetchurl {
+      url = "https://raw.githubusercontent.com/GloriousEggroll/proton-ge-custom/GE-Proton7-27/patches/dxvk/${patch}.patch";
+      inherit sha256;
+    };
+
+  in rec {
+    src = super.fetchFromGitHub {
+      owner = "doitsujin";
+      repo = "dxvk";
+      rev = "6c5f73ac26205fe9cdb98a450e12206c6caf2510";
+      sha256 = "sha256-SoRRSibxubma4VWrUrgXhAS9aQ20nkJ7Gi7omucV/Ws=";
+    };
+
+    dxvkPatches = drv.dxvkPatches ++ [
+      (protonPatch "proton-dxvk_avoid_spamming_log_with_requests_for_IWineD3D11Texture2D" "sha256-CgqojCcIq2C608e0OzF94Db/IbguiTP9EDs1KChx6LA=")
+      (protonPatch "proton-dxvk_add_new_dxvk_config_library" "sha256-4m+28GzxKyO8htQdR5wbFZGzaPGxqRsugEfVdopV2xM=")
+      (protonPatch "2675" "sha256-8/OOjmkAfKCIfTRejMG0fXaYo8ssgPGUbJtcwh//ecM=")
+      (protonPatch "dxvk-async" "sha256-6t7aNbiQIca3rxxnLCa5bR+n7NAi8vDfZFjy/KXeB3o=")
+    ];
+
+    NIX_CFLAGS_COMPILE = "-O3 -flto";
+  });
 
   vkd3d = withNativeAndFlags (super.callPackage ./pkgs/vkd3d-proton {
     wine = self.wine;
