@@ -35,7 +35,7 @@
     };
 
     cleanTmpDir = true;
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   i18n = {
