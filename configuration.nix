@@ -96,9 +96,11 @@
       };
     in with pkgs; [
       # Core Applications
-      brave
+      firefox-bin
       alacritty
       ranger
+      helix
+      lf
       mpv
       vscode-with-extensions
       git
@@ -112,6 +114,8 @@
       duperemove
       compsize
       rust
+      rust-analyzer
+      dxvk.out
 
       # Work related
       dbeaver
@@ -128,7 +132,6 @@
       # Misc Applications
       ripgrep # Improved version of grep
       psmisc # killall
-      gnome3.networkmanagerapplet
       atool
       gnupg1
       python3
@@ -140,18 +143,20 @@
       pavucontrol
       winetricks
       yt-dlp # youtube-dl fork
-      nativeFfmpeg
-      rpcs3
-      the-powder-toy
+      ffmpeg_5
+      #the-powder-toy
       qemu
       srm
       tokei
       spotify
       nodejs-16_x
       yarn
-      steam
       anki-bin
       ntfs3g
+      nwjs
+      just
+      ngrok
+      mangohud
 
       # Rust packages
       cargo-outdated
@@ -160,6 +165,8 @@
 
       # Compression
       unar
+      #ouch
+      unrar
         
       # Themes
       arc-icon-theme
@@ -167,13 +174,9 @@
       gnome3.adwaita-icon-theme
 
       # Custom packages
-      dxvk
       vkd3d
-      bcnotif
       anup
       wpfxm
-      nixup
-      #nixos-update-status
       vapoursynth-plugins
     ];
 
@@ -208,7 +211,6 @@
           profile = "${pkgs.firejail}/etc/firejail/${name}.profile";
         };
       in {
-        brave = wrap "brave" pkgs.brave;
         steam = wrap "steam" pkgs.steam;
       };
     };
