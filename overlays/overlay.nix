@@ -117,51 +117,6 @@ in {
     nlSupport = false;
   }) [ "-O3" ];
 
-  # git version of RPCS3
-  rpcs3 = (super.rpcs3.override {
-    waylandSupport = true;
-    alsaSupport = false;
-
-    stdenv = llvmNativeStdenv;
-  }).overrideAttrs (oldAttrs: rec {
-    name = "rpcs3-${version}";
-
-    commit = "8ca53f9c843712c25988f44761417f526fc26212";
-    gitVersion = "9165-${builtins.substring 0 7 commit}";
-    version = "0.0.7-${gitVersion}";
-
-    src = super.fetchgit {
-      url = "https://github.com/RPCS3/rpcs3";
-      rev = "${commit}";
-      sha256 = "0gmirrs8j7kzjjp01d7n1nlmjc78lcj4zdn2jk6j853spcf44jb1";
-    };
-
-    buildInputs = oldAttrs.buildInputs ++ [ super.vulkan-headers super.libglvnd ];
-
-    cmakeFlags = oldAttrs.cmakeFlags ++ [
-      "-DUSE_DISCORD_RPC=OFF"
-      "-DUSE_NATIVE_INSTRUCTIONS=ON"
-    ];
-
-    preConfigure = ''
-      cat > ./rpcs3/git-version.h <<EOF
-      #define RPCS3_GIT_VERSION "${gitVersion}"
-      #define RPCS3_GIT_BRANCH "HEAD"
-      #define RPCS3_GIT_VERSION_NO_UPDATE 1
-      EOF
-    '';
-
-    postInstall = let
-      mlaaPatch = super.fetchurl {
-        name = "patch.yml";
-        url = "https://rpcs3.net/blog/wp-content/uploads/2020/common/mlaa/patch.yml";
-        sha256 = "018mm3zg9zvdwqk61ixjvz6z1ky2qlxlzaqfmdqszgf4rj8yk4mg";
-      };
-    in oldAttrs.postInstall or "" + ''
-      cp ${mlaaPatch} $out/bin/patch.yml
-    '';
-  });
-
   the-powder-toy = withLLVMNativeAndFlags super.the-powder-toy [ "-O3" "-flto" ];
 
   arc-theme = super.arc-theme.overrideAttrs (oldAttrs: {
