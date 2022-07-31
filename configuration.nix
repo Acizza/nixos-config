@@ -184,14 +184,12 @@
 
     variables = {
       TERM = "alacritty";
+      EDITOR = "hx";
       PATH = [ "/home/jonathan/.cargo/bin/" ];
     };
   };
 
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = false;
-  };
+  virtualisation.podman.enable = true;
   
   programs = {
     fish.enable = true;
