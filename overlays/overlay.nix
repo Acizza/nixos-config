@@ -26,13 +26,37 @@ self: super: let
     patches = old.patches or [] ++ patches;
   }));
 in {
-  brave = super.brave.overrideAttrs (oldAttrs: rec {
-    version = "1.31.88";
+  rust-analyzer-unwrapped = super.rust-analyzer-unwrapped.overrideAttrs (drv: rec {
+    version = "2022-07-25";
 
-    src = super.fetchurl {
-      url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser_${version}_amd64.deb";
-      sha256 = "mThs6gYZ4SW9KvAWHsB5T3ncsNzuMuZq1Jo4SAVmbuQ=";
+    doCheck = false;
+    doInstallCheck = false;
+
+    # temp
+    patches = [];
+
+    src = super.fetchFromGitHub {
+      owner = "rust-analyzer";
+      repo = "rust-analyzer";
+      rev = version;
+      sha256 = "sha256-WFtdMN7WH5twFZEfBqpgc9PMCMHpgJnZyipDSPfui3U=";
     };
+
+    cargoDeps = drv.cargoDeps.overrideAttrs (super.lib.const {
+      name = "rust-analyzer-vendor.tar.gz";
+      inherit src;
+      outputHash = "sha256-f6Z0JGgRIeuAZPSkOWyvEOv7uozbwoBBDQv451+KUa8=";
+    });
+  });
+
+  # Remove libXNVCtrl dependency so we don't have to pull in
+  # the LTS kernel
+  mangohud = (super.mangohud.override {
+    libXNVCtrl = "";
+  }).overrideAttrs (oldAttrs: {
+    mesonFlags = oldAttrs.mesonFlags or [] ++ [
+      "-Dwith_xnvctrl=disabled"
+    ];
   });
 
   qemu = withLLVMNative (super.qemu.override {
