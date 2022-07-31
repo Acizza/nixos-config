@@ -11,12 +11,12 @@
 
 stdenv.mkDerivation rec {
   pname = "vkd3d-proton";
-  version = "3fefc540c81a2fc3d1b1f7652d8ee98d29e45805";
+  version = "d00d035321c9f817e058985e32fe6876ba746de6";
 
   src = fetchgit {
     url = "https://github.com/HansKristian-Work/vkd3d-proton.git";
     rev = version;
-    sha256 = "6JX23AlcFpTyudwl7rg2qB/Cc/2mQg2xhrLvEhjJnoU=";
+    sha256 = "sha256-74wY65e7Fkfjhqo435euztTA6g4Mw7h0rBAXGQQRu/4=";
   };
 
   phases = "unpackPhase patchPhase postPatchPhase buildPhase installPhase";
