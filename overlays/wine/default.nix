@@ -27,21 +27,21 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "GE-Proton7-27";
+    version = "GE-Proton7-34";
 
     src = super.fetchFromGitHub {
       name = "source";
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = version;
-      sha256 = "sha256-pUggwB9CXfdUDzj2jZvLdNmf/c5L6BkgDIEHWHs6Wek=";
+      sha256 = "sha256-zY3QfCr9pm+YaIu67Tp2auqftb2HDN6WtmCqPH3CgZA=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "ValveSoftware";
       repo = "wine";
-      rev = "766947d1d4f62e079309a7bc8688c5d8b52df18a";
-      sha256 = "sha256-JYfX59ztk3eByS75CiPQVEayH7gj9z49sRyY+TkPn9k=";
+      rev = "450ad6a1a7d9843b48df71f29d6f30c7cd9b89c7";
+      sha256 = "sha256-jagfF/KquNw5YvqAKUND5TFcKiq2q2kLezGyoZ4mpEU=";
     };
 
     staging = super.fetchFromGitHub {
@@ -51,7 +51,7 @@ self: super:
       sha256 = "sha256-2gBfsutKG0ok2ISnnAUhJit7H2TLPDpuP5gvfMVE44o=";
     };
 
-    NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
+    NIX_CFLAGS_COMPILE = "-O3 -march=znver1 -fomit-frame-pointer";
   })).overrideDerivation (drv: let
     rev = name: sha256: super.fetchurl {
       url = "https://github.com/ValveSoftware/wine/commit/${name}.patch";
@@ -77,12 +77,12 @@ self: super:
 
     prePatch =
       let
-        vulkanVersion = "1.3.219";
+        vulkanVersion = "1.3.224";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "sha256-0+/mGoV+JPsRSluy6Yz+uVUTlh34DBY42A/1JGdzJts=";
+          sha256 = "sha256-aP6x8GixXn/CUW8BEWs3gYcLndFOnEleDp5OtaryU1s=";
         };
       in ''
         mkdir ge
@@ -164,6 +164,8 @@ self: super:
           -W eventfd_synchronization \
           -W d3dx11_43-D3DX11CreateTextureFromMemory \
           -W dbghelp-Debug_Symbols \
+          -W ddraw-Device_Caps \
+          -W ddraw-version-check \
           -W dwrite-FontFallback \
           -W ntdll-DOS_Attributes \
           -W Pipelight \
@@ -224,6 +226,8 @@ self: super:
           # server-Stored_ACLs - requires ntdll-Junction_Points
           # eventfd_synchronization - already applied
           # d3dx11_43-D3DX11CreateTextureFromMemory - manually applied
+          # ddraw-Device_Caps - conflicts with proton's changes
+          # ddraw-version-check - conflicts with proton's changes
 
           # dbghelp-Debug_Symbols - see below:
           # Sancreed — 11/21/2021
@@ -390,7 +394,7 @@ self: super:
 
           # winex11-wglShareLists
           patch -Np1 < ../patches/wine-hotfixes/staging/winex11-wglShareLists/0001-winex11.drv-Only-warn-about-used-contexts-in-wglShar.patch
-
+          
           # nvapi/nvcuda
           # this was added in 7.1, so it's not in the 7.0 tree
           patch -Np1 < ../patches/wine-hotfixes/staging/nvcuda/0016-nvcuda-Make-nvcuda-attempt-to-load-libcuda.so.1.patch
@@ -415,21 +419,30 @@ self: super:
           echo "WINE: -GAME FIXES- add powerprof patches for FFVII Remake and SpecialK"
           patch -Np1 < ../patches/game-patches/FFVII-and-SpecialK-powerprof.patch
 
+          echo "WINE: -GAME FIXES- add file search workaround hack for Phantasy Star Online 2"
+          patch -Np1 < ../patches/game-patches/pso2_hack.patch
+
       ### END GAME PATCH SECTION ###
 
       ### (2-4) PROTON PATCH SECTION ###
 
-          echo "WINE: -PROTON- fullscreen hack fsr patch"
+          echo "WINE: -FSR- fullscreen hack fsr patch"
           patch -Np1 < ../patches/proton/48-proton-fshack_amd_fsr.patch
 
-          echo "WINE: -PROTON- fake current res patches"
+          echo "WINE: -FSR- fake current res patches"
           patch -Np1 < ../patches/proton/65-proton-fake_current_res_patches.patch
 
-          echo "WINE: -PROTON- add 32:9 FSR resolutions"
+          echo "WINE: -FSR- add 32:9 FSR resolutions"
           patch -Np1 < ../patches/proton/69-proton-fsr-add-329-res.patch
 
-          echo "WINE: -PROTON- add FSR resolutions by aspect ratio instead of current screen width"
+          echo "WINE: -FSR- add FSR resolutions by aspect ratio instead of current screen width"
           patch -Np1 < ../patches/proton/70-proton-add_fsr_res_by_aspect_ratio.patch
+          
+          echo "WINE: -FSR- enable FSR flag by default (fixes broken fs hack scaling in some games like Apex and FFXIV)"
+          patch -Np1 < ../patches/proton/71-invert-fsr-logic.patch
+          
+          echo "WINE: -FSR- set 'balanced' default mode if no mode is set, and dont set any default mode if a custom mode is set"
+          patch -Np1 < ../patches/proton/72-fsr-use-balanced-default-mode.patch
           
 
       ### END PROTON PATCH SECTION ###
@@ -456,9 +469,22 @@ self: super:
           
           echo "WINE: -PROTON- apply revert to allow gallium nine functionality"
           patch -Np1 < ../patches/wine-hotfixes/pending/0001-revert-96b82203f192eade6910f4ac2ecb188e27d22feb-to-k.patch
+          
+          # https://bugs.winehq.org/show_bug.cgi?id=51683
+          echo "WINE: -HOTFIX- Guild Wars 2 patch"
+          patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-guild_wars_2.patch
+          
+          echo "WINE: -HOTFIX- fix upside down videos"
+          patch -Np1 < ../patches/wine-hotfixes/pending/157.patch
+          
+          echo "WINE: -HOTFIX- fix Amazon Games launcher"
+          patch -Np1 < ../patches/wine-hotfixes/upstream/481.patch
+          
+          echo "WINE: -HOTFIX- fix Visual Novel Doukyuusei"
+          patch -Np1 < ../patches/wine-hotfixes/upstream/visual-novel-doukyuusei.patch
 
-          echo "WINE: -PROTON- pending Halo Infinite patches"
-          patch -Np1 < ../patches/wine-hotfixes/pending/halo-infinite-fixes-1.patch
+          echo "WINE: -HOTFIX- fix Persona 4 Golden"
+          patch -Np1 < ../patches/wine-hotfixes/upstream/381c2a9ae151f676a009e89b4b101679fd90b9ae.patch
 
       ### END WINE HOTFIX SECTION ###
     '';
