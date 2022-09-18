@@ -27,14 +27,14 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "GE-Proton7-34";
+    version = "GE-Proton7-35";
 
     src = super.fetchFromGitHub {
       name = "source";
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = version;
-      sha256 = "sha256-zY3QfCr9pm+YaIu67Tp2auqftb2HDN6WtmCqPH3CgZA=";
+      sha256 = "sha256-0dfDAgwuAHDfe92SAficbymF3S1KoU/+zFmnVEo027E=";
     };
 
     wineSrc = super.fetchFromGitHub {
@@ -51,7 +51,7 @@ self: super:
       sha256 = "sha256-2gBfsutKG0ok2ISnnAUhJit7H2TLPDpuP5gvfMVE44o=";
     };
 
-    NIX_CFLAGS_COMPILE = "-O3 -march=znver1 -fomit-frame-pointer";
+    NIX_CFLAGS_COMPILE = "-O3 -march=native -fomit-frame-pointer";
   })).overrideDerivation (drv: let
     rev = name: sha256: super.fetchurl {
       url = "https://github.com/ValveSoftware/wine/commit/${name}.patch";
