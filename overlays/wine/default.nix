@@ -27,21 +27,21 @@ self: super:
     vkd3dSupport = false;
     mingwSupport = true;
   }).overrideAttrs (oldAttrs: rec {
-    version = "GE-Proton7-35";
+    version = "GE-Proton7-47";
 
     src = super.fetchFromGitHub {
       name = "source";
       owner = "GloriousEggroll";
       repo = "proton-ge-custom";
       rev = version;
-      sha256 = "sha256-0dfDAgwuAHDfe92SAficbymF3S1KoU/+zFmnVEo027E=";
+      sha256 = "sha256-NfF2/vNOZ2vk9E7Xg/q3oQ+N1cAI87EbAkQAZS4xyY0=";
     };
 
     wineSrc = super.fetchFromGitHub {
       owner = "ValveSoftware";
       repo = "wine";
-      rev = "450ad6a1a7d9843b48df71f29d6f30c7cd9b89c7";
-      sha256 = "sha256-jagfF/KquNw5YvqAKUND5TFcKiq2q2kLezGyoZ4mpEU=";
+      rev = "063bab6713c444cd50b5c3cc148bae75be065b80";
+      sha256 = "sha256-NWb3fJ4oxz9+6XdC4X7PpzjyJkdnAUE2DASw0vRI2/A=";
     };
 
     staging = super.fetchFromGitHub {
@@ -67,7 +67,7 @@ self: super:
     nativeBuildInputs = drv.nativeBuildInputs ++ [
       super.git
       super.perl
-      super.utillinux
+      super.util-linux
       super.autoconf
       super.python3
       super.perl
@@ -77,12 +77,12 @@ self: super:
 
     prePatch =
       let
-        vulkanVersion = "1.3.224";
+        vulkanVersion = "1.3.235";
 
         vkXmlFile = super.fetchurl {
           name = "vk-${vulkanVersion}.xml";
           url = "https://raw.github.com/KhronosGroup/Vulkan-Docs/v${vulkanVersion}/xml/vk.xml";
-          sha256 = "sha256-aP6x8GixXn/CUW8BEWs3gYcLndFOnEleDp5OtaryU1s=";
+          sha256 = "sha256-ACjkuN0JgQs+1b4IaYRdFLOcf8b762IWPc4Am5spu9E=";
         };
       in ''
         mkdir ge
@@ -210,7 +210,13 @@ self: super:
           -W wscript-support-d-u-switches \
           -W wininet-Cleanup \
           -W sapi-ISpObjectToken-CreateInstance \
-          -W sapi-iteration-tokens
+          -W sapi-iteration-tokens \
+          -W cryptext-CryptExtOpenCER \
+          -W shell32-NewMenu_Interface \
+          -W wintrust-WTHelperGetProvCertFromChain \
+          -W user32-FlashWindowEx \
+          -W user32-MessageBox_WS_EX_TOPMOST \
+          -W wined3d-zero-inf-shaders
 
           # NOTE: Some patches are applied manually because they -do- apply, just not cleanly, ie with patch fuzz.
           # A detailed list of why the above patches are disabled is listed below:
@@ -279,6 +285,12 @@ self: super:
           # ** wininet-Cleanup - applied manually
           # sapi-ISpObjectToken-CreateInstance - already applied
           # sapi-iteration-tokens - already applied
+          # cryptext-CryptExtOpenCER - applied manually
+          # ** wintrust-WTHelperGetProvCertFromChain - applied manually
+          # ** shell32-NewMenu_Interface - applied manually
+          # ** user32-FlashWindowEx - applied manually
+          # user32-MessageBox_WS_EX_TOPMOST - already applied
+          # wined3d-zero-inf-shaders - already applied
 
           echo "WINE: -STAGING- applying staging Compiler_Warnings revert for steamclient compatibility"
           # revert this, it breaks lsteamclient compilation
@@ -394,7 +406,19 @@ self: super:
 
           # winex11-wglShareLists
           patch -Np1 < ../patches/wine-hotfixes/staging/winex11-wglShareLists/0001-winex11.drv-Only-warn-about-used-contexts-in-wglShar.patch
+
+          # cryptext-CryptExtOpenCER
+          patch -Np1 < ../patches/wine-hotfixes/staging/cryptext-CryptExtOpenCER/0001-cryptext-Implement-CryptExtOpenCER.patch
+
+          # wintrust-WTHelperGetProvCertFromChain
+          patch -Np1 < ../patches/wine-hotfixes/staging/wintrust-WTHelperGetProvCertFromChain/0001-wintrust-Add-parameter-check-in-WTHelperGetProvCertF.patch
+
+          # shell32-NewMenu_Interface
+          patch -Np1 < ../patches/wine-hotfixes/staging/shell32-NewMenu_Interface/0001-shell32-Implement-NewMenu-with-new-folder-item.patch
           
+          # user32-FlashWindowEx
+          patch -Np1 < ../patches/wine-hotfixes/staging/user32-FlashWindowEx/0001-user32-Improve-FlashWindowEx-message-and-return-valu.patch
+
           # nvapi/nvcuda
           # this was added in 7.1, so it's not in the 7.0 tree
           patch -Np1 < ../patches/wine-hotfixes/staging/nvcuda/0016-nvcuda-Make-nvcuda-attempt-to-load-libcuda.so.1.patch
@@ -405,10 +429,6 @@ self: super:
 
           echo "WINE: -GAME FIXES- assetto corsa hud fix"
           patch -Np1 < ../patches/game-patches/assettocorsa-hud.patch
-
-          echo "WINE: -GAME FIXES- mk11 crash fix"
-          # this is needed so that online multi-player does not crash
-          patch -Np1 < ../patches/game-patches/mk11.patch
 
           echo "WINE: -GAME FIXES- killer instinct vulkan fix"
           patch -Np1 < ../patches/game-patches/killer-instinct-winevulkan_fix.patch
@@ -462,7 +482,6 @@ self: super:
 
           # https://bugs.winehq.org/show_bug.cgi?id=52956
           echo "WINE: -HOTFIX- fix star citizen bug 52956"
-          patch -Np1 < ../patches/wine-hotfixes/upstream/15aa8c6-fix-star-citizen-bug-52956.patch
           patch -Np1 < ../patches/wine-hotfixes/pending/0001-winex11.drv-Define-ControlMask-when-not-available.patch
           patch -Np1 < ../patches/wine-hotfixes/pending/0002-include-Add-THREAD_POWER_THROTTLING_STATE-type.patch
           patch -Np1 < ../patches/wine-hotfixes/pending/0003-ntdll-Fake-success-for-ThreadPowerThrottlingState.patch
@@ -474,9 +493,6 @@ self: super:
           echo "WINE: -HOTFIX- Guild Wars 2 patch"
           patch -Np1 < ../patches/wine-hotfixes/pending/hotfix-guild_wars_2.patch
           
-          echo "WINE: -HOTFIX- fix upside down videos"
-          patch -Np1 < ../patches/wine-hotfixes/pending/157.patch
-          
           echo "WINE: -HOTFIX- fix Amazon Games launcher"
           patch -Np1 < ../patches/wine-hotfixes/upstream/481.patch
           
@@ -485,7 +501,16 @@ self: super:
 
           echo "WINE: -HOTFIX- fix Persona 4 Golden"
           patch -Np1 < ../patches/wine-hotfixes/upstream/381c2a9ae151f676a009e89b4b101679fd90b9ae.patch
+          
+          echo "WINE: -HOTFIX- fix Overwatch 2 shader compilation issue"
+          # https://gitlab.winehq.org/wine/wine/-/merge_requests/1152
+          patch -Np1 < ../patches/wine-hotfixes/pending/1152.patch
 
+          echo "WINE: -HOTFIX- fix Overwatch 2 from freezing on wine 7.12 and older"
+          # https://gitlab.winehq.org/wine/wine/-/merge_requests/1152
+          patch -Np1 < ../patches/wine-hotfixes/pending/4bf9d2403f269e7f3595ad075a4afee9adbda51f.patch
+          
+          
       ### END WINE HOTFIX SECTION ###
     '';
   });
